@@ -3,5 +3,42 @@
 @tailwind utilities;
 
 body {
-  background-color: #333;
+  background-color: #fff;
+}
+
+.personalized-text-input {
+  border: solid 1px #cecbcb;
+  padding: 8px 10px;
+  border-radius: 4px;
+
+  &::placeholder {
+    font-size: 14px;
+    font-weight: 300;
+    color: gray;
+  }
+
+  &:focus {
+    outline: solid 1.4px #2563eb;
+    outline-offset: -1px;
+  }
+
+  &:focus::placeholder {
+    color: transparent;
+    transition: all ease-in 0.1s;
+  }
+}
+
+.personalized-text-input::-webkit-outer-spin-button,
+.personalized-text-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.personalized-text-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.personalized-text-input:focus ~ .label-default {
+  color: #2563eb;
 }
