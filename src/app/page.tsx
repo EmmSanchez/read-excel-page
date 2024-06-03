@@ -6,6 +6,7 @@ import { useFileStore } from './store/fileStore';
 import { AddIcon, ErrorIcon} from '../../public/icons/icons';
 import { Row } from './components/table/row';
 import { RemoveRowsButton } from './components/buttons/removeRowsButton';
+import { AddRowButton } from './components/buttons/addRowButton';
 
 // interface Participant {
 //   id: number,
@@ -34,7 +35,7 @@ export function Table() {
   const [jump, setJump] = useState<number | null>(null)
   const [strength, setStrength] = useState<number | null>(null)
   const [speed, setSpeed] = useState<number | null>(null)
-  const [score, setScore] = useState<number | null>(null)
+  const [score, setScore] = useState<number | null>(70)
   const [time, setTime] = useState<number | null>(null)
   const [total, setTotal] = useState<number | null>(null)
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState<boolean>(true)
@@ -54,45 +55,50 @@ export function Table() {
 
     if (action === "name") {
       const newName = (e.target.value).trimStart()
-      setName(newName)
+      const editedName = newName.replace(/[^a-zA-Z\s]/g, ''); // Allow only (a-z and A-Z) and spaces between words
+      setName(editedName)
+      
     }
-
+    
     if (action === "age") {
-      const newAge = parseInt(e.target.value)
+      const newAge = parseFloat(e.target.value)
       setAge(newAge)
     }
 
     if (action === "jump") {
-      const newJump = parseInt(e.target.value)
+      const newJump = parseFloat(e.target.value)
       setJump(newJump)
     }
 
     if (action === "strength") {
-      const newStrength = parseInt(e.target.value)
+      const newStrength = parseFloat(e.target.value)
       setStrength(newStrength)
     }
 
     if (action === "speed") {
-      const newSpeed = parseInt(e.target.value)
+      const newSpeed = parseFloat(e.target.value)
       setSpeed(newSpeed)
     }
 
     if (action === "time") {
-      const newTime = parseInt(e.target.value)
+      const newTime = parseFloat(e.target.value)
       setTime(newTime)
     }
   }
   
+  // Submit the form until all variables aren't null
   useEffect(() => {
-    if (id && name && age && jump && strength && speed && time) {
+    if (id && name && age && jump && strength && speed && time && score) {
       setIsAddButtonDisabled(false)
+      const newTotal = jump + strength + speed + score + time
+      setTotal(newTotal)
     } else {
       setIsAddButtonDisabled(true)
     }
-  }, [id, name, age, jump, strength, speed, time])
-
-
+  }, [id, name, age, jump, strength, speed, time, score])
   
+
+  // Get higher available nummber
   const handleGetNewIndex = () => {
     setIdError(false)
     if (excelData) {
@@ -113,12 +119,12 @@ export function Table() {
     setJump(null)
     setStrength(null)
     setSpeed(null)
-    setScore(null)
     setTime(null)
     setTotal(null)
     setIsAddButtonDisabled(true)
   }
   
+  // AVOID e, E, +, -
   const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-") {
       e.preventDefault();
@@ -207,12 +213,26 @@ export function Table() {
   // ADD NEW ROW
   const addRow = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+
+    if (jump && strength && speed && time && score) {
+      const newTotal = jump + strength + speed + score + time
+      setTotal(newTotal)
+      
+
+      if (excelData) {
+        const newRow = [id ,name, age, jump, strength, speed, score, time, total]
+        const newExcelData = [...excelData, newRow]
+        setExcelData(newExcelData)
+        setTotal(null)
+      }
+    }
   }
 
   // TO DO LIST
   // - Add rows
   // - Edit rows
   // - Search for ID
+  
 
   return (
     <>
@@ -220,13 +240,8 @@ export function Table() {
         <>
           <div className="flex flex-col justify-start w-full">
             <div className="flex mx-3 pr-2 w-[1200px] justify-end gap-3 text-sm">
-
-              <button disabled={selectedRows.length > 0} onClick={() => {setIsPopoverVisible(!isPopoverVisible); handleGetNewIndex()}} className={`px-4 py-[6px] rounded-md text-[#2563EB] font-semibold border-[1.4px] border-solid border-[#E2E8F0] transition-all ${selectedRows.length > 0 ? 'text-[#E2E8F0] cursor-not-allowed' : 'hover:bg-gray-100 '}`}>
-                <div className="flex justify-center items-center gap-1">
-                  <AddIcon fill={`${selectedRows.length > 0 ? '#E2E8F0' : '#2563EB'}`} width={18} height={18}/> 
-                  <p>Añadir</p>
-                </div>
-              </button>
+              <AddRowButton selectedRows={selectedRows} setIsPopoverVisible={setIsPopoverVisible} isPopoverVisible={isPopoverVisible} handleGetNewIndex={handleGetNewIndex}/>
+              
 
               {/* POPOVER DEL FORMULARIO PARA AÑADIR */}
               <div className={`fixed top-0 left-0 w-full h-full z-10 bg-gray-600/60 transition-opacity duration-200 ${isPopoverVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -305,6 +320,16 @@ export function Table() {
                                 <input value={time?.toString() || ''} min="0" type="number" name="time" id="time" onChange={(e) => handleInput(e, "time")} onKeyDown={preventInvalidChars} placeholder='Ingresa el tiempo' className='personalized-text-input'/>
                                 <label htmlFor="time" className='pb-[2px] text-[10px] text-black font-medium label-default'>Tiempo</label>
                             </div>
+
+                            <div className="">
+                              <p>Score</p>
+                              <p>{score}</p>
+                            </div>
+
+                            <div className="">
+                              <p>Total</p>
+                              <p>{total}</p>
+                            </div>
                           </div>
                       </div>
                       <div className="flex justify-end gap-2">
@@ -317,9 +342,10 @@ export function Table() {
                           disabled={isAddButtonDisabled}  
                           type='button'
                           onClick={(e) => {
-                            e.preventDefault()
-                            setIsPopoverVisible(false)  
-                            resetInputs()
+                              e.preventDefault()
+                              setIsPopoverVisible(false)  
+                              resetInputs()
+                              addRow(e)
                             }
                             } 
                           className={`bg-[#2563EB] text-white font-semibold px-4 py-2 rounded-md transition-all hover:opacity-90 ${isAddButtonDisabled ? 'bg-slate-400 cursor-not-allowed hover:opacity-100' : ''}`}>Añadir</button>
