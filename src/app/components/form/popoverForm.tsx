@@ -114,18 +114,18 @@ export function PopoverForm ({setId, id, setIdError, idError, setIsPopoverVisibl
   // Submit the form until all variables aren't null
   useEffect(() => {
     // Even when there is no valid ID the total value will be showed
-    if (age && jump && strength && speed && time && score) {
+    if (age !== null && jump !== null && strength !== null && speed !== null && time !== null && score !== null) {
       const newTotal = jump + strength + speed + score + time
       setTotal(newTotal)
     }
 
-    if (id && name && age && jump && strength && speed && time && score) {
+    if (id !== null && name !== null && age !== null && jump !== null && strength !== null && speed !== null && time !== null && score !== null) {
       setIsAddButtonDisabled(false)
     } else {
       setIsAddButtonDisabled(true)
     }
   }, [id, name, age, jump, strength, speed, time, score])
-  
+
   return (
     <>
       <div className={`fixed top-0 left-0 w-full h-full z-10 bg-gray-600/60 transition-opacity duration-200 ${isPopoverVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -196,22 +196,25 @@ export function PopoverForm ({setId, id, setIdError, idError, setIsPopoverVisibl
                   </div>
 
                   {/* FILA 4*/}
-                  <div className="flex gap-4">
+                  <div className="flex gap-6 align-middle">
                     {/* TIEMPO */}
                     <div className="flex flex-col-reverse w-[250px]">
                         <input value={time?.toString() || ''} min="0" type="number" name="time" id="time" onChange={(e) => handleInput(e, "time")} onKeyDown={preventInvalidChars} placeholder='Ingresa el tiempo' className='personalized-text-input'/>
                         <label htmlFor="time" className='pb-[2px] text-[10px] text-black font-medium label-default'>Tiempo</label>
                     </div>
 
-                    <div className="">
-                      <p>Score</p>
-                      <p>{score}</p>
+                    <div className="flex justify-evenly w-[250px] gap-4">
+                      <div className="w-[80px] flex flex-col justify-center items-center rounded-md border-solid border-[1px] border-gray-400">
+                        <p className="pb-[2px] text-[10px] text-black font-medium">Puntuación</p>
+                        <p>{score}</p>
+                      </div>
+
+                      <div className="w-[80px] flex flex-col justify-center items-center rounded-md border-solid border-[1px] border-[#2563EB]">
+                        <p className="pb-[2px] text-[10px] text-black font-medium">Total</p>
+                        <p>{total ? <>{total}</> : <>-</>}</p>
+                      </div>
                     </div>
 
-                    <div className="">
-                      <p>Total</p>
-                      <p>{total}</p>
-                    </div>
                   </div>
               </div>
               <div className="flex justify-end gap-2">

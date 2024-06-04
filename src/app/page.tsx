@@ -1,12 +1,13 @@
 'use client'
 import * as XLSX from 'xlsx';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Dropzone } from './components/dropzone';
 import { useFileStore } from './store/fileStore';
 import { useDataStore } from './store/dataStore';
 import { Row } from './components/table/row';
 import { RemoveRowsButton } from './components/buttons/removeRowsButton';
 import { AddRowButton } from './components/buttons/addRowButton';
+import { SearchIcon } from '../../public/icons/icons';
 
 // interface Participant {
 //   id: number,
@@ -24,8 +25,12 @@ export function Table() {
   const file = useFileStore((state) => state.file);
   const excelData = useDataStore((state) => state.excelData)
   const setExcelData = useDataStore((state) => state.setExcelData)
+  const [filteredExcelData ,setFilteredExcelData] = useState<ExcelData>(null)
   const [rowToDelete, setRowToDelete] = useState<number | null>(null);
   const [selectedRows, setSelectedRows] = useState<number[]>([])  
+
+  // Searchbar
+  const [searchValue, setSearchValue] = useState<string>('')
 
   // -----------------------------------------------------------------------------------------------
 
@@ -51,6 +56,8 @@ export function Table() {
     reader.readAsArrayBuffer(file);
     setSelectedRows([])
     setRowToDelete(null)
+    setSearchValue('')
+    setFilteredExcelData(null)
   }, [file, setExcelData])
 
   // GET ROW INDEX WITH ACTION
@@ -83,13 +90,14 @@ export function Table() {
 
   // DELETE ROW
   const confirmDeleteRow = () => {
-    if (rowToDelete !== null) {
-      const newExcelData = excelData?.filter((_, index) => index !== rowToDelete + 1) as ExcelData;
-      setExcelData(newExcelData);
-      setRowToDelete(null);
-      setSelectedRows([])
+    if (rowToDelete !== null && filteredExcelData && excelData) {
+        const rowToDeleteId = filteredExcelData[rowToDelete + 1][0]; // Obtener el ID de la fila a eliminar
+        const newExcelData = excelData.filter((row, index) => index === 0 || row[0] !== rowToDeleteId) as ExcelData;
+        setExcelData(newExcelData);
+        setRowToDelete(null);
+        setSelectedRows([]);
     }
-  };
+};
 
   const cancelDelete = () => {
     setSelectedRows([])
@@ -99,26 +107,73 @@ export function Table() {
 
   // DELETE MORE THAN 2 ROWS
   const deleteSelectedRows = () => {
-    if(!selectedRows || !excelData) return
-    const newData = excelData.filter((_, index) => !selectedRows.includes(index - 1)) as ExcelData
-    setExcelData(newData)
+    if (!selectedRows || !excelData || !filteredExcelData) return;
+    const idsToDelete = selectedRows.map(rowIndex => filteredExcelData[rowIndex + 1][0]); // Obtener los IDs de las filas a eliminar
+    const newData = excelData.filter((row, index) => index === 0 || !idsToDelete.includes(row[0])) as ExcelData;
+    setExcelData(newData);
+    setSelectedRows([]);
+    setRowToDelete(null);
+};
+
+  const handleSearchbar = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    const newSearchValue = (e.target.value).trimStart()
+    setSearchValue(newSearchValue)
+  }
+
+  // Determine the type of search
+  const isID = (value: string) => /^\d+$/.test(value); // ID is a number
+  const isRange = (value: string) => /^\d+-\d+$/.test(value); // Range is in the form "num1-num2"
+  const isName = (value: string) => !isID(value) && !isRange(value); // Anything else is a name
+
+
+  useEffect(() => {
     setSelectedRows([])
     setRowToDelete(null)
-  }
+
+    if (!searchValue) {
+      setFilteredExcelData(excelData);
+    } else {
+      if (isID(searchValue)) {
+        const filteredExcelData = excelData?.filter((row, index) => index === 0 || row[0]?.toString() === searchValue) as ExcelData
+        setFilteredExcelData(filteredExcelData)
+      } else if (isRange(searchValue)) {
+        const [start, end] = searchValue.split('-').map(Number);
+        const filteredExcelData = excelData?.filter((row, index) => {
+            if (index === 0) return true; // Keep header row
+            const cellValue = Number(row[0]);
+            return cellValue >= start && cellValue <= end;
+        }) as ExcelData;
+        setFilteredExcelData(filteredExcelData);
+        
+      } else if (isName(searchValue)) {
+        const filteredExcelData = excelData?.filter((row, index) => index === 0 || row[1]?.toString().toLowerCase().includes(searchValue.toLowerCase())) as ExcelData;
+        setFilteredExcelData(filteredExcelData);
+      }
+    }
+  },[searchValue, excelData])
 
   // TO DO LIST
   // - Edit rows
-  // - Search for ID
-  
+  // - Search for range ID and name
 
   return (
     <>
       {excelData ? (
         <>
-          <div className="flex flex-col justify-start w-full">
-            <div className="flex mx-3 pr-2 w-[1200px] justify-end gap-3 text-sm">
-              <AddRowButton selectedRows={selectedRows}/>
-              <RemoveRowsButton selectedRows={selectedRows} deleteSelectedRows={deleteSelectedRows}/>
+          <div className="flex flex-col justify-start w-full my-8">
+            <div className="flex w-[1200px] mx-3 pr-2 ">
+              {/* SEARCHBAR */}
+              <div className="flex bg-gray-200 py-2 px-3 gap-4 border-solid border-[1px] border-gray-300 rounded-lg items-center transition-all duration-300 ease-in-out outline outline-2 outline-transparent focus-within:outline-gray-400 focus-within:outline-offset-2 focus-within:bg-white">
+                <SearchIcon width={14} height={14} stroke='#6c757d'/>
+                <input type="text" placeholder="Buscar..." onChange={(e) => handleSearchbar(e)} className="appearance-none w-72 bg-transparent text-sm text-gray-600 focus:outline-none placeholder:text-sm placeholder:text-gray-500"/>
+              </div>
+
+              {/* ADD - REMOVE */}
+              <div className="flex w-full justify-end gap-3 text-sm">
+                <AddRowButton selectedRows={selectedRows}/>
+                <RemoveRowsButton selectedRows={selectedRows} deleteSelectedRows={deleteSelectedRows}/>
+              </div>
             </div>
             
 
@@ -134,7 +189,7 @@ export function Table() {
                 </div>
               </div>
               <div className='table-row-group'>
-                {excelData.slice(1).map((row, rowIndex) => (
+                {filteredExcelData?.slice(1).map((row, rowIndex) => (
                   <Row key={rowIndex} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} row={row} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
                 ))}
               </div>

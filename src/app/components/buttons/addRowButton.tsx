@@ -16,6 +16,7 @@ export function AddRowButton ({selectedRows}: AddRowButtonProps) {
   // Get higher available nummber
   const handleGetNewIndex = () => {
     setIdError(false)
+    // LOGIC IF THERE IS NO LIST
     if (excelData) {
       const lastEntry = excelData[excelData.length - 1]
       if (typeof lastEntry[0] === "number") {
@@ -23,6 +24,10 @@ export function AddRowButton ({selectedRows}: AddRowButtonProps) {
         const newId = lastId + 1
         setId(newId)
       }
+    }
+
+    if (excelData && excelData?.length <= 1) {
+      setId(1)
     }
   }
 
