@@ -44,7 +44,6 @@ export function PopoverForm ({setId, id, setIdError, idError, setIsPopoverVisibl
       const newName = (e.target.value).trimStart()
       const editedName = newName.replace(/[^a-zA-Z\s]/g, ''); // Allow only (a-z and A-Z) and spaces between words
       setName(editedName)
-      
     }
     
     if (action === "age") {
@@ -119,7 +118,7 @@ export function PopoverForm ({setId, id, setIdError, idError, setIsPopoverVisibl
       setTotal(newTotal)
     }
 
-    if (id !== null && name !== null && age !== null && jump !== null && strength !== null && speed !== null && time !== null && score !== null) {
+    if (id !== null && name !== '' && age && jump && strength && speed && time && score) {
       setIsAddButtonDisabled(false)
     } else {
       setIsAddButtonDisabled(true)

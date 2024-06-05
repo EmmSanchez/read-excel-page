@@ -1,11 +1,11 @@
 import { useFileStore } from "@/app/store/fileStore";
 import { useDataStore } from "@/app/store/dataStore";
-import React, {useState, useEffect, useRef, ChangeEvent} from "react";
+import React, {useState, useEffect, ChangeEvent} from "react";
 import * as XLSX from "xlsx"
-import { InfoIcon, SearchIcon } from "../../../../public/icons/icons";
 import { AddRowButton } from "../buttons/addRowButton";
 import { RemoveRowsButton } from "../buttons/removeRowsButton";
 import { Row } from "./row";
+import { Searchbar } from "../searchbar/searchbar";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -20,12 +20,8 @@ export function Table() {
   // deleteRowsPopover
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
 
-  // tooltip
-  const [showTooltip, setShowTooltip] = useState<boolean>(false)
-
   // Searchbar
   const [searchValue, setSearchValue] = useState<string>('')
-  const hideTooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // -----------------------------------------------------------------------------------------------
 
@@ -167,19 +163,6 @@ export function Table() {
   // - Print user
   // - Pagination
 
-  const tooltipToggle = (action: string) => {
-    if (action === "enter") {
-      if (hideTooltipTimeoutRef.current) {
-        clearTimeout(hideTooltipTimeoutRef.current);
-      }
-      setShowTooltip(true);
-    } else if (action === "leave") {
-      hideTooltipTimeoutRef.current = setTimeout(() => {
-        setShowTooltip(false);
-      }, 300);
-    }
-  };
-
   return (
     <>
       {excelData ? (
@@ -187,23 +170,7 @@ export function Table() {
           <div className="flex flex-col justify-start w-full my-11">
             <div className="flex w-[1200px] mx-3 pr-2 ">
               {/* SEARCHBAR */}
-              <div className="flex bg-gray-200 py-2 pl-3 gap-4 border-solid border-[1px] border-gray-300 rounded-lg items-center transition-all duration-300 ease-in-out outline outline-2 outline-transparent focus-within:outline-gray-400 focus-within:outline-offset-2 focus-within:bg-white">
-                <SearchIcon width={14} height={14} stroke='#6c757d'/>
-                <input type="text" placeholder="Buscar..." onChange={(e) => handleSearchbar(e)} className="appearance-none w-72 bg-transparent text-sm text-gray-600 focus:outline-none placeholder:text-sm placeholder:text-gray-500"/>
-                {/* TOOLTIP */}
-                <InfoIcon width={12} height={12} stroke='#6c757d' onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="hover:cursor-pointer" />
-                <div onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="relative">
-                  <div className={`absolute w-96 p-2 -top-14 left-2 text-sm bg-white rounded-md outline outline-gray-300 outline-1 drop-shadow-md transition-all ease-in-out duration-150 transform  ${showTooltip ? 'opacity-100 scale-100 translate-x-0' : 'opacity-0 pointer-events-none scale-[.98] -translate-x-1'}`}>
-                    <ul className="text-[12px] text-gray-600">
-                      <li><span className="font-bold">ID:</span> Escribe un ID específico (e.g., &quot;5&quot;).</li>
-                      <li><span className="font-bold">Rango:</span> Escribe un rango de IDs (e.g., &quot;5-10&quot;).</li>
-                      <li><span className="font-bold">Nombre:</span> Escribe un nombre completo o parcial (e.g., &quot;Luis&quot;).</li>
-                      <li><span className="font-bold">Búsqueda personalizada:</span> Escribe varios IDs separados por comas (e.g., &quot;2,5,3&quot;).</li>
-                    </ul>
-                  </div>
-                </div>
-                  
-              </div>
+              <Searchbar handleSearchbar={handleSearchbar}/>
               {/* ADD - REMOVE */}
               <div className="flex w-full justify-end gap-3 text-sm">
                 <AddRowButton selectedRows={selectedRows}/>
