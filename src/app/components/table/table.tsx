@@ -6,6 +6,7 @@ import { AddRowButton } from "../buttons/addRowButton";
 import { RemoveRowsButton } from "../buttons/removeRowsButton";
 import { Row } from "./row";
 import { Searchbar } from "../searchbar/searchbar";
+import { useFilteredDataStore } from "@/app/store/filteredData";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -13,7 +14,8 @@ export function Table() {
   const file = useFileStore((state) => state.file);
   const excelData = useDataStore((state) => state.excelData)
   const setExcelData = useDataStore((state) => state.setExcelData)
-  const [filteredExcelData ,setFilteredExcelData] = useState<ExcelData>(null)
+  const filteredExcelData = useFilteredDataStore((state) => state.filteredExcelData)
+  const setFilteredExcelData = useFilteredDataStore((state) => state.setFilteredExcelData)
   const [rowToDelete, setRowToDelete] = useState<number | null>(null);
   const [selectedRows, setSelectedRows] = useState<number[]>([])  
 
@@ -73,11 +75,16 @@ export function Table() {
       });
     }
 
-    // DELETE A WITH ROW TRASH BUTTON
+    // DELETE A ROW WITH ROW TRASH BUTTON
     if(action === 'delete') {
       setSelectedRows([rowIndex])
       setRowToDelete(rowIndex)
       setIsPopoverVisible(false) // rows
+    }
+
+    if(action === "edit") {
+      setSelectedRows([rowIndex])
+      setRowToDelete(null)
     }
   };
 
@@ -158,10 +165,9 @@ export function Table() {
   },[searchValue, excelData])
 
   // TO DO LIST
-  // - Edit rows
   // - Export to excel
   // - Print user
-  // - Pagination
+  // - Pagination to see 100 results
 
   return (
     <>

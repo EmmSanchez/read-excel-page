@@ -1,5 +1,5 @@
-import { AddIcon, ErrorIcon } from "../../../../public/icons/icons";
-import { useState, useEffect } from "react";
+import { AddIcon } from "../../../../public/icons/icons";
+import { useState } from "react";
 import { useDataStore } from "@/app/store/dataStore";
 import { PopoverForm } from "../form/popoverForm";
 
