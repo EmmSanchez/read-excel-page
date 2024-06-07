@@ -52,7 +52,7 @@ export function Dropzone() {
             file && <p className='text-[10px] text-black/60'>{(file?.size / 1024).toFixed(2)} KB</p>
           }
         </div>
-        <div className="flex justify-center w-[500px] p-[6px] rounded-lg bg-white drop-shadow-md">
+        <div className="flex justify-center w-[500px] p-[6px] rounded-lg bg-white drop-shadow-md outline outline-1 outline-gray-300">
         {
           file ?
           <>

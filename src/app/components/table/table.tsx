@@ -7,6 +7,7 @@ import { RemoveRowsButton } from "../buttons/removeRowsButton";
 import { Row } from "./row";
 import { Searchbar } from "../searchbar/searchbar";
 import { useFilteredDataStore } from "@/app/store/filteredData";
+import { DeselectRowsButton } from "../buttons/deselectRowsButton";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -165,7 +166,6 @@ export function Table() {
   },[searchValue, excelData])
 
   // TO DO LIST
-  // - Export to excel
   // - Print user
   // - Pagination to see 100 results
 
@@ -174,9 +174,16 @@ export function Table() {
       {excelData ? (
         <>
           <div className="flex flex-col justify-start w-full my-11">
-            <div className="flex w-[1200px] mx-3 pr-2 ">
+            <div className="flex items-end w-[1200px] mx-3 pr-2 gap-4">
               {/* SEARCHBAR */}
               <Searchbar handleSearchbar={handleSearchbar}/>
+              {/* QUIT SELECTED ROW BUTTON */}
+              {
+                selectedRows.length > 0 && (
+                  <DeselectRowsButton selectedRows={selectedRows} setSelectedRows={setSelectedRows}/>
+                )
+              }
+
               {/* ADD - REMOVE */}
               <div className="flex w-full justify-end gap-3 text-sm">
                 <AddRowButton selectedRows={selectedRows}/>

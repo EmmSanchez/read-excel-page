@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
-import { Dropzone } from './components/dropzone';
 import { Table } from './components/table/table';
+import { HeaderButtons } from './components/header/headerButtons';
 
 
 // interface Participant {
@@ -14,11 +14,10 @@ import { Table } from './components/table/table';
 //   total: number
 // }
 
-
 export default function Home() {
   return (
     <>
-      <Dropzone />
+      <HeaderButtons />
       <Table />
     </>
   );
