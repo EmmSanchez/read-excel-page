@@ -1,4 +1,4 @@
-import { TrashIcon } from "../../../../public/icons/icons";
+import { DeleteIcon } from "../../../../public/icons/icons";
 
 interface DeleteButtonProps {
   handleGetRow: (rowIndex: number, action: string) => void;
@@ -12,7 +12,7 @@ export function DeleteButton ({handleGetRow, rowIndex, rowToDelete, cancelDelete
   return (
     <>
       <button className='w-[24px] h-full rounded-md transition-all hover:bg-zinc-50' onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'delete')}}>
-        <TrashIcon width={24} height={24} fill='#00890' className='p-1'/>
+        <DeleteIcon width={24} height={24} fill='#00890' className='p-1'/>
       </button>
       {rowToDelete === rowIndex && (
         <div className='fixed w-[30%] right-5 bottom-10 bg-white rounded-md outline outline-gray-300 outline-1 drop-shadow-md p-4 text-xs'>

@@ -28,7 +28,7 @@ export function RemoveRowsButton({ selectedRows, deleteSelectedRows, isPopoverVi
 
   return (
     <>
-      <button onClick={handleDeleteClick} disabled={selectedRows.length === 0} className={`px-4 py-[6px] rounded-md text-[#2563EB] font-semibold border-[1.4px] border-solid border-[#E2E8F0] transition-all ${selectedRows.length === 0 ? 'text-[#E2E8F0] cursor-not-allowed' : 'hover:bg-gray-100'}`}>
+      <button onClick={handleDeleteClick} disabled={selectedRows.length === 0} className={`w-[140px] px-4 py-[6px] rounded-md text-[#2563EB] font-semibold border-[1.4px] border-solid border-gray-300 transition-all ${selectedRows.length === 0 ? 'text-[#E2E8F0] cursor-not-allowed' : 'hover:bg-gray-100'}`}>
         <div className="flex justify-center items-start gap-1">
           <RemoveIcon fill={`${selectedRows.length === 0 ? '#E2E8F0' : '#2563EB'}`} width={18} height={18} />
           <p>Eliminar</p>

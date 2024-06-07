@@ -145,7 +145,11 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   }, [id, name, age, jump, strength, speed, time, score])
 
   const fixDecimals = (value: number) => {
-    return parseFloat(value.toFixed(2));
+    const num = Number(value);
+    if (isNaN(num)) {
+      return
+    }
+    return parseFloat(num.toFixed(2));
   }
 
   const getRowInfo = (rowIndex: number) => {
@@ -167,30 +171,29 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
       const rowToEdit = excelData.filter((row, rowIndex) => rowIndex > 0 && row[0] === rowId) as ExcelData
       
       if (rowToEdit) {
-        const [id, name, age, jump, strength, speed, score, time, total] = rowToEdit[0]
         
         // Save original values in FormData
-        setFormData({
-          id: id as number,
-          name: name as string,
-          age: age as number,
-          jump: fixDecimals(jump as number),
-          strength: fixDecimals(strength as number),
-          speed: fixDecimals(speed as number),
-          score: fixDecimals(score as number),
-          time: fixDecimals(time as number),
-          total: fixDecimals(total as number),
-        });
+        // setFormData({
+        //   id: id as number,
+        //   name: name as string,
+        //   age: age as number,
+        //   jump: fixDecimals(jump as number),
+        //   strength: fixDecimals(strength as number),
+        //   speed: fixDecimals(speed as number),
+        //   score: fixDecimals(score as number),
+        //   time: fixDecimals(time as number),
+        //   total: fixDecimals(total as number),
+        // });
 
-        setId(id as number);
-        setName(name as string);
-        setAge(age as number);
-        setJump(fixDecimals(jump as number));
-        setStrength(fixDecimals(strength as number));
-        setSpeed(fixDecimals(speed as number));
-        setTime(fixDecimals(time as number));
-        setScore(fixDecimals(score as number));
-        setTotal(fixDecimals(total as number));
+        // setId(id as number);
+        // setName(name as string);
+        // setAge(age as number);
+        // setJump(fixDecimals(jump as number));
+        // setStrength(fixDecimals(strength as number));
+        // setSpeed(fixDecimals(speed as number));
+        // setTime(fixDecimals(time as number));
+        // setScore(fixDecimals(score as number));
+        // setTotal(fixDecimals(total as number));
       }
     }
   }
@@ -202,47 +205,47 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     getRowInfo(rowIndex)
   }
 
-  const handleSaveChanges = (e: React.MouseEvent<HTMLButtonElement>, rowIndex: number) => {
-    e.preventDefault();
+  // const handleSaveChanges = (e: React.MouseEvent<HTMLButtonElement>, rowIndex: number) => {
+  //   e.preventDefault();
   
-    // Actualizar los nuevos valores en excelData
-    if (excelData) {
-      const editedRow: (string | number | boolean | null)[] = [
-        id,
-        name,
-        age,
-        jump,
-        strength,
-        speed,
-        score,
-        time,
-        total !== null ? fixDecimals(total) : null
-      ];
+  //   // Actualizar los nuevos valores en excelData
+  //   if (excelData) {
+  //     const editedRow: (string | number | boolean | null)[] = [
+  //       id,
+  //       name,
+  //       age,
+  //       jump,
+  //       strength,
+  //       speed,
+  //       score,
+  //       time,
+  //       total !== null ? fixDecimals(total) : null
+  //     ];
 
-      if (filteredExcelData) {
-        const rowId = filteredExcelData[rowIndex + 1][0];
+  //     if (filteredExcelData) {
+  //       const rowId = filteredExcelData[rowIndex + 1][0];
         
-        const updatedExcelData = excelData.map((row) => {
-          if (rowId === row[0] ) {
-            return editedRow;
-          } else {
-            return row;
-          }
-        });
+  //       const updatedExcelData = excelData.map((row) => {
+  //         if (rowId === row[0] ) {
+  //           return editedRow;
+  //         } else {
+  //           return row;
+  //         }
+  //       });
 
-        // Sort to avoid problems when the ID's user is changed and is not sorted
-        const sortedExcelData = updatedExcelData.slice(1).sort((a, b) => {
-          return (a[0] as number) - (b[0] as number);
-        });
+  //       // Sort to avoid problems when the ID's user is changed and is not sorted
+  //       const sortedExcelData = updatedExcelData.slice(1).sort((a, b) => {
+  //         return (a[0] as number) - (b[0] as number);
+  //       });
   
-        // Agregar la fila de encabezado nuevamente
-        sortedExcelData.unshift(updatedExcelData[0]);
+  //       // Agregar la fila de encabezado nuevamente
+  //       sortedExcelData.unshift(updatedExcelData[0]);
 
-        setExcelData(sortedExcelData);
-      }
-    }
-    setIsPopoverVisible(false);
-  };
+  //       setExcelData(sortedExcelData);
+  //     }
+  //   }
+  //   setIsPopoverVisible(false);
+  // };
 
   const handleCancelChanges = () => {
     setIsPopoverVisible(false);
@@ -287,7 +290,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                 <button
                   disabled={isSaveButtonDisabled}  
                   type='button'
-                  onClick={(e) => handleSaveChanges(e, rowIndex) } 
+                  // onClick={(e) => handleSaveChanges(e, rowIndex) } 
                   className={`flex h-9 justify-center items-center bg-[#2563EB] text-white font-semibold px-4 py-2 rounded-md transition-all hover:opacity-90 ${isSaveButtonDisabled ? 'bg-slate-400 cursor-not-allowed hover:opacity-100' : ''}`}
                 >
                   Guardar cambios
