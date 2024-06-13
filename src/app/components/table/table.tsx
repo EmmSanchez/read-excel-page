@@ -210,7 +210,7 @@ export function Table() {
         <>
           <div className="flex flex-col justify-start w-full my-4">
             <div className="flex w-full justify-center">
-              <div className="flex h-14 mx-3 items-end w-full pr-2 gap-4">
+              <div className="flex h-14 mx-4 items-end w-full pr-2 gap-4">
                 {/* SEARCHBAR */}
                 <Searchbar handleSearchbar={handleSearchbar}/>
                 {/* QUIT SELECTED ROW BUTTON */}

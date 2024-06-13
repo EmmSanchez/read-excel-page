@@ -27,7 +27,7 @@ export function Searchbar ({handleSearchbar}: SearchbarProps) {
     <>
       <div className="flex bg-gray-200 h-full py-2 pl-3 gap-4 border-solid border-[1px] border-gray-300 rounded-lg items-center transition-all duration-300 ease-in-out outline outline-2 outline-transparent focus-within:outline-gray-400 focus-within:outline-offset-2 focus-within:bg-white">
         <SearchIcon width={14} height={14} stroke='#6c757d'/>
-        <input type="text" placeholder="Buscar..." onChange={(e) => handleSearchbar(e)} className="appearance-none w-72 bg-transparent text-sm text-gray-600 focus:outline-none placeholder:text-sm placeholder:text-gray-500"/>
+        <input type="text" placeholder="Buscar..." onChange={(e) => handleSearchbar(e)} className="appearance-none w-72 bg-transparent text-lg text-gray-600 focus:outline-none placeholder:text-lg placeholder:text-gray-500  placeholder:align-bottom"/>
         {/* TOOLTIP */}
         <InfoIcon width={12} height={12} stroke='#6c757d' onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="hover:cursor-pointer" />
         <div onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="relative">

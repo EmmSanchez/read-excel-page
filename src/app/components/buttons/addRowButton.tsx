@@ -33,7 +33,7 @@ export function AddRowButton ({selectedRows}: AddRowButtonProps) {
 
   return (
     <>
-      <button disabled={selectedRows.length > 0} onClick={() => {setIsPopoverVisible(!isPopoverVisible); handleGetNewIndex()}} className={`h-full w-[140px] px-4 py-[6px] rounded-md text-[#2563EB] font-semibold border-[1.4px] border-solid border-gray-300 transition-all ${selectedRows.length > 0 ? 'text-[#E2E8F0] cursor-not-allowed' : 'hover:bg-gray-100 '}`}>
+      <button disabled={selectedRows.length > 0} onClick={() => {setIsPopoverVisible(!isPopoverVisible); handleGetNewIndex()}} className={`h-full w-[140px] px-4 py-[6px] rounded-md text-xl text-[#2563EB] font-semibold border-[1.4px] border-solid border-gray-300 transition-all ${selectedRows.length > 0 ? 'text-[#E2E8F0] cursor-not-allowed' : 'hover:bg-gray-100 '}`}>
         <div className="flex justify-center items-center gap-1">
           <AddIcon fill={`${selectedRows.length > 0 ? '#E2E8F0' : '#2563EB'}`} width={18} height={18}/> 
           <p>Añadir</p>

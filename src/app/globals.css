@@ -7,7 +7,7 @@ body {
 }
 
 .personalized-text-input {
-  height: 37px;
+  height: 3rem;
   border: solid 1px #cecbcb;
   padding: 8px 10px;
   border-radius: 4px;
@@ -42,4 +42,8 @@ body {
 
 .personalized-text-input:focus ~ .label-default {
   color: #2563eb;
+}
+
+.custom-grid-form {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
 }
