@@ -162,6 +162,19 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setFormData(newFormData)
   }
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, action: string) => {
+    const newValue = e.target.value 
+    const newFormData = { ...formData }
+
+    switch (action) {
+      case "test":
+      case "genre":
+        newFormData[action] = newValue
+        break
+    }
+    setFormData(newFormData)
+  }
+
   useEffect(() => {
     if (idError) {
       setIsSaveButtonDisabled(true)
@@ -353,7 +366,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
             </div>
 
             <div className="flex flex-col flex-grow">
-              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} />   
+              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} handleSelectChange={handleSelectChange}/>   
             </div>
 
 
