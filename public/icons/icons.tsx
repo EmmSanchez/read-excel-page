@@ -190,3 +190,21 @@ export const ButtonPrintIcon = (props: SVGProps<SVGSVGElement>) => (
     <rect x="6" y="14" width="12" height="8" rx="1" />
   </svg>
 )
+
+export const XSquareIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <path
+      stroke={props.stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2ZM9 9l6 6M15 9l-6 6"
+    />
+  </svg>
+)

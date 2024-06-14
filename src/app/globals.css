@@ -29,6 +29,16 @@ body {
   }
 }
 
+.error-input {
+  background-color: rgb(255, 229, 229);
+  border: solid 1px rgb(224, 68, 68);
+
+  &:focus {
+    outline: solid 1.4px rgb(224, 68, 68);
+    outline-offset: -1px;
+  }
+}
+
 .personalized-text-input::-webkit-outer-spin-button,
 .personalized-text-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -46,4 +56,12 @@ body {
 
 .custom-grid-form {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
+}
+
+.custom-grid-form_rendimiento {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 100%), 1fr));
+}
+
+.custom-grid-form_rendimiento-sections {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
 }

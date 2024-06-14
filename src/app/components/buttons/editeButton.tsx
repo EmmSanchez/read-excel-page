@@ -28,12 +28,12 @@ interface FormData {
   ffm: number | null;
   tbw: number | null;
   grip: number | null;
-  points: number | null;
+  grip_points: number | null;
   jump: number | null;
   jump_points: number | null;
   agility: number | null;
   agility_points: number | null;
-  resistance: number | null;
+  resistance: string;
   resistance_points: number | null;
   total: number | null;
 }
@@ -75,12 +75,12 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     ffm: null,
     tbw: null,
     grip: null,
-    points: null,
+    grip_points: null,
     jump: null,
     jump_points: null,
     agility: null,
     agility_points: null,
-    resistance: null,
+    resistance: '',
     resistance_points: null,
     total: null
   };
@@ -111,26 +111,18 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
         break;
         
         case "p_surname" :
-          const newP_surname = newValue.trimStart().replace(/[^a-zA-Z\s]/g, '');
-          newFormData.p_surname = newP_surname
-          break;
-        
         case "m_surname" :
-          const newM_surname = newValue.trimStart().replace(/[^a-zA-Z\s]/g, '');
-          newFormData.m_surname = newM_surname
-          break;
-          
         case "name" :
-          const newName = newValue.trimStart().replace(/[^a-zA-Z\s]/g, '');
-          newFormData.name = newName
+          const newInfo = newValue.trimStart().replace(/[^a-zA-Z\s]/g, '');
+          newFormData[action] = newInfo
           break;
 
         case "test":
-          newFormData.test = newValue; 
-          break;
-    
         case "employeeNumber":
-          newFormData.employeeNumber = newValue;
+        case "genre":
+        case "category":
+        case "resistance":
+          newFormData[action] = newValue; 
           break;
     
         case "age":
@@ -140,13 +132,29 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
           }
           break;
     
-        case "genre":
-          newFormData.genre = newValue;
+        case "height":
+        case "weight":
+        case "imc":
+        case "waist":
+        case "bmi":
+        case "bmr":
+        case "grease":
+        case "fat_mass":
+        case "ffm":
+        case "tbw":
+        case "grip":
+        case "grip_points":
+        case "jump":
+        case "jump_points":
+        case "agility":
+        case "agility_points":
+        case "resistance_points":
+          const newData = parseFloat(newValue);
+          if (!isNaN(newData)) {
+            newFormData[action] = newData;
+          }
           break;
-    
-        case "category":
-          newFormData.category = newValue;
-          break;
+        
     
         default:
           break;
@@ -210,21 +218,21 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
           category: rowToEdit[8] as unknown as string,
           height: rowToEdit[9] !== null ? Number(rowToEdit[9]) : null,
           weight: rowToEdit[10] !== null ? Number(rowToEdit[10]) : null,
-          imc: rowToEdit[11] !== null ? Number(rowToEdit[11]) : null,
-          waist: rowToEdit[12] !== null ? Number(rowToEdit[12]) : null,
-          bmi: rowToEdit[13] !== null ? Number(rowToEdit[13]) : null,
-          bmr: rowToEdit[14] !== null ? Number(rowToEdit[14]) : null,
-          grease: rowToEdit[15] !== null ? Number(rowToEdit[15]) : null,
+          grease: rowToEdit[11] !== null ? Number(rowToEdit[11]) : null,
+          imc: rowToEdit[12] !== null ? Number(rowToEdit[12]) : null,
+          waist: rowToEdit[13] !== null ? Number(rowToEdit[13]) : null,
+          bmi: rowToEdit[14] !== null ? Number(rowToEdit[14]) : null,
+          bmr: rowToEdit[15] !== null ? Number(rowToEdit[15]) : null,
           fat_mass: rowToEdit[16] !== null ? Number(rowToEdit[16]) : null,
           ffm: rowToEdit[17] !== null ? Number(rowToEdit[17]) : null,
           tbw: rowToEdit[18] !== null ? Number(rowToEdit[18]) : null,
           grip: rowToEdit[19] !== null ? Number(rowToEdit[19]) : null,
-          points: rowToEdit[20] !== null ? Number(rowToEdit[20]) : null,
+          grip_points: rowToEdit[20] !== null ? Number(rowToEdit[20]) : null,
           jump: rowToEdit[21] !== null ? Number(rowToEdit[21]) : null,
           jump_points: rowToEdit[22] !== null ? Number(rowToEdit[22]) : null,
           agility: rowToEdit[23] !== null ? Number(rowToEdit[23]) : null,
           agility_points: rowToEdit[24] !== null ? Number(rowToEdit[24]) : null,
-          resistance: rowToEdit[25] !== null ? Number(rowToEdit[25]) : null,
+          resistance: rowToEdit[25] as unknown  as string,
           resistance_points: rowToEdit[26] !== null ? Number(rowToEdit[26]) : null,
           total: rowToEdit[27] !== null ? Number(rowToEdit[27]) : null,
         };
@@ -254,12 +262,70 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setFormData(initialFormData)
     setIsSaveButtonDisabled(false)
     setIdError(false)
+    setActiveSection("Información")
+    handleGetRow(rowIndex, 'cancel-edit')
   }
+
+  const handleSaveChanges = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setIsPopoverVisible(false);
+    setActiveSection("Información");
+
+    if (excelData) {
+      const updatedExcelData = excelData.map(row => {
+        if (row[0] === originalFormData.id) {
+          return [
+            formData.id,
+            formData.p_surname,
+            formData.m_surname,
+            formData.name,
+            formData.test,
+            formData.employeeNumber,
+            formData.age,
+            formData.genre,
+            formData.category,
+            formData.height,
+            formData.weight,
+            formData.grease,
+            formData.imc,
+            formData.waist,
+            formData.bmi,
+            formData.bmr,
+            formData.fat_mass,
+            formData.ffm,
+            formData.tbw,
+            formData.grip,
+            formData.grip_points,
+            formData.jump,
+            formData.jump_points,
+            formData.agility,
+            formData.agility_points,
+            formData.resistance,
+            formData.resistance_points,
+            formData.total
+          ];
+        }
+        return row;
+      });
+
+      // SORT AGAIN
+      updatedExcelData.sort((a, b) => {
+        const idA = Number(a[0]);
+        const idB = Number(b[0]);
+        if (idA === null || idB === null) {
+          return 0;
+        }
+        return idA - idB;
+      });
+
+      setExcelData(updatedExcelData);
+    }
+  };
+
   const handleChangeSection = (e: React.MouseEvent<HTMLHeadingElement, MouseEvent>) => {
     e.preventDefault()
     const newSection = e.currentTarget.innerHTML
     setActiveSection(newSection)
-    
   }
 
   return (
@@ -269,8 +335,9 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
       </button>
       {/* POPOVER FORM */}
       <div onClick={(e) => e.stopPropagation()} className={`fixed top-0 left-0 w-full h-full z-10 bg-gray-600/60 transition-opacity duration-200 ${isPopoverVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`relative  overflow-auto m-auto top-[10%] w-[80%] h-[80%] px-10 py-6 bg-white rounded-md outline outline-gray-300 outline-1 drop-shadow-md transform transition-transform duration-100 ${isPopoverVisible ? 'scale-100' : 'scale-95'}`}>
+        <div className={`relative overflow-auto m-auto top-[10%] w-[80%] h-[80%] px-10 py-6 bg-white rounded-md outline outline-gray-300 outline-1 drop-shadow-md transform transition-transform duration-100 ${isPopoverVisible ? 'scale-100' : 'scale-95'}`}>
           <form autoComplete='off' className="flex flex-col justify-around gap-6 h-full">
+
             <div className="flex flex-row items-center justify-between gap-2">
                 <div className="flex flex-col gap-2">
                   <h1 className='font-bold text-4xl'>Editar Registro</h1>
@@ -284,24 +351,37 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                   </div>
                 </div>
             </div>
-            <div className="flex flex-col">
+
+            <div className="flex flex-col flex-grow">
               <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} />   
             </div>
-            <div className="flex justify-end pb-5 gap-4">
-              <button type='button' 
-                  onClick={handleCancelChanges} className='flex h-9 justify-center items-center px-4 py-2 rounded-md border-[1.4px] border-solid border-[#E2E8F0] transition-all hover:bg-gray-100'
-              >
-                Cancelar
-              </button>
 
-              <button
-                disabled={isSaveButtonDisabled}  
-                type='button'
-                // onClick={(e) => handleSaveChanges(e, rowIndex) } 
-                className={`flex h-9 justify-center items-center bg-[#2563EB] text-white font-semibold px-4 py-2 rounded-md transition-all hover:opacity-90 ${isSaveButtonDisabled ? 'bg-slate-400 cursor-not-allowed hover:opacity-100' : ''}`}
-              >
-                Guardar cambios
-              </button>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xl text-gray-900 px-4 py-2 rounded-md">
+                  Total acumulado: 
+                  <span className="text-2xl text-gray-700 text-transparent font-bold bg-gradient-to-br from-blue-900 via-sky-700 to-sky-900 bg-clip-text"> {originalFormData.total} </span> 
+                  puntos
+                </p>
+              </div>
+
+              <div className="flex gap-4">
+                <button type='button' 
+                    onClick={handleCancelChanges} className='flex h-9 justify-center items-center px-4 py-2 rounded-md border-[1.4px] border-solid border-[#E2E8F0] transition-all hover:bg-gray-100'
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  disabled={isSaveButtonDisabled}  
+                  type='button'
+                  onClick={(e) => handleSaveChanges(e) } 
+                  className={`flex h-9 justify-center items-center bg-[#2563EB] text-white font-semibold px-4 py-2 rounded-md transition-all hover:opacity-90 ${isSaveButtonDisabled ? 'bg-slate-400 cursor-not-allowed hover:opacity-100' : ''}`}
+                >
+                  Guardar cambios
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -309,51 +389,3 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     </>
   )
 }
-
-// // {/* FILA 2*/}
-// <div className="flex gap-6">
-// {/* EDAD */}
-// <div className="flex flex-col-reverse w-[30%]">
-//     <input value={age?.toString() || ''} min="0" type="number" name="age" id="age" onChange={(e) => handleInput(e, "age")} onKeyDown={preventInvalidChars} placeholder='Ingresa la edad' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.age !== age ? 'bg-gray-200' : 'bg-white' }`}`}/>
-//     <label htmlFor="age" className='pb-[2px] text-[10px] text-black font-medium label-default'>Edad</label>
-// </div>
-// {/* SALTO */}
-// <div className="flex flex-col-reverse w-[30%]">
-//     <input value={jump?.toString() || ''} min="0" type="number" name="jump" id="jump" onChange={(e) => handleInput(e, "jump")} onKeyDown={preventInvalidChars} placeholder='Ingresa el salto' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.jump !== jump ? 'bg-gray-200' : 'bg-white' }`}`}/>
-//     <label htmlFor="jump" className='pb-[2px] text-[10px] text-black font-medium label-default'>Salto</label>
-// </div>
-// </div>
-
-// {/* FILA 3*/}
-// <div className="flex gap-6">
-// {/* FUERZA */}
-// <div className="flex flex-col-reverse w-[30%]">
-//     <input value={strength?.toString() || ''} min="0" type="number" name="strength" id="strength" onChange={(e) => handleInput(e, "strength")} onKeyDown={preventInvalidChars} placeholder='Ingresa la fuerza' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.strength !== strength ? 'bg-gray-200' : 'bg-white' }`}`}/>
-//     <label htmlFor="strength" className='pb-[2px] text-[10px] text-black font-medium label-default'>Fuerza</label>
-// </div>
-// {/* VELOCIDAD */}
-// <div className="flex flex-col-reverse w-[30%]">
-//     <input value={speed?.toString() || ''} min="0" type="number" name="speed" id="speed" onChange={(e) => handleInput(e, "speed")} onKeyDown={preventInvalidChars} placeholder='Ingresa la velocidad' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.speed !== speed ? 'bg-gray-200' : 'bg-white' }`}`}/>
-//     <label htmlFor="speed" className='pb-[2px] text-[10px] text-black font-medium label-default'>Velocidad</label>
-// </div>
-// </div>
-
-// {/* FILA 4*/}
-// <div className="flex gap-6 align-middle">
-// {/* TIEMPO */}
-// <div className="flex flex-col-reverse w-[30%]">
-//     <input value={time?.toString() || ''} min="0" type="number" name="time" id="time" onChange={(e) => handleInput(e, "time")} onKeyDown={preventInvalidChars} placeholder='Ingresa el tiempo' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.time !== time ? 'bg-gray-200' : 'bg-white' }`}`}/>
-//     <label htmlFor="time" className='pb-[2px] text-[10px] text-black font-medium label-default'>Tiempo</label>
-// </div>
-
-// <div className="flex justify-evenly w-[30%] gap-4">
-//   <div className="w-[80px] flex flex-col justify-center items-center rounded-md border-solid border-[1px] border-gray-400">
-//     <p className="pb-[2px] text-[10px] text-black font-medium">Puntuación</p>
-//     <p>{score}</p>
-//   </div>
-
-//   <div className="w-[80px] flex flex-col justify-center items-center rounded-md border-solid border-[1px] border-[#2563EB]">
-//     <p className="pb-[2px] text-[10px] text-black font-medium">Total</p>
-//     <p>{total ? <>{total.toFixed(2)}</> : <>-</>}</p>
-//   </div>
-// </div>

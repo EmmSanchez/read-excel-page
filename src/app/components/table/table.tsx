@@ -114,6 +114,11 @@ export function Table() {
       setSelectedRows([rowIndex])
       setRowToDelete(null)
     }
+
+    if(action === "cancel-edit") {
+      setSelectedRows([])
+      setRowToDelete(null)
+    }
   };
 
   // DELETE ROW

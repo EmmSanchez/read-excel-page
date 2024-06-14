@@ -23,7 +23,7 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
 
   return (
     <>
-      <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-200'}`}>
+      <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-200/90'}`}>
         <div className="table-cell align-middle pl-1 py-[6px] text-center text-sm border-solid border-t-[1px] border-black/20">
           <input 
             type="checkbox" 
