@@ -1,3 +1,4 @@
+import React from "react";
 import { ErrorIcon, AddIcon } from "../../../../../public/icons/icons"
 
 interface FormData {
@@ -38,9 +39,10 @@ interface FormInputsProps {
   formData: FormData;
   originalFormData?: FormData;
   activeSection?: string;
+  handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, action: string) => void
 }
 
-export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection }: FormInputsProps) {
+export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, handleSelectChange }: FormInputsProps) {
   // AVOID e, E, +, -
   const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-") {
@@ -87,11 +89,25 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
               <input value={formData.name} type="text" name="name" id="name" onChange={(e) => handleInput(e, "name")} placeholder='Ingresa el nombre' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.name !== originalFormData?.name ? 'bg-gray-200' : 'bg-white'}`}`} />
               <label htmlFor="name" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Nombre</label>
             </div>
+
             {/* PRUEBA */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <input value={formData.test} type="text" name="test" id="test" onChange={(e) => handleInput(e, "test")} placeholder='Selecciona la prueba' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.test !== originalFormData?.test ? 'bg-gray-200' : 'bg-white'}`}`} />
+              <select 
+                  value={formData.test} 
+                  name="test" 
+                  id="test" 
+                  onChange={(e) => handleSelectChange(e, "test")} 
+                  className={`select-custom ${!formData ? 'bg-white' : `${formData.test !== originalFormData?.test ? 'bg-gray-200' : 'bg-white'}`}`}
+              >
+                  <option value="" disabled className="option-custom">Selecciona la prueba</option>
+                  <option value="Prueba 1" className="option-custom">AP2023</option>
+                  <option value="Prueba 2" className="option-custom">SS2023</option>
+                  <option value="Prueba 3" className="option-custom">Policía Monterrey</option>
+                  {/* Agrega más opciones según sea necesario */}
+              </select>
               <label htmlFor="test" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Prueba</label>
             </div>
+
             {/* # EMPLEADO */}
             <div className="flex flex-col-reverse gap-1 w-full">
               <input value={formData.employeeNumber} type="text" name="employeeNumber" id="employeeNumber" onChange={(e) => handleInput(e, "employeeNumber")} placeholder='Ingresa el número de empleado' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.employeeNumber !== originalFormData?.employeeNumber ? 'bg-gray-200' : 'bg-white'}`}`} />

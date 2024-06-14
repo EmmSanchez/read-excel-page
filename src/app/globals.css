@@ -65,3 +65,34 @@ body {
 .custom-grid-form_rendimiento-sections {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
 }
+
+.select-custom {
+  appearance: none;
+  height: 3rem;
+  border: solid 1px #cecbcb;
+  padding: 8px 10px;
+  border-radius: 4px;
+  color: gray;
+
+  &:focus {
+    outline: solid 1.4px #2563eb;
+    outline-offset: -1px;
+  }
+}
+
+.option-custom {
+  appearance: none;
+  padding: 4px 4px;
+  color: black;
+  border-radius: none;
+}
+
+.error-input {
+  background-color: rgb(255, 229, 229);
+  border: solid 1px rgb(224, 68, 68);
+
+  &:focus {
+    outline: solid 1.4px rgb(224, 68, 68);
+    outline-offset: -1px;
+  }
+}

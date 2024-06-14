@@ -111,7 +111,6 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
           newFormData[action] = newInfo
           break;
 
-        case "test":
         case "employeeNumber":
         case "genre":
         case "category":
@@ -159,6 +158,53 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
   // ADD NEW ROW
   const handleAddRow = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+     // Ensure the formData has an id before adding
+     if (formData.id !== null) {
+      const newRow = [
+          formData.id,
+          formData.p_surname,
+          formData.m_surname,
+          formData.name,
+          formData.test,
+          formData.employeeNumber,
+          formData.age,
+          formData.genre,
+          formData.category,
+          formData.height,
+          formData.weight,
+          formData.imc,
+          formData.waist,
+          formData.bmi,
+          formData.bmr,
+          formData.grease,
+          formData.fat_mass,
+          formData.ffm,
+          formData.tbw,
+          formData.grip,
+          formData.grip_points,
+          formData.jump,
+          formData.jump_points,
+          formData.agility,
+          formData.agility_points,
+          formData.resistance,
+          formData.resistance_points,
+          formData.total,
+      ];
+
+      // Add new row to the existing excelData
+      const updatedData = excelData ? [...excelData, newRow] : [newRow]
+
+      // Sort the data by id in ascending order
+      updatedData.sort((a, b) => (a[0] as number) - (b[0] as number));
+
+      // Update the state with the new sorted data
+      setExcelData(updatedData);
+
+      // Reset the form inputs
+      resetInputs();
+      setIsPopoverVisible(false);
+      setIdError(false);
+    }
   }
 
   const resetInputs = () => {
@@ -174,6 +220,19 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     setIsPopoverVisible(false);
     resetInputs()
     setIdError(false)
+  }
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, action: string) => {
+    const newValue = e.target.value 
+    const newFormData = { ...formData }
+
+    switch (action) {
+      case "test":
+      case "genre":
+        newFormData[action] = newValue
+        break
+    }
+    setFormData(newFormData)
   }
 
   return (
@@ -196,7 +255,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
             </div>
 
             <div className="flex flex-col flex-grow">
-              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} />   
+              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} handleSelectChange={handleSelectChange}/>   
             </div>
             
             <div className="flex items-center justify-between">
