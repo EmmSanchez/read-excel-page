@@ -87,6 +87,14 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
   // SECTIONS FORM
   const [activeSection, setActiveSection] = useState<string>("Información")
 
+  // DROPDOWN CHOOSE
+  const [isTestOpen, setIsTestOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
+
+  const [isGenreOpen, setIsGenreOpen] = useState(false);
+  const [selectedGenre, setSelectedGenre] = useState('')
+
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, action: string) => {
     const newValue = e.target.value
     const newFormData = { ...formData }
@@ -165,10 +173,10 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
           formData.p_surname,
           formData.m_surname,
           formData.name,
-          formData.test,
+          selectedOption,
           formData.employeeNumber,
           formData.age,
-          formData.genre,
+          selectedGenre,
           formData.category,
           formData.height,
           formData.weight,
@@ -204,6 +212,10 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
       resetInputs();
       setIsPopoverVisible(false);
       setIdError(false);
+      setSelectedOption('')
+      setIsTestOpen(false)
+      setSelectedGenre('')
+      setIsGenreOpen(false)
     }
   }
 
@@ -220,19 +232,10 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     setIsPopoverVisible(false);
     resetInputs()
     setIdError(false)
-  }
-
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, action: string) => {
-    const newValue = e.target.value 
-    const newFormData = { ...formData }
-
-    switch (action) {
-      case "test":
-      case "genre":
-        newFormData[action] = newValue
-        break
-    }
-    setFormData(newFormData)
+    setSelectedOption('')
+    setIsTestOpen(false)
+    setSelectedGenre('')
+    setIsGenreOpen(false)
   }
 
   return (
@@ -255,7 +258,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
             </div>
 
             <div className="flex flex-col flex-grow">
-              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} handleSelectChange={handleSelectChange}/>   
+              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen}/>   
             </div>
             
             <div className="flex items-center justify-between">

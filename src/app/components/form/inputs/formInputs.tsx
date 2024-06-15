@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { ErrorIcon, AddIcon } from "../../../../../public/icons/icons"
+import { TestControlledDropdown } from "./dropdown/testDropdown";
+import { GenreControlledDropdown } from "./dropdown/genreDropdwon";
 
 interface FormData {
   id: number | null;
@@ -39,10 +41,18 @@ interface FormInputsProps {
   formData: FormData;
   originalFormData?: FormData;
   activeSection?: string;
-  handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, action: string) => void
+  selectedOption?: string
+  setSelectedOption?: React.Dispatch<React.SetStateAction<string>>;
+  isTestOpen: boolean
+  setIsTestOpen: React.Dispatch<React.SetStateAction<boolean>>
+  selectedGenre?: string
+  setSelectedGenre?: React.Dispatch<React.SetStateAction<string>>
+  isGenreOpen: boolean
+  setIsGenreOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, handleSelectChange }: FormInputsProps) {
+export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, setSelectedOption, selectedOption, isTestOpen, setIsTestOpen, selectedGenre, setSelectedGenre, isGenreOpen,setIsGenreOpen }: FormInputsProps) {
+
   // AVOID e, E, +, -
   const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-") {
@@ -92,20 +102,8 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
 
             {/* PRUEBA */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <select 
-                  value={formData.test} 
-                  name="test" 
-                  id="test" 
-                  onChange={(e) => handleSelectChange(e, "test")} 
-                  className={`select-custom ${!formData ? 'bg-white' : `${formData.test !== originalFormData?.test ? 'bg-gray-200' : 'bg-white'}`}`}
-              >
-                  <option value="" disabled className="option-custom">Selecciona la prueba</option>
-                  <option value="Prueba 1" className="option-custom">AP2023</option>
-                  <option value="Prueba 2" className="option-custom">SS2023</option>
-                  <option value="Prueba 3" className="option-custom">Policía Monterrey</option>
-                  {/* Agrega más opciones según sea necesario */}
-              </select>
-              <label htmlFor="test" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Prueba</label>
+              <TestControlledDropdown isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedOption={selectedOption} setSelectedOption={setSelectedOption} originalFormData={originalFormData}/>
+              <label htmlFor="test" className={`pb-[2px] text-base font-medium label-default ${isTestOpen ? 'text-[#2563eb]' : 'text-gray-800'}`}>Prueba</label>
             </div>
 
             {/* # EMPLEADO */}
@@ -119,9 +117,10 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
               <label htmlFor="age" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Edad</label>
             </div>
             {/* GENERO */}
+            {/* PRUEBA */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <input value={formData.genre} type="text" name="genre" id="genre" onChange={(e) => handleInput(e, "genre")} placeholder='Selecciona el género' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.genre !== originalFormData?.genre ? 'bg-gray-200' : 'bg-white'}`}`} />
-              <label htmlFor="genre" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Género</label>
+              <GenreControlledDropdown isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen} originalFormData={originalFormData} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre}/>
+              <label htmlFor="test" className={`pb-[2px] text-base font-medium label-default ${isTestOpen ? 'text-[#2563eb]' : 'text-gray-800'}`}>Género</label>
             </div>
             {/* CATEGORÍA */}
             <div className="flex flex-col-reverse gap-1 w-full">

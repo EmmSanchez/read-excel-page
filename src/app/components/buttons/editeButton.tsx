@@ -89,6 +89,13 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [originalFormData, setOriginalFormData] = useState<FormData>(initialFormData);
 
+   // DROPDOWN CHOOSE
+  const [isTestOpen, setIsTestOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [isGenreOpen, setIsGenreOpen] = useState(false);
+  const [selectedGenre, setSelectedGenre] = useState('')
+
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, action: string) => {
     const newValue = e.target.value
     const newFormData = { ...formData }
@@ -158,19 +165,6 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     
         default:
           break;
-    }
-    setFormData(newFormData)
-  }
-
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, action: string) => {
-    const newValue = e.target.value 
-    const newFormData = { ...formData }
-
-    switch (action) {
-      case "test":
-      case "genre":
-        newFormData[action] = newValue
-        break
     }
     setFormData(newFormData)
   }
@@ -249,12 +243,13 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
           resistance_points: rowToEdit[26] !== null ? Number(rowToEdit[26]) : null,
           total: rowToEdit[27] !== null ? Number(rowToEdit[27]) : null,
         };
-        setOriginalFormData(rowInfo);
-        setFormData(rowInfo);
-        setIsSaveButtonDisabled(false)
-
+          setOriginalFormData(rowInfo);
+          setFormData(rowInfo);
+          setIsSaveButtonDisabled(false)
+          setSelectedOption(rowToEdit[4] as unknown  as string)
+          setSelectedGenre(rowToEdit[7] as unknown as string)
+        }
       }
-    }
   }
 
   const resetInputs = () => {
@@ -277,6 +272,10 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setIdError(false)
     setActiveSection("Información")
     handleGetRow(rowIndex, 'cancel-edit')
+    setSelectedOption('')
+    setIsTestOpen(false)
+    setSelectedGenre('')
+    setIsGenreOpen(false)
   }
 
   const handleSaveChanges = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -292,10 +291,10 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
             formData.p_surname,
             formData.m_surname,
             formData.name,
-            formData.test,
+            selectedOption,
             formData.employeeNumber,
             formData.age,
-            formData.genre,
+            selectedGenre,
             formData.category,
             formData.height,
             formData.weight,
@@ -332,6 +331,10 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
       });
 
       setExcelData(updatedExcelData);
+      setSelectedOption('')
+      setIsTestOpen(false)
+      setSelectedGenre('')
+      setIsGenreOpen(false)
     }
   };
 
@@ -366,7 +369,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
             </div>
 
             <div className="flex flex-col flex-grow">
-              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} handleSelectChange={handleSelectChange}/>   
+              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen}/>   
             </div>
 
 
