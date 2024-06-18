@@ -132,35 +132,30 @@ body {
   transform: rotate(180deg);
 }
 
-.login-card {
-  border-radius: 0.6vw;
-  border: solid 0.1vw #e4e4e4;
-  box-shadow: 0 0.4vw 0.8vw -0.2vw rgb(0 0 0 / 0.1),
-    0 1.2vw 1.5vw -0.8vw rgb(0 0 0 / 0.1);
-}
-
 .text-sub {
   font-size: 1vw;
 }
 
 .text-title {
-  font-size: 3vw;
+  font-size: 2.6vw;
 }
 
 .input-title {
   font-size: 1.1vw;
+  letter-spacing: 0.02vw;
 }
 
 .text_placeholder-input {
   height: 12%;
-  background-color: rgb(236, 233, 233);
+  /* background-color: rgb(236, 233, 233); */
   border-radius: 0.3vw;
   padding: 2% 4%;
   font-size: 1vw;
   transition: all ease-in 40ms;
+  outline: 0.1vw solid rgb(156, 156, 156);
 
   &:focus {
-    outline: 0.15vw solid rgb(116, 116, 116);
+    outline: 0.15vw solid rgb(0, 0, 0);
   }
 }
 
@@ -173,17 +168,16 @@ body {
 }
 
 .button-login {
-  width: 60%;
   height: 60%;
-  background-color: #2563eb;
+  background-color: black;
   color: white;
   margin-top: 8%;
   padding: 2% 0%;
   font-size: 1.2vw;
-  border-radius: 2vw;
+  border-radius: 0.4vw;
   transition: all ease-in-out 40ms;
 
   &:hover {
-    background-color: #2058d1;
+    background-color: rgb(29, 29, 29);
   }
 }
