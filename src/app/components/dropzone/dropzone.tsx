@@ -1,6 +1,6 @@
-import { TrashIcon, UploadIcon } from "../../../public/icons/icons"
+import { TrashIcon, UploadIcon } from "../../../../public/icons/icons"
 import React, { useState, ChangeEvent } from 'react'
-import { useFileStore } from "../store/fileStore"
+import { useFileStore } from "../../store/fileStore"
 
 export function Dropzone() {
   const file = useFileStore((state) => state.file)

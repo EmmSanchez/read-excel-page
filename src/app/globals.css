@@ -146,12 +146,10 @@ body {
 }
 
 .text_placeholder-input {
-  height: 12%;
-  /* background-color: rgb(236, 233, 233); */
+  height: 6vh;
   border-radius: 0.3vw;
   padding: 2% 4%;
   font-size: 1vw;
-  transition: all ease-in 40ms;
   outline: 0.1vw solid rgb(156, 156, 156);
 
   &:focus {

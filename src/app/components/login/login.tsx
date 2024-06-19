@@ -1,21 +1,36 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ToggleTheme } from '../toggle/toggleTheme';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useUserStore } from '@/app/store/userStore';
 
 export function Login() {
   const [credentials, setCredentials] = useState({
-    email: '',
+    user: '',
     password: ''
   })
+  const setUserProfile = useUserStore((state) => state.setUserProfile)
+  const userProfile = useUserStore((state) => state.userProfile)
   
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials({
       ...credentials,
       [e.target.name]: e.target.value
     })
-    
   }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(credentials)
+    });
+  }
+
   return (
     <>
       <div className="w-full h-screen text-[16px]">
@@ -36,7 +51,7 @@ export function Login() {
                 <h1 className='w-full text-center font-bold text-gray-900 text-title dark:text-white'>Inicia sesión en tu cuenta</h1>
                 <h4 className='w-full text-center text-gray-500 text-sub dark:text-gray-300'>¡Bienvenido de nuevo!</h4>
 
-                <form action="" className='flex flex-col'>
+                <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col'>
                   <label htmlFor="user" className="input-title mt-[5%] mb-[1%] font-semibold text-gray-800 dark:text-gray-100">
                     Usuario
                   </label>
@@ -64,7 +79,7 @@ export function Login() {
                   />
 
                   <div className="flex justify-center">
-                    <button className='w-full button-login font-normal dark:bg-gray-100'>
+                    <button type='submit' className='w-full button-login font-normal dark:bg-gray-100'>
                       <p className='input-title dark:text-gray-950 font-semibold'>
                         Iniciar sesión
                       </p>
