@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 import { Table } from '../components/table/table';
 import { HeaderButtons } from '../components/header/headerButtons';
 import { useUserStore } from '../store/userStore';
+import { Providers } from '../themes/themeProvider';
 
 export default function Home() {
   const setUserProfile = useUserStore(state => state.setUserProfile)
-  const userProfile = useUserStore(state => state.userProfile)
 
   const getProfile = async () => {
     const response = await fetch('/api/auth/profile', {
@@ -16,10 +16,8 @@ export default function Home() {
       }
     });
 
-    const profileData = await response.json()
-
-    console.log(profileData);
-    
+    const { user } = await response.json()
+    setUserProfile(user)
   }
 
   useEffect(() => {
@@ -28,8 +26,12 @@ export default function Home() {
 
   return (
     <>
-      <HeaderButtons />
-      <Table />
+      <Providers>
+        <div className="w-full h-screen bg-white dark:bg-zinc-950">
+          <HeaderButtons />
+          <Table />
+        </div>
+      </Providers>
     </>
   );
 }

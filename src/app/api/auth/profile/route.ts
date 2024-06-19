@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verify } from "jsonwebtoken";
 
 export async function GET(req: NextRequest, res: NextResponse) {
-  const myTokenCookie = req.cookies.get('myTokenName')
-  const myTokenName = myTokenCookie?.value
+  const myTokenName = req.cookies.get('myTokenName')?.value
 
   if (!myTokenName) {
     return NextResponse.json({ message: 'Token not found'}, { status: 401})

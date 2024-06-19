@@ -1,16 +1,16 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { ToggleTheme } from '../toggle/toggleTheme';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { useUserStore } from '@/app/store/userStore';
+import { useRouter } from "next/navigation"
+
+
 
 export function Login() {
   const [credentials, setCredentials] = useState({
     user: '',
     password: ''
   })
-  const setUserProfile = useUserStore((state) => state.setUserProfile)
-  const userProfile = useUserStore((state) => state.userProfile)
+  const router = useRouter()
   
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials({
@@ -22,13 +22,17 @@ export function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    await fetch('/api/auth', {
+    const res = await fetch('/api/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(credentials)
     });
+
+    if (res.status === 200) {
+      router.push('/dashboard')
+    }
   }
 
   return (

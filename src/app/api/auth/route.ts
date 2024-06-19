@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
         path: '/'
       });
 
-      const response = NextResponse.json({ message: 'Login successfully' });
+      const response = NextResponse.json({ message: 'Login successfully' }, { status: 200 });
       response.headers.append('Set-Cookie', serialized);
       
       return response;
