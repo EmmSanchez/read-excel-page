@@ -134,9 +134,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     
         case "age":
           const newAge = parseInt(newValue);
-          if (!isNaN(newAge)) {
-            newFormData.age = newAge;
-          }
+          newFormData.age = isNaN(newAge) ? null : newAge;
           break;
     
         case "height":
@@ -157,9 +155,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
         case "agility_points":
         case "resistance_points":
           const newData = parseFloat(newValue);
-          if (!isNaN(newData)) {
-            newFormData[action] = newData;
-          }
+          newFormData[action] = isNaN(newData) ? null : newData;
           break;
         
     

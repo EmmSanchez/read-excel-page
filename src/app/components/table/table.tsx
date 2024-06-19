@@ -163,10 +163,38 @@ export function Table() {
   const filterColumns = (arr: ExcelData, columns: string[]) => {
     if (arr) {
       const headerRow = arr[0];
-      const columnIndexes = columns.map(column => headerRow.indexOf(column));
+      // Mapa para mantener el recuento de las columnas duplicadas
+      const columnCount = new Map<string, number>();
+  
+      // Encuentra los índices de las columnas teniendo en cuenta los duplicados
+      const columnIndexes = columns.map((column, idx) => {
+        let count = columnCount.get(column) || 0;
+        let columnIndex = -1;
+        let occurrence = 0;
+  
+        for (let i = 0; i < headerRow.length; i++) {
+          if (headerRow[i] === column) {
+            if (occurrence === count) {
+              columnIndex = i;
+              break;
+            }
+            occurrence++;
+          }
+        }
+  
+        columnCount.set(column, count + 1);
+        return columnIndex;
+      });
+  
       return arr.map(row => columnIndexes.map(index => row[index]));
     }
   };
+  
+
+  const columnsToKeep = [
+    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad',
+    'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total'
+  ];
 
   useEffect(() => {
     setSelectedRows([]);
@@ -174,9 +202,9 @@ export function Table() {
     setIsPopoverVisible(false);
   
     if (!searchValue) {
-      setFilteredExcelData(excelData ? filterColumns(excelData, ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total']) as ExcelData : null);
+      setFilteredExcelData(excelData ? filterColumns(excelData, columnsToKeep) as ExcelData : null);
+
     } else {
-      const columnsToKeep = ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total'];
       let filteredData: ExcelData | null = null;
   
       if (isID(searchValue)) {
