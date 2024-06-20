@@ -1,3 +1,4 @@
+"use server"
 import { NextRequest, NextResponse } from "next/server";
 import { verify } from "jsonwebtoken";
 import { serialize } from 'cookie'

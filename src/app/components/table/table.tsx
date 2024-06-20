@@ -8,6 +8,7 @@ import { Row } from "./row";
 import { Searchbar } from "../searchbar/searchbar";
 import { useFilteredDataStore } from "@/app/store/filteredData";
 import { DeselectRowsButton } from "../buttons/deselectRowsButton";
+import { json } from "node:stream/consumers";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -54,6 +55,21 @@ export function Table() {
 
   };
 
+  function arrayToJSON(data: ExcelData) {
+    if (data) {
+      const headers: string[] = data[0] as string[];
+      const jsonData: { [key: string]: any }[] = [];
+      for (let i = 1; i < data.length; i++) {
+        let obj: { [key: string]: any } = {};
+        for (let j = 0; j < headers.length; j++) {
+          obj[headers[j]] = data[i][j];
+        }
+        jsonData.push(obj);
+      }
+      return JSON.stringify(jsonData, null, 2);
+    }
+  }
+
   // CONVERT EXCEL TO JSON
   useEffect(() => {
     if (!file) {
@@ -78,7 +94,7 @@ export function Table() {
     setSelectedRows([])
     setRowToDelete(null)
     setSearchValue('')
-    setFilteredExcelData(null)
+    setFilteredExcelData(null)  
   }, [file, setExcelData])
 
   // GET ROW INDEX WITH ACTION
@@ -234,7 +250,6 @@ export function Table() {
   // TO DO LIST
   // - Print user
   // - Pagination to see 100 results
-
 
 
   return (

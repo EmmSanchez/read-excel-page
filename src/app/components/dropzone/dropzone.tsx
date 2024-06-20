@@ -8,7 +8,7 @@ export function Dropzone() {
 
 
   const [isDragging, setIsDragging] = useState<boolean>(false)
-  
+
   const handleDragOver = (e:  React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault()
     setIsDragging(true)
@@ -86,7 +86,7 @@ export function Dropzone() {
           </label>
           <input type="file" accept='.xlsx' id='file-upload' className='hidden' onChange={(e) => handleFileChange(e)}/>
         </>
-      }
+        }
         </div>
       </div>
     </>
