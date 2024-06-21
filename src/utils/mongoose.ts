@@ -16,7 +16,9 @@ export default async function connectDB() {
   }
 
   try {
-    const db = await connect(uri)
+    const db = await connect(uri, {
+      dbName: 'Data'
+    })
     conn.isConnected = db.connections[0].readyState === 1
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);

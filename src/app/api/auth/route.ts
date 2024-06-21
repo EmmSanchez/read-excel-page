@@ -2,12 +2,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
+import UserModel from "@/models/users";
+import connectDB from "@/utils/mongoose";
+
 
 export async function POST(req: NextRequest) {
   try {
     const { user, password } = await req.json();
+    
+    await connectDB()
+    const username = await UserModel.findOne({ username: user })
 
-    if (user === 'admin' && password === 'admin') {
+    if (username?.username === user && username?.password === password) {
       const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
         user: 'admin',

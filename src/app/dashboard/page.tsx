@@ -36,8 +36,10 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        if (data.length === 0) {
-          console.log('No hay datos disponibles en la base de datos', data);
+        
+        // if there is no data or just the columns
+        if (data.length <= 1) {
+          console.log('No hay datos disponibles en la base de datos');
 
         } else {
           setExcelData(data)

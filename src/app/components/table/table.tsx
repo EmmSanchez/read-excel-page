@@ -8,7 +8,6 @@ import { Row } from "./row";
 import { Searchbar } from "../searchbar/searchbar";
 import { useFilteredDataStore } from "@/app/store/filteredData";
 import { DeselectRowsButton } from "../buttons/deselectRowsButton";
-import { json } from "node:stream/consumers";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -102,6 +101,7 @@ export function Table() {
   useEffect(() => {
     if (!file) {
       setExcelData(null);
+      setFilteredExcelData(null)
       return;
     }
 
@@ -282,11 +282,6 @@ export function Table() {
   // TO DO LIST
   // - Print user
   // - Pagination to see 100 results
-
-  console.log('ExcelData',excelData);
-  
-  console.log('FilteredExcelData', filteredExcelData);
-  
 
   return (
     <>
