@@ -4,9 +4,14 @@ import { Table } from '../components/table/table';
 import { HeaderButtons } from '../components/header/headerButtons';
 import { useUserStore } from '../store/userStore';
 import { Providers } from '../themes/themeProvider';
+import { useDataStore } from '../store/dataStore';
+import { useFilteredDataStore } from '../store/filteredData';
 
 export default function Home() {
   const setUserProfile = useUserStore(state => state.setUserProfile)
+  const setExcelData = useDataStore((state) => state.setExcelData)
+  const setFilteredExcelData = useFilteredDataStore((state) => state.setFilteredExcelData)
+  
 
   const getProfile = async () => {
     const response = await fetch('/api/auth/profile', {
@@ -20,8 +25,32 @@ export default function Home() {
     setUserProfile(user)
   }
 
+  const getData = async () => {
+    try {
+      const response = await fetch('/api/excelData/getData', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length === 0) {
+          console.log('No hay datos disponibles en la base de datos', data);
+
+        } else {
+          setExcelData(data)
+        }
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+    }
+  }
+
   useEffect(() => {
     getProfile()
+    getData()
   }, [])
 
   return (

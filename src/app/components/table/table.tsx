@@ -62,11 +62,39 @@ export function Table() {
       for (let i = 1; i < data.length; i++) {
         let obj: { [key: string]: any } = {};
         for (let j = 0; j < headers.length; j++) {
-          obj[headers[j]] = data[i][j];
+          let propName = headers[j];
+          // Check if the property already exists in the object
+          if (obj.hasOwnProperty(propName)) {
+            // Append an index to make the property name unique
+            let index = 1;
+            while (obj.hasOwnProperty(propName + '_' + index)) {
+              index++;
+            }
+            propName = propName + '_' + index;
+          }
+          obj[propName] = data[i][j];
         }
         jsonData.push(obj);
       }
-      return JSON.stringify(jsonData, null, 2);
+      return jsonData;
+    }
+  }
+  
+  async function sendToMongoDB(data: { [key: string]: any }[] | undefined) {
+    try {
+      const response = await fetch("/api/excelData/uploadData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload data");
+      }
+    } catch (error) {
+      console.error("Error uploading data to MongoDB:", error);
     }
   }
 
@@ -78,7 +106,7 @@ export function Table() {
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const result = e.target?.result;
       if (result instanceof ArrayBuffer) {
         const data = new Uint8Array(result);
@@ -88,6 +116,9 @@ export function Table() {
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as ExcelData;
         const sortedData = sortArrayByColumn(jsonData, '#') as ExcelData;
         setExcelData(sortedData)
+        
+        const sortedDataJSON = arrayToJSON(sortedData)
+        await sendToMongoDB(sortedDataJSON);
       }
     };
     reader.readAsArrayBuffer(file);
@@ -96,7 +127,7 @@ export function Table() {
     setSearchValue('')
     setFilteredExcelData(null)  
   }, [file, setExcelData])
-
+  
   // GET ROW INDEX WITH ACTION
   const handleGetRow = (rowIndex: number, action: string) => {
     if(!action) return
@@ -244,6 +275,7 @@ export function Table() {
       }
   
       setFilteredExcelData(filteredData ? filterColumns(filteredData, columnsToKeep) as ExcelData : null);
+      
     }
   }, [searchValue, excelData]);
 
@@ -251,6 +283,10 @@ export function Table() {
   // - Print user
   // - Pagination to see 100 results
 
+  console.log('ExcelData',excelData);
+  
+  console.log('FilteredExcelData', filteredExcelData);
+  
 
   return (
     <>
