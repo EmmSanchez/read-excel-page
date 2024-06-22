@@ -1,7 +1,13 @@
 import { create } from "zustand";
 
+interface MongoFile {
+  _id: string;
+  name: string;
+  size: number;
+}
+
 interface FileState {
-  file: File | null
+  file: File | null 
   setFile: (file: File | null) => void
 }
 

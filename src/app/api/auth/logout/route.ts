@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verify } from "jsonwebtoken";
 import { serialize } from 'cookie'
+import { disconnectDB } from "@/utils/mongoose";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const myTokenName = req.cookies.get('myTokenName')?.value
@@ -20,8 +21,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       path: '/'
     });
 
+    await disconnectDB()
     const response = NextResponse.json({message: 'Logout successfully '}, { status: 200})
     response.headers.set('Set-Cookie', serialized)
+    
     return response
   } catch (error) {
     return NextResponse.json({ message: 'Invalid Token'}, {status: 401})

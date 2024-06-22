@@ -1,5 +1,5 @@
 "use server"
-import { connect } from "mongoose";
+import { connect, disconnect } from "mongoose";
 
 const conn = {
   isConnected: false,
@@ -23,5 +23,18 @@ export default async function connectDB() {
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
     throw new Error('Failed to connect to MongoDB');
+  }
+}
+
+export async function disconnectDB() {
+  if (!conn.isConnected) return;
+
+  try {
+    await disconnect();
+    conn.isConnected = false;
+    console.log('Desconectado de MongoDB');
+  } catch (error) {
+    console.error('Error disconnecting from MongoDB:', error);
+    throw new Error('Failed to disconnect from MongoDB');
   }
 }

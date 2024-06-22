@@ -79,14 +79,14 @@ export function Table() {
     }
   }
   
-  async function sendToMongoDB(data: { [key: string]: any }[] | undefined) {
+  async function sendToMongoDB(data: { [key: string]: any }[] | undefined, fileName: string, fileSize: number) {
     try {
       const response = await fetch("/api/excelData/uploadData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({data, fileName, fileSize}),
       });
 
       if (!response.ok) {
@@ -105,28 +105,34 @@ export function Table() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const result = e.target?.result;
-      if (result instanceof ArrayBuffer) {
-        const data = new Uint8Array(result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as ExcelData;
-        const sortedData = sortArrayByColumn(jsonData, '#') as ExcelData;
-        setExcelData(sortedData)
-        
-        const sortedDataJSON = arrayToJSON(sortedData)
-        await sendToMongoDB(sortedDataJSON);
-      }
-    };
-    reader.readAsArrayBuffer(file);
+    if (file.type) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const result = e.target?.result;
+        if (result instanceof ArrayBuffer) {
+          const data = new Uint8Array(result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as ExcelData;
+          const sortedData = sortArrayByColumn(jsonData, '#') as ExcelData;
+          setExcelData(sortedData)
+          
+          const sortedDataJSON = arrayToJSON(sortedData)
+          const fileName = file.name
+          const fileSize = file.size
+          await sendToMongoDB(sortedDataJSON, fileName, fileSize);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+
     setSelectedRows([])
     setRowToDelete(null)
     setSearchValue('')
     setFilteredExcelData(null)  
-  }, [file, setExcelData])
+  }, [file])
   
   // GET ROW INDEX WITH ACTION
   const handleGetRow = (rowIndex: number, action: string) => {
@@ -244,6 +250,7 @@ export function Table() {
   ];
 
   useEffect(() => {
+    
     setSelectedRows([]);
     setRowToDelete(null);
     setIsPopoverVisible(false);

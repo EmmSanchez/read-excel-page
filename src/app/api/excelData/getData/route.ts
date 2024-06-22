@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import ParticipantModel from '@/models/uploadedFile';
+import ParticipantModel from '@/models/uploadedData';
+import FileInfoModel from '@/models/fileInfo';
 
 interface Participant {
   '#': number;
@@ -39,7 +40,13 @@ function convertParticipantsToArray(participants: Participant[]): (string | numb
     'Puntos', 'Salto', 'Puntos_1', 'Agilidad', 'Puntos_2', 'Resistencia', 'Puntos_3', 'Total'
   ];
 
-  const participantsArray: (string | number)[][] = [keys];
+  const headers: (keyof Participant)[] = [
+    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', '# Empleado', 'Edad', 'Genero', 'Categoria',
+    'Altura [cm]', 'Peso [kg]', 'Grasa [%]', 'IMC', 'Cintura [cm]', 'BMI', 'BMR', 'Fatmass', 'FFM', 'TBW', 'Agarre',
+    'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total'
+  ];
+
+  const participantsArray: (string | number)[][] = [headers];
 
   participants.map(participant => {
     const values = keys.map(key => participant[key]);
@@ -55,7 +62,9 @@ export async function GET(req: NextRequest) {
     const participants = await ParticipantModel.find({});
     const participantsArray = convertParticipantsToArray(participants);
 
-    return NextResponse.json(participantsArray);
+    const fileInfoArray = await FileInfoModel.find({})
+
+    return NextResponse.json({participantsArray, fileInfoArray});
   } catch (error) {
     console.error('Error al obtener datos desde MongoDB:', error);
     return NextResponse.json({ error: 'Error al obtener datos desde MongoDB' }, { status: 500 });

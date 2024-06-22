@@ -12,6 +12,8 @@ export async function POST(req: NextRequest) {
     
     await connectDB()
     const username = await UserModel.findOne({ username: user })
+    console.log(username?.username, username?.password);
+    
 
     if (username?.username === user && username?.password === password) {
       const token = jwt.sign({
