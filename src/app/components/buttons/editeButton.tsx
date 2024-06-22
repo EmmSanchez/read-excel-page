@@ -253,6 +253,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setOriginalFormData(initialFormData)
   }
 
+  // EDIT -------------------
   const handleEditeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     setIsPopoverVisible(!isPopoverVisible)
@@ -260,6 +261,27 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     getRowInfo(rowIndex)
   }
 
+  const updateRowInDatabase = async (formData: FormData, id: number, selectedOption: string, selectedGenre: string) => {
+    try {
+      const response = await fetch('/api/excelData/editData/editRow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({formData, id, selectedGenre, selectedOption}),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+  
+    } catch (error) {
+      console.error('Failed to update row in database:', error);
+      throw error;
+    }
+  };
+  
+  // CANCEL BUTTON 
   const handleCancelChanges = () => {
     setIsPopoverVisible(false);
     resetInputs()
@@ -274,63 +296,73 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setIsGenreOpen(false)
   }
 
-  const handleSaveChanges = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  // APROVE CHANGES
+  const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setIsPopoverVisible(false);
     setActiveSection("Información");
 
-    if (excelData) {
-      const updatedExcelData = excelData.map(row => {
-        if (row[0] === originalFormData.id) {
-          return [
-            formData.id,
-            formData.p_surname,
-            formData.m_surname,
-            formData.name,
-            selectedOption,
-            formData.employeeNumber,
-            formData.age,
-            selectedGenre,
-            formData.category,
-            formData.height,
-            formData.weight,
-            formData.grease,
-            formData.imc,
-            formData.waist,
-            formData.bmi,
-            formData.bmr,
-            formData.fat_mass,
-            formData.ffm,
-            formData.tbw,
-            formData.grip,
-            formData.grip_points,
-            formData.jump,
-            formData.jump_points,
-            formData.agility,
-            formData.agility_points,
-            formData.resistance,
-            formData.resistance_points,
-            formData.total
-          ];
-        }
-        return row;
-      });
-
-      // SORT AGAIN
-      updatedExcelData.sort((a, b) => {
-        const idA = Number(a[0]);
-        const idB = Number(b[0]);
-        if (idA === null || idB === null) {
-          return 0;
-        }
-        return idA - idB;
-      });
-
-      setExcelData(updatedExcelData);
-      setSelectedOption('')
-      setIsTestOpen(false)
-      setSelectedGenre('')
-      setIsGenreOpen(false)
+    try {
+      if(!originalFormData.id) return
+      const originalId = originalFormData.id
+      await updateRowInDatabase(formData, originalId, selectedOption, selectedGenre)
+      
+      if (excelData) {
+        const updatedExcelData = excelData.map(row => {
+          if (row[0] === originalFormData.id) {
+            return [
+              formData.id,
+              formData.p_surname,
+              formData.m_surname,
+              formData.name,
+              selectedOption,
+              formData.employeeNumber,
+              formData.age,
+              selectedGenre,
+              formData.category,
+              formData.height,
+              formData.weight,
+              formData.grease,
+              formData.imc,
+              formData.waist,
+              formData.bmi,
+              formData.bmr,
+              formData.fat_mass,
+              formData.ffm,
+              formData.tbw,
+              formData.grip,
+              formData.grip_points,
+              formData.jump,
+              formData.jump_points,
+              formData.agility,
+              formData.agility_points,
+              formData.resistance,
+              formData.resistance_points,
+              formData.total
+            ];
+          }
+          return row;
+        });
+  
+        // SORT AGAIN
+        updatedExcelData.sort((a, b) => {
+          const idA = Number(a[0]);
+          const idB = Number(b[0]);
+          if (idA === null || idB === null) {
+            return 0;
+          }
+          return idA - idB;
+        });
+  
+        setExcelData(updatedExcelData);
+        setSelectedOption('')
+        setIsTestOpen(false)
+        setSelectedGenre('')
+        setIsGenreOpen(false)
+      }
+      
+    } catch (error) {
+      console.error('Error saving changes:', error);
     }
   };
 

@@ -59,10 +59,14 @@ function convertParticipantsToArray(participants: Participant[]): (string | numb
 export async function GET(req: NextRequest) {
   
   try {
-    const participants = await ParticipantModel.find({});
-    const participantsArray = convertParticipantsToArray(participants);
+    // Sorted if you refresh and the id are not sorted (cause you can't, you have to find, edit new data, delete old data, upload all new docs)
+    const sortedParticipants = await ParticipantModel.find().sort({ '#': 1 });
+    
+    const participantsArray = convertParticipantsToArray(sortedParticipants);
 
     const fileInfoArray = await FileInfoModel.find({})
+
+    
 
     return NextResponse.json({participantsArray, fileInfoArray});
   } catch (error) {
