@@ -13,6 +13,7 @@ type ExcelData = (string | number | boolean | null)[][] | null;
 
 export function Table() {
   const file = useFileStore((state) => state.file);
+  const setFile = useFileStore((state) => state.setFile);
   const excelData = useDataStore((state) => state.excelData)
   const setExcelData = useDataStore((state) => state.setExcelData)
   const filteredExcelData = useFilteredDataStore((state) => state.filteredExcelData)
@@ -27,6 +28,10 @@ export function Table() {
   const [searchValue, setSearchValue] = useState<string>('')
 
   // -----------------------------------------------------------------------------------------------
+
+  useEffect(() => {
+    setFile(null)
+  }, [])
 
   // SORT FUNCTION
   const sortArrayByColumn = (arr: ExcelData, column: string) => {
@@ -123,13 +128,10 @@ export function Table() {
           const fileSize = file.size
           
           await sendToMongoDB(sortedDataJSON, fileName, fileSize);
-          // PROBLEM IS HERE
-          console.log('pasó por aquí', file);
         }
       };
       reader.readAsArrayBuffer(file);
     }
-
 
     setSelectedRows([])
     setRowToDelete(null)
@@ -137,7 +139,6 @@ export function Table() {
     setFilteredExcelData(null)  
   }, [file])
   
-  console.log(file);
   
   // GET ROW INDEX WITH ACTION
   const handleGetRow = (rowIndex: number, action: string) => {
@@ -179,16 +180,41 @@ export function Table() {
     }
   };
 
-  // DELETE ROW
-  const confirmDeleteRow = () => {
-    if (rowToDelete !== null && filteredExcelData && excelData) {
-        const rowToDeleteId = filteredExcelData[rowToDelete + 1][0]; // Obtener el ID de la fila a eliminar
-        const newExcelData = excelData.filter((row, index) => index === 0 || row[0] !== rowToDeleteId) as ExcelData;
-        setExcelData(newExcelData);
-        setRowToDelete(null);
-        setSelectedRows([]);
+  // DELETE ENDPOINT
+  const deleteRowDB = async (id: number | number[]) => {
+    try {
+      const response = await fetch('/api/excelData/editData/deleteRow', {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(id)
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al borrar fila o filas')
+      }
+      
+    } catch (error) {
+      console.error('Error al borrar en MongoDB', error)
     }
-};
+  }
+
+  // DELETE ROW
+  const confirmDeleteRow = async () => {
+    if (rowToDelete !== null && filteredExcelData && excelData) {
+        const rowToDeleteId = Number(filteredExcelData[rowToDelete + 1][0]) // Obtener el ID de la fila a eliminar
+        try {
+          const res = await deleteRowDB(rowToDeleteId)
+          const newExcelData = excelData.filter((row, index) => index === 0 || row[0] !== rowToDeleteId) as ExcelData;
+          setExcelData(newExcelData);
+          setRowToDelete(null);
+          setSelectedRows([]);
+        } catch (error) {
+          
+        }
+    }
+  };
 
   const cancelDelete = () => {
     setSelectedRows([])
@@ -197,14 +223,15 @@ export function Table() {
   // --------
 
   // DELETE MORE THAN 2 ROWS
-  const deleteSelectedRows = () => {
+  const deleteSelectedRows = async () => {
     if (!selectedRows || !excelData || !filteredExcelData) return;
-    const idsToDelete = selectedRows.map(rowIndex => filteredExcelData[rowIndex + 1][0]); // Obtener los IDs de las filas a eliminar
-    const newData = excelData.filter((row, index) => index === 0 || !idsToDelete.includes(row[0])) as ExcelData;
+    const idsToDelete = selectedRows.map(rowIndex => Number(filteredExcelData[rowIndex + 1][0])); // Obtener los IDs de las filas a eliminar
+    const res = await deleteRowDB(idsToDelete)
+    const newData = excelData.filter((row, index) => index === 0 || !idsToDelete.includes(Number(row[0]))) as ExcelData;
     setExcelData(newData);
     setSelectedRows([]);
     setRowToDelete(null);
-};
+  };
 
   const handleSearchbar = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
