@@ -10,6 +10,8 @@ import { ToggleTheme } from "../toggle/toggleTheme"
 
 export function HeaderButtons () {
   const file = useFileStore((state) => state.file)
+  const setFile = useFileStore((state) => state.setFile)
+  
   const userProfile = useUserStore((state) => state.userProfile)
   const router = useRouter()
 
@@ -21,6 +23,8 @@ export function HeaderButtons () {
           'Content-Type': 'application/json'
         }
       })
+      setFile(null)
+
       router.push('/')
     } catch (error) {
       console.log(error);

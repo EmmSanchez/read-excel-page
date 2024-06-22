@@ -33,7 +33,7 @@ export function Dropzone() {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
-    const selectedFile= e.target.files?.[0]
+    const selectedFile = e.target.files?.[0]
     if (selectedFile !== undefined) {
       setFile(selectedFile)
     }

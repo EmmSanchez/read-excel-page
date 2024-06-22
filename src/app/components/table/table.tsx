@@ -121,7 +121,10 @@ export function Table() {
           const sortedDataJSON = arrayToJSON(sortedData)
           const fileName = file.name
           const fileSize = file.size
+          
           await sendToMongoDB(sortedDataJSON, fileName, fileSize);
+          // PROBLEM IS HERE
+          console.log('pasó por aquí', file);
         }
       };
       reader.readAsArrayBuffer(file);
@@ -133,6 +136,8 @@ export function Table() {
     setSearchValue('')
     setFilteredExcelData(null)  
   }, [file])
+  
+  console.log(file);
   
   // GET ROW INDEX WITH ACTION
   const handleGetRow = (rowIndex: number, action: string) => {

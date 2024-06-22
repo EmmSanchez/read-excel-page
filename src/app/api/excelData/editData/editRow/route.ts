@@ -5,7 +5,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const { formData, id, selectedOption, selectedGenre } = await req.json()
     
-    // INVESTIGAR finOneAndUpdate
     const result = await ParticipantModel.findOneAndUpdate(
       { '#': id },
       { $set: {
@@ -45,9 +44,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       return NextResponse.json({ message: "Participante no encontrado" }, { status: 404 });
     }
 
-    // SORT BY ID
-    // const sortedParticipants = await ParticipantModel.find().sort({ '#': 1 });
-    
     return NextResponse.json({ message: "Participante actualizado exitosamente", data: result });
     
   } catch (error) {
