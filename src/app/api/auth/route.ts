@@ -9,15 +9,19 @@ import connectDB from "@/utils/mongoose";
 export async function POST(req: NextRequest) {
   try {
     const { user, password } = await req.json();
-    
     await connectDB()
+
     const username = await UserModel.findOne({ username: user })
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined');
+    }
 
     if (username?.username === user && username?.password === password) {
       const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
         user: 'admin',
-      }, 'secret');
+      }, process.env.JWT_SECRET);
 
       const serialized = serialize('myTokenName', token, {
         httpOnly: true,

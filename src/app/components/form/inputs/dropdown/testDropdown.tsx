@@ -68,10 +68,37 @@ export const TestControlledDropdown = ({
     setIsAddTestActive(true);
   };
 
-  const handleAddOption = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const addNewOption = async (option: string) => {
+    try {
+      const res = await fetch('/api/excelData/testOptions/addOption', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(option)
+      })
+      
+      if (!res.ok) throw new Error('Dato inválido');
+    } catch (error) {
+      console.error('Error al agregar opción')
+    }
+  }
+
+  const handleAddOption = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     if (newOption.trim() !== '') {
-      setOptions([...options, newOption]);
+      try {
+        await addNewOption(newOption)
+        
+        if (options) {
+          setOptions([...options, newOption]);
+        } else {
+          setOptions([newOption])
+        }
+      } catch (error) {
+        console.error('Error al agregar nueva opción', error)
+      }
+
       if (setSelectedOption) {
         setSelectedOption(newOption);
       }
@@ -113,7 +140,7 @@ export const TestControlledDropdown = ({
           isTestOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
-        {options.map((option) => (
+        {options?.map((option) => (
           <div
             key={option}
             className="dropdown-item font-semibold text-gray-600"

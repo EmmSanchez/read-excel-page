@@ -6,15 +6,21 @@ export async function middleware(req: NextRequest) {
 
   const tokenValue = req.cookies.get('myTokenName')?.value
 
+  
+
   if (req.nextUrl.pathname.includes('/dashboard')) {
     // if there is no token
     if (!tokenValue) {
       return NextResponse.redirect(new URL('/',  req.url))
     }
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined');
+    }
+
     try {
       // first validete token
-      await jwtVerify(tokenValue, new TextEncoder().encode('secret'))
+      await jwtVerify(tokenValue, new TextEncoder().encode(process.env.JWT_SECRET))
       return NextResponse.next()
     } catch (error) {
       console.log(error);
@@ -34,6 +40,5 @@ export async function middleware(req: NextRequest) {
       return NextResponse.next()
     }
   }
-  
   return NextResponse.next()
 }

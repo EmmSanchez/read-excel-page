@@ -11,8 +11,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json({error: 'No token'}, { status: 401})
   }
 
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not defined');
+  }
+
+
   try {
-    verify(myTokenName, 'secret') as { user: string; [key: string]: any };
+    verify(myTokenName, process.env.JWT_SECRET) as { user: string; [key: string]: any };
     const serialized = serialize('myTokenName', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

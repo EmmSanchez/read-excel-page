@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
 interface OptionsContextType {
-  options: string[];
+  options: string[] | null;
   setOptions: (options: string[]) => void;
 }
 
 export const useTestOptionsStore = create<OptionsContextType>((set) => ({
-  options: ['SS2023', 'AP2023'],
+  options: null,
   setOptions: (options) => set(state => ({ options: options }))
 }))

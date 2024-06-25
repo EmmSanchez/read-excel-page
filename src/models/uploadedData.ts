@@ -39,7 +39,7 @@ const participantSchema = new Schema<ParticipantModel>({
   "Prueba": { type: String },
   "# Empleado": { type: Number },
   "Edad": { type: Number },
-  "Genero": { type: String, enum: ['HOMBRE', 'MUJER'] },
+  "Genero": { type: String, enum: ['HOMBRE', 'MUJER', null, ''] },
   "Categoria": { type: Number },
   "Altura [cm]": { type: Number },
   "Peso [kg]": { type: Number },

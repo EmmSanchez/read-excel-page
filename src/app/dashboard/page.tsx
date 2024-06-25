@@ -7,12 +7,14 @@ import { Providers } from '../themes/themeProvider';
 import { useDataStore } from '../store/dataStore';
 import { useFilteredDataStore } from '../store/filteredData';
 import { useFileStore } from '../store/fileStore';
+import { error } from 'console';
+import { useTestOptionsStore } from '../store/testOptions';
 
 export default function Home() {
   const setUserProfile = useUserStore(state => state.setUserProfile)
   const setExcelData = useDataStore((state) => state.setExcelData)
-  const setFilteredExcelData = useFilteredDataStore((state) => state.setFilteredExcelData)
   const setFile = useFileStore((state) => state.setFile)  
+  const setOptions = useTestOptionsStore(state => state.setOptions)
 
   const getProfile = async () => {
     const response = await fetch('/api/auth/profile', {
@@ -56,9 +58,28 @@ export default function Home() {
     }
   }
 
+  const getOptions = async () => {
+    try {
+      const res = await fetch('/api/excelData/testOptions/getOptions', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (res.ok) {
+        const {options} = await res.json()
+        setOptions(options)                
+      }
+    } catch (error) {
+      console.error('Error en la petición', error)
+    }
+  }
+
   useEffect(() => {
     getProfile()
     getData()
+    getOptions()
   }, [])
 
   return (

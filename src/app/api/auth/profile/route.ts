@@ -10,8 +10,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ message: 'Token not found'}, { status: 401})
   }
 
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not defined');
+  }
+
   try {
-    const profile = verify(myTokenName, 'secret') as { user: string; [key: string]: any };
+    const profile = verify(myTokenName,  process.env.JWT_SECRET) as { user: string; [key: string]: any };
     await connectDB()
     return NextResponse.json({ user: profile.user})
     
