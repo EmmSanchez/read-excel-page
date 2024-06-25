@@ -40,14 +40,16 @@ export default function Home() {
         
         
         // if there is no data or just the columns
-        if (participantsArray.length <= 1) {
-          console.log('No hay datos disponibles en la base de datos');
+        // if (participantsArray.length <= 1) {
+        //   console.log('No hay datos disponibles en la base de datos');
 
-        } else {
+        // } else {
+        //   console.log(participantsArray);
+          
           setExcelData(participantsArray)
           const fileInfo = fileInfoArray[0]
           setFile(fileInfo)
-        }
+        // }
       }
     } catch (error) {
       console.error('Error de red:', error);

@@ -211,7 +211,7 @@ export function Table() {
           setRowToDelete(null);
           setSelectedRows([]);
         } catch (error) {
-          
+          console.error('Error al eliminar fila(s)', error)
         }
     }
   };

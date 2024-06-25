@@ -64,12 +64,8 @@ export async function GET(req: NextRequest) {
     
     const participantsArray = convertParticipantsToArray(sortedParticipants);
 
-
     // BRING FILE INFO
     const fileInfoArray = await FileInfoModel.find({})
-
-    
-    
 
     return NextResponse.json({participantsArray, fileInfoArray});
   } catch (error) {

@@ -13,6 +13,10 @@ export async function POST(req: NextRequest) {
   }
     
   try {
+     // Delete past info
+     await FileInfoModel.deleteMany({})
+     await ParticipantModel.deleteMany({})
+
     // Iterate and upload data
     await ParticipantModel.insertMany(data);
     await FileInfoModel.insertMany({

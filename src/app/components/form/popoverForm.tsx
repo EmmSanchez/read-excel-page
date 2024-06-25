@@ -128,9 +128,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     
         case "age":
           const newAge = parseInt(newValue);
-          if (!isNaN(newAge)) {
-            newFormData.age = newAge;
-          }
+          newFormData.age = isNaN(newAge) ? null: newAge;
           break;
     
         case "height":
@@ -151,9 +149,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
         case "agility_points":
         case "resistance_points":
           const newData = parseFloat(newValue);
-          if (!isNaN(newData)) {
-            newFormData[action] = newData;
-          }
+          newFormData[action] = isNaN(newData) ? null : newData;
           break;
         
     
@@ -163,8 +159,27 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     setFormData(newFormData)
   }
 
+  // ENDPOINT TO ADD NEW ROW
+  const sendNewRow = async (row: (string | number | null)[]) => {
+    try {
+      const res = await fetch('/api/excelData/editData/addRow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({row})
+      })
+  
+      if (!res.ok) {
+        throw new Error("Failed to upload data");
+      }
+    } catch (error) {
+      console.error("Error uploading data to MongoDB:", error);
+    }
+  }
+
   // ADD NEW ROW
-  const handleAddRow = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddRow = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
      // Ensure the formData has an id before adding
      if (formData.id !== null) {
@@ -199,14 +214,19 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
           formData.total,
       ];
 
-      // Add new row to the existing excelData
-      const updatedData = excelData ? [...excelData, newRow] : [newRow]
+      try {
+        await sendNewRow(newRow)
+        
+        // Add new row to the existing excelData
+        const updatedData = excelData ? [...excelData, newRow] : [newRow]  
+        // Sort the data by id in ascending order
+        updatedData.sort((a, b) => (a[0] as number) - (b[0] as number));
+        // Update the state with the new sorted data
+        setExcelData(updatedData);
+      } catch (error) {
+        console.error('Error al crear nuevo participante', error)
+      }
 
-      // Sort the data by id in ascending order
-      updatedData.sort((a, b) => (a[0] as number) - (b[0] as number));
-
-      // Update the state with the new sorted data
-      setExcelData(updatedData);
 
       // Reset the form inputs
       resetInputs();
