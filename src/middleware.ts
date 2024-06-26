@@ -20,7 +20,13 @@ export async function middleware(req: NextRequest) {
 
     try {
       // first validete token
-      await jwtVerify(tokenValue, new TextEncoder().encode(process.env.JWT_SECRET))
+      const { payload } = await jwtVerify(tokenValue, new TextEncoder().encode(process.env.JWT_SECRET))
+      const rol = payload.user
+      if (req.nextUrl.pathname.includes('/dashboard/settings')) {
+        if (rol === 'invited') return NextResponse.redirect(new URL('/dashboard/table',  req.url))
+        return NextResponse.next()
+      }
+      
       return NextResponse.next()
     } catch (error) {
       console.log(error);

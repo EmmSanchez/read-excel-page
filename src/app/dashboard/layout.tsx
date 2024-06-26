@@ -1,11 +1,12 @@
 'use client'
 import { NavBar } from "../components/NavBar/navbar";
 import { Providers } from "../themes/themeProvider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "../store/userStore";
 import { useDataStore } from "../store/dataStore";
 import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
+import { useDataUsersStore } from "../store/dataUsers";
 
 export default function Layout({
   children,
@@ -13,9 +14,12 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   const setUserProfile = useUserStore(state => state.setUserProfile)
+  const userProfile = useUserStore(state => state.userProfile)
   const setExcelData = useDataStore((state) => state.setExcelData)
   const setFile = useFileStore((state) => state.setFile)  
   const setOptions = useTestOptionsStore(state => state.setOptions)
+  const setUsers = useDataUsersStore(state => state.setUsers)
+  const users = useDataUsersStore(state => state.users)
 
   const getProfile = async () => {
     const response = await fetch('/api/auth/profile', {
@@ -77,13 +81,42 @@ export default function Layout({
     }
   }
 
+  const validateRol = async (rol: string | null) => {
+    if (!rol) return
+
+    if (rol === 'admin') {
+      try {
+        const res = await fetch('/api/auth/getUsers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(rol)
+        })
+
+        if (res.ok) {
+          const { users } = await res.json()
+          setUsers(users)
+          
+        }
+      } catch (error) {
+        console.error('Error obtener datos', error)
+      }
+    }
+  }
+  
   useEffect(() => {
     getProfile()
     getData()
     getOptions()
   }, [])
 
-
+  useEffect(() => {
+    if (userProfile === 'admin') {
+      validateRol(userProfile)
+    }
+  }, [userProfile])
+  
   return (
     <>
       <Providers>

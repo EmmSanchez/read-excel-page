@@ -17,7 +17,27 @@ export async function POST(req: NextRequest) {
       throw new Error('JWT_SECRET is not defined');
     }
 
-    if (username?.username === user && username?.password === password) {
+    if (username?.username === user && username?.password === password && username?.rol === 'Invitado') {
+      const token = jwt.sign({
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+        user: 'invited',
+      }, process.env.JWT_SECRET);
+
+      const serialized = serialize('myTokenName', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 12, // 12 hours
+        path: '/'
+      });
+
+      const response = NextResponse.json({ message: 'Login successfully' }, { status: 200 });
+      response.headers.append('Set-Cookie', serialized);
+      
+      return response;
+    }
+
+    if (username?.username === user && username?.password === password && username?.rol === 'Administrador') {
       const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
         user: 'admin',

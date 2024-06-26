@@ -6,9 +6,11 @@ import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUserStore } from "@/app/store/userStore";
 
 export function NavBar () {
   const setFile = useFileStore((state) => state.setFile) 
+  const userProfile = useUserStore(state => state.userProfile)
   const {theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false);
 
@@ -77,18 +79,40 @@ export function NavBar () {
           </button>
 
           {
-            links.map((link) => {
-              const LinkIcon = link.icon
-              return (
-                <Link 
-                  key={link.name}
-                  href={link.href}
-                  className={`py-2 px-2 rounded-md ${pathname === link.href ? 'bg-[#2563EB]' : ''}`}
-                >
-                  <LinkIcon className={`${pathname === link.href ? 'invert' : ''}`}/>
-                </Link>
-              )
-            })
+            userProfile === 'admin' ? 
+            <>
+              {
+                links.map((link) => {
+                  const LinkIcon = link.icon
+                  return (
+                    <Link 
+                      key={link.name}
+                      href={link.href}
+                      className={`py-2 px-2 rounded-md ${pathname === link.href ? 'bg-[#2563EB]' : ''}`}
+                    >
+                      <LinkIcon className={`${pathname === link.href ? 'invert' : ''}`}/>
+                    </Link>
+                  )
+                })
+              }
+            </>
+            :
+            <>
+              {
+                links.slice(0,1).map((link) => {
+                  const LinkIcon = link.icon
+                  return (
+                    <Link 
+                      key={link.name}
+                      href={link.href}
+                      className={`py-2 px-2 rounded-md ${pathname === link.href ? 'bg-[#2563EB]' : ''}`}
+                    >
+                      <LinkIcon className={`${pathname === link.href ? 'invert' : ''}`}/>
+                    </Link>
+                  )
+                })
+              }
+            </>
           }
 
           <button onClick={logout} className="px-2">
