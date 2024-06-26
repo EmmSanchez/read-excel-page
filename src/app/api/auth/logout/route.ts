@@ -26,9 +26,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
       path: '/'
     });
 
-    await disconnectDB()
-    const response = NextResponse.json({message: 'Logout successfully '}, { status: 200})
+    const response = NextResponse.redirect(new URL('/', req.url));
     response.headers.set('Set-Cookie', serialized)
+    await disconnectDB()
     
     return response
   } catch (error) {

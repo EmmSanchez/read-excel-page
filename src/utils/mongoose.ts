@@ -32,7 +32,6 @@ export async function disconnectDB() {
   try {
     await disconnect();
     conn.isConnected = false;
-    console.log('Desconectado de MongoDB');
   } catch (error) {
     console.error('Error disconnecting from MongoDB:', error);
     throw new Error('Failed to disconnect from MongoDB');

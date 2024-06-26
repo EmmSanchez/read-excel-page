@@ -41,13 +41,13 @@ export function Dropzone() {
 
   const handleRemoveFile = async () => {
     try {
-      const response = await fetch('api/excelData/removeData', {
+      const response = await fetch('/api/excelData/removeData', {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         }
       })
-
+      
       if (response.ok) {
         setFile(null);
       }

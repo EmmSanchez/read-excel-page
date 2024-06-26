@@ -6,7 +6,7 @@ export interface ParticipantModel extends Document {
   "Apellido materno": string;
   "Nombre": string;
   "Prueba": string;
-  "# Empleado": number;
+  "# Empleado": string;
   "Edad": number;
   "Genero": string;
   "Categoria": number;
@@ -37,9 +37,9 @@ const participantSchema = new Schema<ParticipantModel>({
   "Apellido materno": { type: String },
   "Nombre": { type: String },
   "Prueba": { type: String },
-  "# Empleado": { type: Number },
+  "# Empleado": { type: String },
   "Edad": { type: Number },
-  "Genero": { type: String, enum: ['HOMBRE', 'MUJER', null, ''] },
+  "Genero": { type: String},
   "Categoria": { type: Number },
   "Altura [cm]": { type: Number },
   "Peso [kg]": { type: Number },

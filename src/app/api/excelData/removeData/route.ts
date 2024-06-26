@@ -4,6 +4,7 @@ import FileInfoModel from '@/models/fileInfo';
 
 export async function DELETE(req: NextRequest) {
   try {
+    
     await ParticipantModel.deleteMany({})
     await FileInfoModel.deleteMany({})
 

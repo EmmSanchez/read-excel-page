@@ -8,7 +8,7 @@ export async function middleware(req: NextRequest) {
 
   
 
-  if (req.nextUrl.pathname.includes('/dashboard')) {
+  if (req.nextUrl.pathname.includes('/dashboard/table') || req.nextUrl.pathname.includes('/dashboard/settings')) {
     // if there is no token
     if (!tokenValue) {
       return NextResponse.redirect(new URL('/',  req.url))
@@ -34,8 +34,8 @@ export async function middleware(req: NextRequest) {
     }
 
     try {
-      await jwtVerify(tokenValue, new TextEncoder().encode('secret'))
-      return NextResponse.redirect(new URL('/dashboard', req.url))
+      await jwtVerify(tokenValue, new TextEncoder().encode(process.env.JWT_SECRET))
+      return NextResponse.redirect(new URL('/dashboard/table', req.url))
     } catch (error) {
       return NextResponse.next()
     }

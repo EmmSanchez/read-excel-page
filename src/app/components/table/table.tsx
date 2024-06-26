@@ -29,9 +29,10 @@ export function Table() {
 
   // -----------------------------------------------------------------------------------------------
 
-  useEffect(() => {
-    setFile(null)
-  }, [])
+  // USED TO FIX UPLOAD TO OR 3 TIMES DATA
+  // useEffect(() => {
+  //   setFile(null)
+  // }, [])
 
   // SORT FUNCTION
   const sortArrayByColumn = (arr: ExcelData, column: string) => {
