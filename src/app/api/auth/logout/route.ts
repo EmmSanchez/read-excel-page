@@ -26,10 +26,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       path: '/'
     });
 
-    const response = NextResponse.redirect(new URL('/', req.url));
+    const response = NextResponse.json({message: 'Logout successfully '}, { status: 200})
     response.headers.set('Set-Cookie', serialized)
-    await disconnectDB()
     
+    await disconnectDB()
     return response
   } catch (error) {
     return NextResponse.json({ message: 'Invalid Token'}, {status: 401})

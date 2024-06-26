@@ -1,5 +1,6 @@
 'use client'
 import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon, TableIcon } from "../../../../public/icons/icons";
+import { useRouter } from "next/navigation"
 import { useFileStore } from "@/app/store/fileStore";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
@@ -17,15 +18,18 @@ export function NavBar () {
     setMounted(true);
   }, []);
 
+  const router = useRouter()
 
   const logout = async () => {
     try {
+      router.push('/')
       await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         }
       })
+      router.push('/')
       setFile(null)
     } catch (error) {
       console.log(error);
