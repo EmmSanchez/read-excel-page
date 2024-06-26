@@ -7,6 +7,7 @@ import { useDataStore } from "../store/dataStore";
 import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
+import { useNavLinksStore } from "../store/navLinks";
 
 export default function Layout({
   children,
@@ -19,8 +20,11 @@ export default function Layout({
   const setFile = useFileStore((state) => state.setFile)  
   const setOptions = useTestOptionsStore(state => state.setOptions)
   const setUsers = useDataUsersStore(state => state.setUsers)
-  const users = useDataUsersStore(state => state.users)
+  const setLinks = useNavLinksStore(state => state.setLinks)
 
+
+
+  // SETEAR LINKS EN ESTA FUNCIÓN DEPENDIENDO TIPO DE USER
   const getProfile = async () => {
     const response = await fetch('/api/auth/profile', {
       method: 'GET',
@@ -29,8 +33,9 @@ export default function Layout({
       }
     });
 
-    const { user } = await response.json()
+    const { user, links } = await response.json()
     setUserProfile(user)
+    setLinks(links)
   }
 
   const getData = async () => {

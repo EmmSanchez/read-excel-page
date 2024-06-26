@@ -3,14 +3,17 @@ import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon, TableIcon } from "../../..
 import { useRouter } from "next/navigation"
 import { useFileStore } from "@/app/store/fileStore";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, SVGProps } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserStore } from "@/app/store/userStore";
+import { useNavLinksStore } from "@/app/store/navLinks";
 
 export function NavBar () {
   const setFile = useFileStore((state) => state.setFile) 
   const userProfile = useUserStore(state => state.userProfile)
+  const links = useNavLinksStore(state => state.links)
+  const setLinks = useNavLinksStore(state => state.setLinks)
   const {theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false);
 
@@ -24,7 +27,6 @@ export function NavBar () {
 
   const logout = async () => {
     try {
-      router.push('/')
       await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
@@ -33,20 +35,18 @@ export function NavBar () {
       })
       router.push('/')
       setFile(null)
+      setLinks([])
     } catch (error) {
       console.log(error);
     }
 
   }
 
-  const links = [
-    {
-      name: 'Dasboard', href: '/dashboard/table', icon: TableIcon
-    },
-    {
-      name: 'Settings', href: '/dashboard/settings', icon: SettingsIcon
-    }
-  ]
+  const iconMapping: { [key: string]: (props: SVGProps<SVGSVGElement>) => JSX.Element } = {
+    'Dasboard': TableIcon,
+    'Settings': SettingsIcon
+  }
+  
 
   return (
     <>
@@ -78,12 +78,10 @@ export function NavBar () {
             }
           </button>
 
-          {
-            userProfile === 'admin' ? 
-            <>
+         
               {
                 links.map((link) => {
-                  const LinkIcon = link.icon
+                  const LinkIcon = iconMapping[link.name]
                   return (
                     <Link 
                       key={link.name}
@@ -95,25 +93,6 @@ export function NavBar () {
                   )
                 })
               }
-            </>
-            :
-            <>
-              {
-                links.slice(0,1).map((link) => {
-                  const LinkIcon = link.icon
-                  return (
-                    <Link 
-                      key={link.name}
-                      href={link.href}
-                      className={`py-2 px-2 rounded-md ${pathname === link.href ? 'bg-[#2563EB]' : ''}`}
-                    >
-                      <LinkIcon className={`${pathname === link.href ? 'invert' : ''}`}/>
-                    </Link>
-                  )
-                })
-              }
-            </>
-          }
 
           <button onClick={logout} className="px-2">
             <LogOutIcon className="invert dark:invert-0"/>
