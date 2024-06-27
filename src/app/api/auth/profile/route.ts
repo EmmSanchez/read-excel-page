@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { verify } from "jsonwebtoken";
 import connectDB from "@/utils/mongoose";
 
+export const maxDuration = 50; // 50 seconds
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest, res: NextResponse) {
   const myTokenName = req.cookies.get('myTokenName')?.value
   const links = [

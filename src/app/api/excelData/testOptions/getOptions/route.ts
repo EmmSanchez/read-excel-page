@@ -1,6 +1,9 @@
 import TestOptionsModel from "@/models/tests";
 import { NextResponse } from "next/server";
 
+export const maxDuration = 50; // 50 seconds
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     // just get option and not _id

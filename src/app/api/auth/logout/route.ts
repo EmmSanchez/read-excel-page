@@ -4,6 +4,9 @@ import { verify } from "jsonwebtoken";
 import { serialize } from 'cookie'
 import { disconnectDB } from "@/utils/mongoose";
 
+export const maxDuration = 50; // 50 seconds
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest, res: NextResponse) {
   const myTokenName = req.cookies.get('myTokenName')?.value
 

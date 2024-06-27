@@ -3,6 +3,9 @@ import ParticipantModel from '@/models/uploadedData';
 import UserModel from '@/models/users';
 import FileInfoModel from '@/models/fileInfo';
 
+export const maxDuration = 50; // 50 seconds
+export const dynamic = 'force-dynamic';
+
 type ExcelData = (string | number | boolean | null)[][] | null;
 
 export async function POST(req: NextRequest) {
