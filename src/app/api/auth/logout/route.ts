@@ -1,5 +1,4 @@
 "use server"
-export const maxDuration = 50; // 50 seconds
 import { NextRequest, NextResponse } from "next/server";
 import { verify } from "jsonwebtoken";
 import { serialize } from 'cookie'

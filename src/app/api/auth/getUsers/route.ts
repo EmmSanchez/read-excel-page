@@ -1,5 +1,4 @@
 "user server"
-export const maxDuration = 50; // 50 seconds
 import UserModel from "@/models/users";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -1,5 +1,4 @@
 "use server"
-export const maxDuration = 50; // 50 seconds
 import TestOptionsModel from "@/models/tests";
 import { NextResponse } from "next/server";
 

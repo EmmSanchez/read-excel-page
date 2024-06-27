@@ -4,9 +4,6 @@ import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
 import UserModel from "@/models/users";
 
-export const maxDuration = 50; // 50 seconds
-
-
 export async function POST(req: NextRequest) {
   try {
     const { user, password } = await req.json();
