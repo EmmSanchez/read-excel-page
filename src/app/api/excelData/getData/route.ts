@@ -61,17 +61,14 @@ export async function GET(req: NextRequest) {
   try {
     // Sorted if you refresh and the id are not sorted (cause you can't, you have to find, edit new data, delete old data, upload all new docs)
     // is the problem here, .sort('#': 1) deleted
-    const sortedParticipants = await ParticipantModel.find({})
+    // const sortedParticipants = await ParticipantModel.find({})
 
-    const participantsArray = convertParticipantsToArray(sortedParticipants);
+    // const participantsArray = convertParticipantsToArray(sortedParticipants);
 
     // BRING FILE INFO
     const fileInfoArray = await FileInfoModel.find({})
 
-    // BRING TEST OPTIONS
-    
-
-    return NextResponse.json({participantsArray, fileInfoArray});
+    return NextResponse.json({fileInfoArray});
   } catch (error) {
     console.error('Error al obtener datos desde MongoDB:', error);
     return NextResponse.json({ error: 'Error al obtener datos desde MongoDB' }, { status: 500 });

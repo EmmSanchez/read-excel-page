@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
 import UserModel from "@/models/users";
-import connectDB from "@/utils/mongoose";
 
 
 export async function POST(req: NextRequest) {
