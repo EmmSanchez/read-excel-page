@@ -66,9 +66,9 @@ export async function GET(req: NextRequest) {
     // const participantsArray = convertParticipantsToArray(sortedParticipants);
 
     // BRING FILE INFO
-    const fileInfoArray = await FileInfoModel.find({})
+    // const fileInfoArray = await FileInfoModel.find({})
 
-    return NextResponse.json({fileInfoArray});
+    return NextResponse.json({ message : 'Info fetched'});
   } catch (error) {
     console.error('Error al obtener datos desde MongoDB:', error);
     return NextResponse.json({ error: 'Error al obtener datos desde MongoDB' }, { status: 500 });
