@@ -5,7 +5,6 @@ import { serialize } from 'cookie';
 import UserModel from "@/models/users";
 
 export const maxDuration = 50; // 50 seconds
-export const dynamic = 'force-dynamic';
 
 
 export async function POST(req: NextRequest) {

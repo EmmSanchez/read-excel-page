@@ -3,7 +3,6 @@ import ParticipantModel from '@/models/uploadedData';
 import FileInfoModel from '@/models/fileInfo';
 
 export const maxDuration = 50; // 50 seconds
-export const dynamic = 'force-dynamic';
 
 interface Participant {
   '#': number;
