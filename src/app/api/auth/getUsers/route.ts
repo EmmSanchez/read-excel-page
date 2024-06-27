@@ -1,7 +1,8 @@
+"user server"
+export const maxDuration = 50; // 50 seconds
 import UserModel from "@/models/users";
 import { NextRequest, NextResponse } from "next/server";
 
-export const maxDuration = 50; // 50 seconds
 
 export async function POST(req: NextRequest) {
   const rol = await req.json()

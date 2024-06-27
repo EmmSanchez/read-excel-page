@@ -1,9 +1,10 @@
+"use server"
+export const maxDuration = 50; // 50 seconds
 import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
 import UserModel from '@/models/users';
 import FileInfoModel from '@/models/fileInfo';
 
-export const maxDuration = 50; // 50 seconds
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
