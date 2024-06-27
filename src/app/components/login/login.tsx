@@ -29,6 +29,9 @@ export function Login() {
       body: JSON.stringify(credentials)
     });
 
+    console.log('Autenticación completada');
+    
+
     if (res.status === 200) {
       router.push('/dashboard/table')
     }
@@ -45,9 +48,8 @@ export function Login() {
                 <Image  
                   src={'/images/fod_logo_dark.png'}
                   alt='Logotipo oficial de la Facultad de Organización Depotiva'
-                  layout='fill'
-                  objectFit='contain'
-                  className='invert dark:invert-0'
+                  fill
+                  className='object-contain invert dark:invert-0'
                 />
               </div>
               <div className="flex flex-col w-full h-[70%] mt-[2%]">
