@@ -111,9 +111,17 @@ export default function Layout({
   }
   
   useEffect(() => {
-    getProfile()
-    getData()
-    getOptions()
+    const fetchData = async () => {
+      try {
+        await getProfile();
+        await getData();
+        await getOptions();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
   }, [])
 
   useEffect(() => {
