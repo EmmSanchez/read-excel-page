@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
   try {
     const profile = verify(myTokenName,  process.env.JWT_SECRET) as { user: string; [key: string]: any };
-    await connectDB()
+    // await connectDB()
 
     if (profile.user === 'invited') {
       const filteredLinks = links.slice(0, 1)
