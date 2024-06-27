@@ -11,6 +11,9 @@ export async function POST(req: NextRequest) {
 
     const username = await UserModel.findOne({ username: user })
 
+    console.log('username obtenido de db');
+    
+
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined');
     }
@@ -40,6 +43,8 @@ export async function POST(req: NextRequest) {
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
         user: 'admin',
       }, process.env.JWT_SECRET);
+
+      console.log('token generado');
 
       const serialized = serialize('myTokenName', token, {
         httpOnly: true,
