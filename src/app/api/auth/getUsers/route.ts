@@ -1,4 +1,4 @@
-"user server"
+"use server"
 import UserModel from "@/models/users";
 import { NextRequest, NextResponse } from "next/server";
 
