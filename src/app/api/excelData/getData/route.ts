@@ -60,9 +60,9 @@ export async function GET(req: NextRequest) {
   
   try {
     // Sorted if you refresh and the id are not sorted (cause you can't, you have to find, edit new data, delete old data, upload all new docs)
-    // AQUÍ EL PROBLEMA
+    // is the problem here ?
     const sortedParticipants = await ParticipantModel.find({}).sort({ '#': 1 });
-    
+
     const participantsArray = convertParticipantsToArray(sortedParticipants);
 
     // BRING FILE INFO

@@ -1,11 +1,10 @@
 import Image from 'next/image';
 import { ToggleTheme } from '../toggle/toggleTheme';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useRouter } from "next/navigation"
 
-
-
 export function Login() {
+
   const [credentials, setCredentials] = useState({
     user: '',
     password: ''

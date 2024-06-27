@@ -6,11 +6,7 @@ import { useUserStore } from "@/app/store/userStore"
 export default function Settings () {
   const options = useTestOptionsStore(state => state.options)
   const users = useDataUsersStore(state => state.users)
-  const userProfile = useUserStore(state => state.userProfile)
   
-  console.log(options);
-  
-
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 m-4">
