@@ -1,3 +1,4 @@
+export const maxDuration = 40; // This function can run for a maximum of 5 seconds
 import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
 import FileInfoModel from '@/models/fileInfo';
