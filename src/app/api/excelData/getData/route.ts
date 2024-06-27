@@ -60,8 +60,8 @@ export async function GET(req: NextRequest) {
   
   try {
     // Sorted if you refresh and the id are not sorted (cause you can't, you have to find, edit new data, delete old data, upload all new docs)
-    // is the problem here ?
-    const sortedParticipants = await ParticipantModel.find({}).sort({ '#': 1 });
+    // is the problem here, .sort('#': 1) deleted
+    const sortedParticipants = await ParticipantModel.find({})
 
     const participantsArray = convertParticipantsToArray(sortedParticipants);
 
