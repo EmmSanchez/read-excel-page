@@ -7,7 +7,16 @@ import connectDB from '@/utils/mongoose';
 export default function Home() {
 
   useEffect(() => {
-    connectDB()
+    const establishConnection = async () => {
+      try {
+        await connectDB();
+        console.log('Conexión a MongoDB establecida');
+      } catch (error) {
+        console.error('Error al conectar a MongoDB:', error);
+      }
+    };
+
+    establishConnection();
   }, [])
 
   return (

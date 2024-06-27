@@ -17,7 +17,7 @@ export default async function connectDB() {
 
   try {
     const db = await connect(uri, {
-      dbName: 'Data'
+      dbName: 'Data',
     })
     conn.isConnected = db.connections[0].readyState === 1
   } catch (error) {
