@@ -9,7 +9,12 @@ import connectDB from "@/utils/mongoose";
 export async function POST(req: NextRequest) {
   try {
     const { user, password } = await req.json();
-    await connectDB()
+    try {
+      await connectDB()
+    } catch (error) {
+      console.error('Error al contectar con DB:', error);
+      return NextResponse.json({ error: 'Failed to connect to DB' })
+    }
 
     const username = await UserModel.findOne({ username: user })
 
