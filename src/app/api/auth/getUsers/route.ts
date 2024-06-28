@@ -1,5 +1,4 @@
 "use server"
-import connectDB from "@/app/lib/mongodb";
 import UserModel from "@/models/users";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,7 +9,6 @@ export async function POST(req: NextRequest) {
   if (!rol) return NextResponse.json({status: 400})
   
   if (rol === 'Administrador') {
-    await connectDB()
     const users = await UserModel.find({})
 
     return NextResponse.json({message: 'Usuarios obtenidos' , users: users}, { status: 200 })

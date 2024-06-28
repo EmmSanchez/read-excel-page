@@ -1,10 +1,13 @@
 import { TrashIcon, UploadIcon } from "../../../../public/icons/icons"
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useEffect } from 'react'
 import { useFileStore } from "../../store/fileStore"
+import { useUserStore } from "@/app/store/userStore"
 
 export function Dropzone() {
   const file = useFileStore((state) => state.file)
   const setFile = useFileStore((state) => state.setFile)
+  const userProfile = useUserStore(state => state.userProfile)
+
 
 
   const [isDragging, setIsDragging] = useState<boolean>(false)
@@ -73,7 +76,15 @@ export function Dropzone() {
             <p>
               <span className='font-bold'>{file.name}</span><span className='font-light'> cargado correctamente</span>
             </p>
-            <TrashIcon className='cursor-pointer' onClick={handleRemoveFile}/>
+            {
+              userProfile === 'Administrador' ?
+              <>
+                <TrashIcon className='cursor-pointer' onClick={handleRemoveFile}/>
+              </>
+              :
+              <>
+              </>
+            }
           </div>
           </>
             :

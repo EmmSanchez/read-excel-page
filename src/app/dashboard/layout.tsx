@@ -34,6 +34,8 @@ export default function Layout({
 
       if (response.ok) {
         const {participantsArray, fileInfoArray} = await response.json();
+        console.log(participantsArray);
+        
         
         
         

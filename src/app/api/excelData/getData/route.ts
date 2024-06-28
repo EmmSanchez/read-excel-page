@@ -67,7 +67,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     let sortedParticipants;
     try {
       // POSIBLE PROBLEMA AQUÍ CON EL SORT ----------------------------------------------------------------
-      sortedParticipants = await ParticipantModel.find({}).sort({ '#': 1 });
+      sortedParticipants = await ParticipantModel.find().sort({ '#': 1 });
     } catch (error) {
       console.error('Error al obtener participantes:', error);
       return NextResponse.json({ error: 'Error al obtener participantes' }, { status: 500 });
@@ -85,7 +85,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     // Get file's info
     let fileInfoArray;
     try {
-      fileInfoArray = await FileInfoModel.find({});
+      fileInfoArray = await FileInfoModel.find();
     } catch (error) {
       console.error('Error al obtener información del archivo:', error);
       return NextResponse.json({ error: 'Error al obtener información del archivo' }, { status: 500 });

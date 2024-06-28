@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { ToggleTheme } from '../toggle/toggleTheme';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from "next/navigation"
-import connectDB from '@/app/lib/mongodb';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useUserStore } from '@/app/store/userStore';
 import { useNavLinksStore } from '@/app/store/navLinks';
@@ -13,7 +12,6 @@ interface IUser {
 }
 
 async function submitUser(credentials: IUser, router: AppRouterInstance) {
-  await connectDB()
   const res = await fetch('/api/auth', {
     method: 'POST',
     headers: {
