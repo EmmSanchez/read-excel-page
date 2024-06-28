@@ -54,8 +54,8 @@ export function Login() {
       const { user, links } = await res?.json()
   
       // Save in cache cause it's losted btw refreshes
-      sessionStorage.setItem('userProfile', JSON.stringify(user.rol));
-      sessionStorage.setItem('links', JSON.stringify(links));
+      localStorage.setItem('userProfile', JSON.stringify(user.rol));
+      localStorage.setItem('links', JSON.stringify(links));
   
       setUserProfile(user.rol)
       setLinks(links)

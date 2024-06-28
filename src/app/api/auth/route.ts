@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
 import UserModel from "@/models/users";
+import connectDB from "@/app/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   const links = [
@@ -13,6 +14,8 @@ export async function POST(req: NextRequest) {
       name: 'Settings', href: '/dashboard/settings',
     }
   ]
+
+  await connectDB()
 
   try {
     const { username , password } = await req.json();

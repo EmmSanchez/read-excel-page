@@ -20,7 +20,7 @@ export function NavBar () {
 
   useEffect(() => {
     setMounted(true);
-    const storedNewLinks = sessionStorage.getItem('links')
+    const storedNewLinks = localStorage.getItem('links')
 
     if (storedNewLinks){
       const newLinks = JSON.parse(storedNewLinks)
@@ -42,7 +42,7 @@ export function NavBar () {
       router.push('/')
       setFile(null)
       setLinks([])
-      sessionStorage.clear()
+      localStorage.clear()
     } catch (error) {
       console.log(error);
     }

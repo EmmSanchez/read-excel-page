@@ -106,7 +106,7 @@ export default function Layout({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await connectDB()
+        
         await getData();
         await getOptions();
       } catch (error) {
@@ -116,7 +116,7 @@ export default function Layout({
     
     fetchData();
     
-    const storedUserRol = sessionStorage.getItem('userProfile')
+    const storedUserRol = localStorage.getItem('userProfile')
     if (!storedUserRol) return
     const userRol = JSON.parse(storedUserRol)
     if (userRol !== 'Administrador') return
