@@ -1,11 +1,33 @@
 import Image from 'next/image';
 import { ToggleTheme } from '../toggle/toggleTheme';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from "next/navigation"
+import connectDB from '@/app/lib/mongodb';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+
+interface IUser {
+  user: string;
+  password: string;
+}
+
+async function submitUser(credentials: IUser, router: AppRouterInstance) {
+  await connectDB()
+  const res = await fetch('/api/auth', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+  });
+
+  if (res.status === 200) {
+    router.push('/dashboard/table')
+  }
+}
 
 export function Login() {
 
-  const [credentials, setCredentials] = useState({
+  const [credentials, setCredentials] = useState<IUser>({
     user: '',
     password: ''
   })
@@ -20,21 +42,7 @@ export function Login() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    const res = await fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    });
-
-    console.log('Autenticación completada');
-    
-
-    if (res.status === 200) {
-      router.push('/dashboard/table')
-    }
+    await submitUser(credentials, router)
   }
 
   return (

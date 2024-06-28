@@ -1,5 +1,5 @@
 "use server"
-import { connect, disconnect } from "mongoose";
+import mongoose from "mongoose";
 
 const conn = {
   isConnected: false,
@@ -16,8 +16,13 @@ export default async function connectDB() {
   }
 
   try {
-    const db = await connect(uri, {
+    const db = await mongoose.connect(uri, {
       dbName: 'Data',
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000,
+      maxPoolSize: 10
     })
     conn.isConnected = db.connections[0].readyState === 1
   } catch (error) {
@@ -30,7 +35,7 @@ export async function disconnectDB() {
   if (!conn.isConnected) return;
 
   try {
-    await disconnect();
+    await mongoose.disconnect();
     conn.isConnected = false;
   } catch (error) {
     console.error('Error disconnecting from MongoDB:', error);

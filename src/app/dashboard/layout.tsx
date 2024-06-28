@@ -8,6 +8,9 @@ import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
 import { useNavLinksStore } from "../store/navLinks";
+import connectDB from "../lib/mongodb";
+
+
 
 export default function Layout({
   children,
@@ -113,6 +116,7 @@ export default function Layout({
   useEffect(() => {
     const fetchData = async () => {
       try {
+        await connectDB()
         await getProfile();
         console.log('Datos del perfil obtenidos');
         await getData();
