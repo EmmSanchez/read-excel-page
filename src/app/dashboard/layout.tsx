@@ -7,8 +7,6 @@ import { useDataStore } from "../store/dataStore";
 import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
-import { useNavLinksStore } from "../store/navLinks";
-import connectDB from "../lib/mongodb";
 
 
 
@@ -38,17 +36,26 @@ export default function Layout({
         const {participantsArray, fileInfoArray} = await response.json();
         
         
+        
         // if there is no data or just the columns
-        // if (participantsArray.length <= 1) {
-        //   console.log('No hay datos disponibles en la base de datos');
-
-        // } else {
-        //   console.log(participantsArray);
+        if (participantsArray.length === 1) {
+          console.log('No hay datos de partipantes');
+          
+          // there is a file with no data
+          if (!fileInfoArray) {
+            return
+          }
           
           setExcelData(participantsArray)
           const fileInfo = fileInfoArray[0]
           setFile(fileInfo)
-        // }
+          
+
+        } else {
+          setExcelData(participantsArray)
+          const fileInfo = fileInfoArray[0]
+          setFile(fileInfo)
+        }
       } else {
         console.error('Error al obtener los datos de participantes')
       }
