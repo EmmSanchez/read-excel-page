@@ -67,7 +67,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
           <div className="grid custom-grid-form gap-x-8 gap-y-3 w-full">
             {/* ID */}
             <div className="flex flex-col-reverse gap-[2px]">
-              <input value={formData.id?.toString()} onChange={(e) => handleInput(e, "id")} min="1" type="number" name="id" id="id" placeholder='Ingresa el ID' className={`${idError ? 'error-input' : ''} personalized-text-input ${!formData ? 'bg-white' : `${formData.id !== originalFormData?.id ? 'bg-gray-200' : 'bg-white'}`}`} />
+              <input value={formData.id?.toString() || ''} onChange={(e) => handleInput(e, "id")} min="1" type="number" name="id" id="id" placeholder='Ingresa el ID' className={`${idError ? 'error-input' : ''} personalized-text-input ${!formData ? 'bg-white' : `${formData.id !== originalFormData?.id ? 'bg-gray-200' : 'bg-white'}`}`} />
               <div onClick={handleGetNewIndex} className="relative">
                 <div className="absolute top-[10px] right-2 rounded-[4px] p-[2px] hover:bg-slate-200 hover:cursor-pointer">
                   <AddIcon fill='#2563EB' width={28} height={28} />
@@ -86,17 +86,17 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
             </div>
             {/* APELLIDO PATERNO */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <input value={formData.p_surname} type="text" name="p_surname" id="p_surname" onChange={(e) => handleInput(e, "p_surname")} placeholder='Ingresa el apellido paterno' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.p_surname !== originalFormData?.p_surname ? 'bg-gray-200' : 'bg-white'}`}`} />
+              <input value={formData.p_surname?.toString() || ''} type="text" name="p_surname" id="p_surname" onChange={(e) => handleInput(e, "p_surname")} placeholder='Ingresa el apellido paterno' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.p_surname !== originalFormData?.p_surname ? 'bg-gray-200' : 'bg-white'}`}`} />
               <label htmlFor="p_surname" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Apellido Paterno</label>
             </div>
             {/* APELLIDO MATERNO */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <input value={formData.m_surname} type="text" name="m_surname" id="m_surname" onChange={(e) => handleInput(e, "m_surname")} placeholder='Ingresa el apellido materno' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.m_surname !== originalFormData?.m_surname ? 'bg-gray-200' : 'bg-white'}`}`} />
+              <input value={formData.m_surname?.toString() || ''} type="text" name="m_surname" id="m_surname" onChange={(e) => handleInput(e, "m_surname")} placeholder='Ingresa el apellido materno' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.m_surname !== originalFormData?.m_surname ? 'bg-gray-200' : 'bg-white'}`}`} />
               <label htmlFor="m_surname" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Apellido Materno</label>
             </div>
             {/* NOMBRE */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <input value={formData.name} type="text" name="name" id="name" onChange={(e) => handleInput(e, "name")} placeholder='Ingresa el nombre' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.name !== originalFormData?.name ? 'bg-gray-200' : 'bg-white'}`}`} />
+              <input value={formData.name?.toString() || ''} type="text" name="name" id="name" onChange={(e) => handleInput(e, "name")} placeholder='Ingresa el nombre' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.name !== originalFormData?.name ? 'bg-gray-200' : 'bg-white'}`}`} />
               <label htmlFor="name" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Nombre</label>
             </div>
 
@@ -108,7 +108,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
 
             {/* # EMPLEADO */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <input value={formData.employeeNumber} type="text" name="employeeNumber" id="employeeNumber" onChange={(e) => handleInput(e, "employeeNumber")} placeholder='Ingresa el número de empleado' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.employeeNumber !== originalFormData?.employeeNumber ? 'bg-gray-200' : 'bg-white'}`}`} />
+              <input value={formData.employeeNumber?.toString() || ''} type="text" name="employeeNumber" id="employeeNumber" onChange={(e) => handleInput(e, "employeeNumber")} placeholder='Ingresa el número de empleado' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.employeeNumber !== originalFormData?.employeeNumber ? 'bg-gray-200' : 'bg-white'}`}`} />
               <label htmlFor="employeeNumber" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Número de Empleado</label>
             </div>
             {/* EDAD */}
@@ -124,7 +124,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
             </div>
             {/* CATEGORÍA */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <input value={formData.category} type="text" name="category" id="category" onChange={(e) => handleInput(e, "category")} placeholder='Ingresa la categoría del participante' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.category !== originalFormData?.category ? 'bg-gray-200' : 'bg-white'}`}`} />
+              <input value={formData.category?.toString() || ''} type="text" name="category" id="category" onChange={(e) => handleInput(e, "category")} placeholder='Ingresa la categoría del participante' className={`personalized-text-input ${!formData ? 'bg-white' : `${formData.category !== originalFormData?.category ? 'bg-gray-200' : 'bg-white'}`}`} />
               <label htmlFor="category" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Categoría</label>
             </div>
           </div>
