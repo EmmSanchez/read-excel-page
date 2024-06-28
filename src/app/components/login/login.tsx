@@ -4,9 +4,11 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from "next/navigation"
 import connectDB from '@/app/lib/mongodb';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useUserStore } from '@/app/store/userStore';
+import { useNavLinksStore } from '@/app/store/navLinks';
 
 interface IUser {
-  user: string;
+  username: string;
   password: string;
 }
 
@@ -22,15 +24,19 @@ async function submitUser(credentials: IUser, router: AppRouterInstance) {
 
   if (res.status === 200) {
     router.push('/dashboard/table')
+    return res
   }
 }
 
 export function Login() {
+  const setUserProfile = useUserStore(state => state.setUserProfile)
+  const setLinks = useNavLinksStore(state => state.setLinks)
 
   const [credentials, setCredentials] = useState<IUser>({
-    user: '',
+    username: '',
     password: ''
   })
+  
   const router = useRouter()
   
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +48,15 @@ export function Login() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await submitUser(credentials, router)
+    const res = await submitUser(credentials, router)
+    const { user, links } = await res?.json()
+
+    // Save in cache cause it's losted btw refreshes
+    sessionStorage.setItem('userProfile', JSON.stringify(user.rol));
+    sessionStorage.setItem('links', JSON.stringify(links));
+
+    setUserProfile(user.rol)
+    setLinks(links)
   }
 
   return (
@@ -65,14 +79,14 @@ export function Login() {
                 <h4 className='w-full text-center text-gray-500 text-sub dark:text-gray-300'>¡Bienvenido de nuevo!</h4>
 
                 <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col'>
-                  <label htmlFor="user" className="input-title mt-[5%] mb-[1%] font-semibold text-gray-800 dark:text-gray-100">
+                  <label htmlFor="username" className="input-title mt-[5%] mb-[1%] font-semibold text-gray-800 dark:text-gray-100">
                     Usuario
                   </label>
                   <input 
                     onChange={(e) => handleChange(e)}
                     autoComplete='off'
-                    id="user"
-                    name='user'
+                    id="username"
+                    name='username'
                     type="text"
                     placeholder="Ingresa el nombre de usuario"
                     className="bg-transparent text_placeholder-input dark:outline-gray-500 dark:focus:outline-gray-100 dark:text-white"

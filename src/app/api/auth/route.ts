@@ -5,21 +5,28 @@ import { serialize } from 'cookie';
 import UserModel from "@/models/users";
 
 export async function POST(req: NextRequest) {
+  const links = [
+    {
+      name: 'Dasboard', href: '/dashboard/table',
+    },
+    {
+      name: 'Settings', href: '/dashboard/settings',
+    }
+  ]
+
   try {
-    const { user, password } = await req.json();
-
-    const username = await UserModel.findOne({ username: user })
-
+    const { username , password } = await req.json();
     
+    const user = await UserModel.findOne({ username: username })
 
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined');
     }
 
-    if (username?.username === user && username?.password === password && username?.rol === 'Invitado') {
+    if (user?.username === username && user?.password === password && user?.rol === 'Invitado') {
       const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-        user: 'invited',
+        user: user?.username,
       }, process.env.JWT_SECRET);
 
       const serialized = serialize('myTokenName', token, {
@@ -30,16 +37,18 @@ export async function POST(req: NextRequest) {
         path: '/'
       });
 
-      const response = NextResponse.json({ message: 'Login successfully' }, { status: 200 });
+      const filteredLinks = await links.slice(0, 1)
+
+      const response = NextResponse.json({ user, links: filteredLinks }, { status: 200 });
       response.headers.append('Set-Cookie', serialized);
       
       return response;
     }
 
-    if (username?.username === user && username?.password === password && username?.rol === 'Administrador') {
+    if (user?.username === username && user?.password === password && user?.rol === 'Administrador') {
       const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-        user: 'admin',
+        user: user?.username,
       }, process.env.JWT_SECRET);
 
       const serialized = serialize('myTokenName', token, {
@@ -50,7 +59,7 @@ export async function POST(req: NextRequest) {
         path: '/'
       });
 
-      const response = NextResponse.json({ message: 'Login successfully' }, { status: 200 });
+      const response = NextResponse.json({ user, links }, { status: 200 });
       response.headers.append('Set-Cookie', serialized);
       
       return response;

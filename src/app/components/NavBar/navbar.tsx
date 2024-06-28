@@ -11,7 +11,6 @@ import { useNavLinksStore } from "@/app/store/navLinks";
 
 export function NavBar () {
   const setFile = useFileStore((state) => state.setFile) 
-  const userProfile = useUserStore(state => state.userProfile)
   const links = useNavLinksStore(state => state.links)
   const setLinks = useNavLinksStore(state => state.setLinks)
   const {theme, setTheme } = useTheme()
@@ -21,6 +20,13 @@ export function NavBar () {
 
   useEffect(() => {
     setMounted(true);
+    const storedNewLinks = sessionStorage.getItem('links')
+
+    if (storedNewLinks){
+      const newLinks = JSON.parse(storedNewLinks)
+
+      setLinks(newLinks)
+    }
   }, []);
 
   const router = useRouter()
@@ -36,6 +42,7 @@ export function NavBar () {
       router.push('/')
       setFile(null)
       setLinks([])
+      sessionStorage.clear()
     } catch (error) {
       console.log(error);
     }

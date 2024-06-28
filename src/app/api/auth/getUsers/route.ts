@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   
   if (!rol) return NextResponse.json({status: 400})
   
-  if (rol === 'admin') {
+  if (rol === 'Administrador') {
     const users = await UserModel.find({})
 
     return NextResponse.json({message: 'Usuarios obtenidos' , users: users}, { status: 200 })

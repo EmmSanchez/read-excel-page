@@ -17,29 +17,13 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const setUserProfile = useUserStore(state => state.setUserProfile)
   const userProfile = useUserStore(state => state.userProfile)
   const setExcelData = useDataStore((state) => state.setExcelData)
   const setFile = useFileStore((state) => state.setFile)  
   const setOptions = useTestOptionsStore(state => state.setOptions)
   const setUsers = useDataUsersStore(state => state.setUsers)
-  const setLinks = useNavLinksStore(state => state.setLinks)
 
 
-
-  // SETEAR LINKS EN ESTA FUNCIÓN DEPENDIENDO TIPO DE USER
-  const getProfile = async () => {
-    const response = await fetch('/api/auth/profile', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    const { user, links } = await response.json()
-    setUserProfile(user)
-    setLinks(links)
-  }
 
   const getData = async () => {
     try {
@@ -92,7 +76,7 @@ export default function Layout({
   const validateRol = async (rol: string | null) => {
     if (!rol) return
 
-    if (rol === 'admin') {
+    if (rol === 'Administrador') {
       try {
         const res = await fetch('/api/auth/getUsers', {
           method: 'POST',
@@ -117,23 +101,23 @@ export default function Layout({
     const fetchData = async () => {
       try {
         await connectDB()
-        // await getProfile();
         await getData();
         await getOptions();
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
+    
     fetchData();
+    
+    const storedUserRol = sessionStorage.getItem('userProfile')
+    if (!storedUserRol) return
+    const userRol = JSON.parse(storedUserRol)
+    if (userRol !== 'Administrador') return
+    validateRol(userRol)
+
   }, [])
 
-  useEffect(() => {
-    if (userProfile === 'admin') {
-      validateRol(userProfile)
-    }
-  }, [userProfile])
-  
   return (
     <>
       <Providers>
