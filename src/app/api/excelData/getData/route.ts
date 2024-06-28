@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
 import FileInfoModel from '@/models/fileInfo';
+import connectDB from '@/app/lib/mongodb';
 
 
 interface Participant {
@@ -58,19 +59,41 @@ function convertParticipantsToArray(participants: Participant[]): (string | numb
   return participantsArray;
 }
 
-export async function GET(req: NextRequest) {
-  
+export async function GET(req: NextRequest, res: NextResponse) {
   try {
-    // Sorted if you refresh and the id are not sorted (cause you can't, you have to find, edit new data, delete old data, upload all new docs)
-    // .sort({ '#': 1 });
-    const sortedParticipants = await ParticipantModel.find({})
-    
-    const participantsArray = convertParticipantsToArray(sortedParticipants);
+    // Conecta a la base de datos
+    await connectDB();
 
-    // BRING FILE INFO
-    const fileInfoArray = await FileInfoModel.find({})
+    // Obteniendo participantes ordenados
+    let sortedParticipants;
+    try {
+      sortedParticipants = await ParticipantModel.find({}).sort({ '#': 1 });
+    } catch (error) {
+      console.error('Error al obtener participantes:', error);
+      return NextResponse.json({ error: 'Error al obtener participantes' }, { status: 500 });
+    }
 
-    return NextResponse.json({ participantsArray , fileInfoArray });
+    // Convertir participantes a array
+    let participantsArray;
+    try {
+      participantsArray = convertParticipantsToArray(sortedParticipants);
+    } catch (error) {
+      console.error('Error al convertir participantes a array:', error);
+      return NextResponse.json({ error: 'Error al convertir participantes a array' }, { status: 500 });
+    }
+
+    // Obteniendo información del archivo
+    let fileInfoArray;
+    try {
+      fileInfoArray = await FileInfoModel.find({});
+    } catch (error) {
+      console.error('Error al obtener información del archivo:', error);
+      return NextResponse.json({ error: 'Error al obtener información del archivo' }, { status: 500 });
+    }
+
+    // Devolver la respuesta exitosa
+    return NextResponse.json({ participantsArray, fileInfoArray });
+
   } catch (error) {
     console.error('Error al obtener datos desde MongoDB:', error);
     return NextResponse.json({ error: 'Error al obtener datos desde MongoDB' }, { status: 500 });

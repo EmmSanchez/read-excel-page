@@ -117,7 +117,7 @@ export default function Layout({
     const fetchData = async () => {
       try {
         await connectDB()
-        await getProfile();
+        // await getProfile();
         await getData();
         await getOptions();
       } catch (error) {
