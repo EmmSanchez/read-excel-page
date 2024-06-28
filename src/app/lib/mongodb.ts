@@ -18,11 +18,6 @@ export default async function connectDB() {
   try {
     const db = await mongoose.connect(uri, {
       dbName: 'Data',
-      bufferCommands: false,
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 30000,
-      maxPoolSize: 10
     })
     conn.isConnected = db.connections[0].readyState === 1
   } catch (error) {

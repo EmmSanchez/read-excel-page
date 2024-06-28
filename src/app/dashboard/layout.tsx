@@ -118,16 +118,13 @@ export default function Layout({
       try {
         await connectDB()
         await getProfile();
-        console.log('Datos del perfil obtenidos');
         await getData();
-        console.log('Archivo cargado');
         await getOptions();
-        console.log('Opciones de pruebas obtenidas');
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     fetchData();
   }, [])
 
