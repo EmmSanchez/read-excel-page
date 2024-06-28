@@ -49,6 +49,8 @@ export default function Layout({
           const fileInfo = fileInfoArray[0]
           setFile(fileInfo)
         // }
+      } else {
+        console.error('Error al obtener los datos de participantes')
       }
     } catch (error) {
       console.error('Error de red:', error);
@@ -67,6 +69,8 @@ export default function Layout({
       if (res.ok) {
         const {options} = await res.json()
         setOptions(options)                
+      } else {
+        console.error('Error al obtener las opciones de test')
       }
     } catch (error) {
       console.error('Error en la petición', error)
@@ -90,6 +94,8 @@ export default function Layout({
           const { users } = await res.json()
           setUsers(users)
           
+        } else {
+          console.error('Error al validar el rol')
         }
       } catch (error) {
         console.error('Error obtener datos', error)

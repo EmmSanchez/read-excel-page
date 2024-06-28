@@ -49,14 +49,19 @@ export function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const res = await submitUser(credentials, router)
-    const { user, links } = await res?.json()
 
-    // Save in cache cause it's losted btw refreshes
-    sessionStorage.setItem('userProfile', JSON.stringify(user.rol));
-    sessionStorage.setItem('links', JSON.stringify(links));
-
-    setUserProfile(user.rol)
-    setLinks(links)
+    if (res?.ok) {
+      const { user, links } = await res?.json()
+  
+      // Save in cache cause it's losted btw refreshes
+      sessionStorage.setItem('userProfile', JSON.stringify(user.rol));
+      sessionStorage.setItem('links', JSON.stringify(links));
+  
+      setUserProfile(user.rol)
+      setLinks(links)
+    } else {
+      console.error('Error: Credenciales incorrectas')
+    }
   }
 
   return (
