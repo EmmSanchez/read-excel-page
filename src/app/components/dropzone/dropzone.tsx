@@ -7,6 +7,7 @@ export function Dropzone() {
   const file = useFileStore((state) => state.file)
   const setFile = useFileStore((state) => state.setFile)
   const userProfile = useUserStore(state => state.userProfile)
+  const setUserProfile = useUserStore(state => state.setUserProfile)
 
 
 
@@ -58,6 +59,14 @@ export function Dropzone() {
       console.error("Error deleting file:", error);
     }
   }
+
+  useEffect(() => {
+    const storedUserRol = localStorage.getItem('userProfile')
+    if (!storedUserRol) return
+    const userRol = JSON.parse(storedUserRol)
+    if (userRol !== 'Administrador') return
+    setUserProfile(userRol)
+  }, [])
 
   return (
     <>

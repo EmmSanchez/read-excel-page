@@ -11,6 +11,32 @@ import { DeselectRowsButton } from "../buttons/deselectRowsButton";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
+// SORT FUNCTION
+export const sortArrayByColumn = (arr: ExcelData, column: string) => {
+  if (arr) {
+    const columnIndex = arr[0].indexOf(column);
+
+    if (columnIndex === -1) {
+      throw new Error(`La columna "${column}" no existe en los encabezados.`);
+    }
+
+    const dataCopy = [...arr];
+    const sortedData = dataCopy.slice(1).sort((a, b) => {
+      const aValue = a[columnIndex];
+      const bValue = b[columnIndex];
+
+      if (typeof aValue !== 'number' || typeof bValue !== 'number') {
+        throw new Error(`Los valores en la columna "${column}" no son números.`);
+      }
+
+      return aValue - bValue;
+    });
+
+    return [dataCopy[0], ...sortedData];
+  }
+
+};
+
 export function Table() {
   const file = useFileStore((state) => state.file);
   const setFile = useFileStore((state) => state.setFile);
@@ -33,32 +59,6 @@ export function Table() {
   // useEffect(() => {
   //   setFile(null)
   // }, [])
-
-  // SORT FUNCTION
-  const sortArrayByColumn = (arr: ExcelData, column: string) => {
-    if (arr) {
-      const columnIndex = arr[0].indexOf(column);
-
-      if (columnIndex === -1) {
-        throw new Error(`La columna "${column}" no existe en los encabezados.`);
-      }
-
-      const dataCopy = [...arr];
-      const sortedData = dataCopy.slice(1).sort((a, b) => {
-        const aValue = a[columnIndex];
-        const bValue = b[columnIndex];
-
-        if (typeof aValue !== 'number' || typeof bValue !== 'number') {
-          throw new Error(`Los valores en la columna "${column}" no son números.`);
-        }
-
-        return aValue - bValue;
-      });
-
-      return [dataCopy[0], ...sortedData];
-    }
-
-  };
 
   function arrayToJSON(data: ExcelData) {
     if (data) {
