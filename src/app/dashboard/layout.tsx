@@ -30,7 +30,7 @@ export default function Layout({
         headers: {
           'Content-Type': 'application/json'
         },
-        cache: "no-store"
+        next: { revalidate: 5 }
       });
 
       if (response.ok) {
@@ -72,7 +72,7 @@ export default function Layout({
         headers: {
           'Content-Type': 'application/json'
         },
-        cache: "no-store"
+        next: { revalidate: 5 }
       })
 
       if (res.ok) {
