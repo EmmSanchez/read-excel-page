@@ -20,7 +20,7 @@ export function ExportToExcelButton () {
 
   return (
     <>
-      <button onClick={handleExportToExcel} className="flex mt-[50px] h-11 items-center justify-around rounded-md bg-[#107C10] ml-4 px-4 py-2 gap-2 text-sm font-medium text-white drop-shadow-md hover:bg-[#0B6A0B]" >
+      <button onClick={handleExportToExcel} className="flex mb-4 sm:mt-[50px] h-11 items-center justify-around rounded-md bg-[#107C10] ml-4 px-4 py-2 gap-2 text-sm font-medium text-white drop-shadow-md hover:bg-[#0B6A0B]" >
         <FileSpreadsheetIcon/>
         <p>Exportar a Excel</p>
       </button>

@@ -10,6 +10,7 @@ export async function middleware(req: NextRequest) {
   if (req.nextUrl.pathname.includes('/dashboard/table') || req.nextUrl.pathname.includes('/dashboard/settings')) {
     // if there is no token
     if (!tokenValue) {
+      localStorage.clear();
       return NextResponse.redirect(new URL('/',  req.url))
     }
 

@@ -38,10 +38,10 @@ export function NavBar() {
           'Content-Type': 'application/json'
         }
       });
-      router.push('/');
+      await router.push('/');
       setFile(null);
-      setLinks([]);
       localStorage.clear();
+      setLinks([]);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +53,7 @@ export function NavBar() {
   };
 
   return (
-    <div className="flex justify-between items-center px-4 py-1 bg-gray-100 border-b-[1px] border-solid border-gray-200">
+    <div className="flex w-full justify-between items-center px-4 py-1 bg-gray-100 border-b-[1px] border-solid border-gray-200">
       <div>
         {links.map((link) => (
           <div key={link.name} className="font-bold">

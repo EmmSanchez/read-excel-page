@@ -8,7 +8,7 @@ export function HeaderButtons () {
   const file = useFileStore((state) => state.file)
   return (
     <>
-      <div className="flex w-[1200px]">
+      <div className="flex flex-wrap">
         <Dropzone />
         {
           file && (

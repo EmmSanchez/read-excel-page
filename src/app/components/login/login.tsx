@@ -30,6 +30,14 @@ export function Login() {
   const setUserProfile = useUserStore(state => state.setUserProfile)
   const setLinks = useNavLinksStore(state => state.setLinks)
 
+  // Password  show controller
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Info submitted logic
   const [credentials, setCredentials] = useState<IUser>({
     username: '',
     password: ''
@@ -103,10 +111,38 @@ export function Login() {
                     autoComplete='off'
                     id="password"
                     name='password'
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Ingresa la contraseña"
                     className="bg-transparent text_placeholder-input dark:outline-gray-500 dark:focus:outline-gray-100 dark:text-white"
                   />
+
+                  <div className="absolute w-[3%] h-[4%]">
+                    <button
+                      type='button'
+                      onClick={toggleShowPassword}
+                      className='relative top-[512%] left-[950%] w-full h-full'
+                    >
+                      {showPassword ? 
+                        <>
+                          <Image  
+                            src={'/icons/eye-closedIcon.svg'}
+                            alt='Habilidar Modo Obscuro'
+                            layout='fill'
+                            className='w-full'
+                          />
+                        </>
+                        : 
+                        <>
+                          <Image  
+                            src={'/icons/eyeIcon.svg'}
+                            alt='Habilidar Modo Obscuro'
+                            layout='fill'
+                            className='w-[.2vw] h-[.2vw]'
+                          />
+                        </>
+                      }
+                    </button>
+                  </div>
 
                   <div className="flex justify-center">
                     <button type='submit' className='w-full button-login font-normal dark:bg-gray-100'>
