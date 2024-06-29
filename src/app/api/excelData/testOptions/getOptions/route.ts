@@ -1,6 +1,7 @@
-"use server"
 import TestOptionsModel from "@/models/tests";
 import { NextResponse } from "next/server";
+export const revalidate = 5
+export const dynamic = 'force-dynamic'
 
 
 export async function GET() {
