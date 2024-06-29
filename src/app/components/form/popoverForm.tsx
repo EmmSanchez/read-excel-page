@@ -102,7 +102,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     switch (action) {
       case "id":
         const newId = parseInt(newValue);   
-        if (excelData?.some((row, index) => index > 0 && row[0] === newId)) {
+        if (excelData?.some((row, index) => index > 0 && row[0] === newId) || !newId) {
           setIdError(true)
           setIsAddButtonDisabled(true)
         } else {

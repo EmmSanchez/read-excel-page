@@ -7,65 +7,7 @@ import { useDataStore } from "../store/dataStore";
 import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
-import { sortArrayByColumn } from "../components/table/table";
 
-interface Participant {
-  '#': number;
-  'Apellido paterno': string;
-  'Apellido materno': string;
-  'Nombre': string;
-  'Prueba': string;
-  '# Empleado': number;
-  'Edad': number;
-  'Genero': string;
-  'Categoria': string;
-  'Altura [cm]': number;
-  'Peso [kg]': number;
-  'Grasa [%]': number;
-  'IMC': number;
-  'Cintura [cm]': number;
-  'BMI': number;
-  'BMR': number;
-  'Fatmass': number;
-  'FFM': number;
-  'TBW': number;
-  'Agarre': number;
-  'Puntos': number;
-  'Salto': number;
-  'Puntos_1': number;
-  'Agilidad': number;
-  'Puntos_2': number;
-  'Resistencia': number;
-  'Puntos_3': number;
-  'Total': number;
-}
-
-type ExcelData = (string | number | boolean | null)[][] | null;
-
-
-
-function convertParticipantsToArray(participants: Participant[]): (string | number)[][] {
-  const keys: (keyof Participant)[] = [
-    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', '# Empleado', 'Edad', 'Genero', 'Categoria',
-    'Altura [cm]', 'Peso [kg]', 'Grasa [%]', 'IMC', 'Cintura [cm]', 'BMI', 'BMR', 'Fatmass', 'FFM', 'TBW', 'Agarre',
-    'Puntos', 'Salto', 'Puntos_1', 'Agilidad', 'Puntos_2', 'Resistencia', 'Puntos_3', 'Total'
-  ];
-
-  const headers: (keyof Participant)[] = [
-    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', '# Empleado', 'Edad', 'Genero', 'Categoria',
-    'Altura [cm]', 'Peso [kg]', 'Grasa [%]', 'IMC', 'Cintura [cm]', 'BMI', 'BMR', 'Fatmass', 'FFM', 'TBW', 'Agarre',
-    'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total'
-  ];
-
-  const sortedParticipants: (string | number)[][] = [headers];
-
-  participants.map(participant => {
-    const values = keys.map(key => participant[key]);
-    sortedParticipants.push(values);
-  });
-
-  return sortedParticipants;
-}
 
 
 export default function Layout({
@@ -73,6 +15,7 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userProfile = useUserStore(state => state.userProfile)
   const setExcelData = useDataStore((state) => state.setExcelData)
   const setFile = useFileStore((state) => state.setFile)  
   const setOptions = useTestOptionsStore(state => state.setOptions)
@@ -86,19 +29,13 @@ export default function Layout({
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        cache: "no-store"
       });
 
       if (response.ok) {
-        const { participants , fileInfoArray} = await response.json();
-        console.log(participants);
-        
-        const participantsArray = convertParticipantsToArray(participants)
+        const {participantsArray, fileInfoArray} = await response.json();
         console.log(participantsArray);
-
-        const sortedParticipants = sortArrayByColumn(participantsArray, '#') as ExcelData
-        console.log(sortedParticipants);
-        
         
         // if there is no data or just the columns
         if (participantsArray.length === 1) {
@@ -108,21 +45,20 @@ export default function Layout({
           if (!fileInfoArray) {
             return
           }
-  
-          setExcelData(sortedParticipants)
+          
+          setExcelData(participantsArray)
           const fileInfo = fileInfoArray[0]
           setFile(fileInfo)
           
+
         } else {
-          setExcelData(sortedParticipants)
+          setExcelData(participantsArray)
           const fileInfo = fileInfoArray[0]
           setFile(fileInfo)
         }
       } else {
         console.error('Error al obtener los datos de participantes')
-        const {participants} = await response.json();
-        console.log(participants);
-        
+        const {participantsArray} = await response.json();
       }
     } catch (error) {
       console.error('Error de red:', error);
@@ -135,7 +71,8 @@ export default function Layout({
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        cache: "no-store"
       })
 
       if (res.ok) {
@@ -177,8 +114,7 @@ export default function Layout({
   
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        
+      try {  
         await getData();
         await getOptions();
       } catch (error) {
