@@ -35,7 +35,6 @@ export default function Layout({
 
       if (response.ok) {
         const {participantsArray, fileInfoArray} = await response.json();
-        console.log(participantsArray);
         
         // if there is no data or just the columns
         if (participantsArray.length === 1) {
@@ -58,7 +57,6 @@ export default function Layout({
         }
       } else {
         console.error('Error al obtener los datos de participantes')
-        const {participantsArray} = await response.json();
       }
     } catch (error) {
       console.error('Error de red:', error);

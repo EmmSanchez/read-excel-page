@@ -70,7 +70,7 @@ export function Dropzone() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 m-4">
+      <div className="flex flex-col gap-2 my-4">
         <div className="flex w-[500px] justify-between items-end">
           <p className='font-bold text-sm'>Archivo</p>
           {
