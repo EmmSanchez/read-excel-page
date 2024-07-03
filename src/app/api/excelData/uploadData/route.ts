@@ -1,11 +1,7 @@
 "use server"
 import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
-import UserModel from '@/models/users';
 import FileInfoModel from '@/models/fileInfo';
-
-
-type ExcelData = (string | number | boolean | null)[][] | null;
 
 export async function POST(req: NextRequest) {
   const { data, fileName, fileSize } = await req.json();
@@ -15,9 +11,9 @@ export async function POST(req: NextRequest) {
   }
     
   try {
-     // Delete past info
-     await FileInfoModel.deleteMany({})
-     await ParticipantModel.deleteMany({})
+    // Delete past info
+    await FileInfoModel.deleteMany({})
+    await ParticipantModel.deleteMany({})
 
     // Iterate and upload data
     await ParticipantModel.insertMany(data);
@@ -31,10 +27,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Error al guardar datos en MongoDB' }, { status: 500 });
   }
 }
-
-
-// await UserModel.insertMany({
-//   username: 'admin',
-//   password: 'admin123',
-//   rol: 'administrador'
-// });

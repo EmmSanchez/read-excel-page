@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 interface User {
-  _id: string;
   username: string;
   password: string;
   rol: string;

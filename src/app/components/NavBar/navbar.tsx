@@ -56,7 +56,7 @@ export function NavBar() {
     <div className="flex w-full justify-between items-center px-4 py-1 bg-gray-100 border-b-[1px] border-solid border-gray-200">
       <div>
         {links.map((link) => (
-          <div key={link.name} className="font-bold">
+          <div key={link.name} className="text-3xl text-[#2563EB] font-bold">
             {pathname === link.href ? <p>{link.name}</p> : null}
           </div>
         ))}

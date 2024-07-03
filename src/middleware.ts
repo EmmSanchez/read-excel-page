@@ -5,12 +5,9 @@ import { jwtVerify } from "jose";
 export async function middleware(req: NextRequest) {
   const tokenValue = req.cookies.get('myTokenName')?.value
 
-  
-
   if (req.nextUrl.pathname.includes('/dashboard/table') || req.nextUrl.pathname.includes('/dashboard/settings')) {
     // if there is no token
     if (!tokenValue) {
-      localStorage.clear();
       return NextResponse.redirect(new URL('/',  req.url))
     }
 

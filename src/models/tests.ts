@@ -5,7 +5,7 @@ interface ITests {
 }
 
 const testSchema = new Schema<ITests>({
-  option: { type: String, required: true }
+  option: { type: String, required: true, unique: true }
 }, {
   versionKey: false
 })
