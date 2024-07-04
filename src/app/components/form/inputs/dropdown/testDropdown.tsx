@@ -39,6 +39,8 @@ interface TestControlledDropdownProps {
   selectedOption?: string;
   setSelectedOption?: React.Dispatch<React.SetStateAction<string>>;
   originalFormData: FormData | undefined;
+  formData: FormData
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>
 }
 
 export const TestControlledDropdown = ({
@@ -47,6 +49,8 @@ export const TestControlledDropdown = ({
   selectedOption,
   setSelectedOption,
   originalFormData,
+  formData,
+  setFormData
 }: TestControlledDropdownProps) => {
   const [isAddTestActive, setIsAddTestActive] = useState<boolean>(false);
   const [newOption, setNewOption] = useState<string>('');
@@ -56,6 +60,9 @@ export const TestControlledDropdown = ({
   const handleOptionClick = (option: string) => {
     if (setSelectedOption) {
       setSelectedOption(option);
+      const newFormData = {...formData}
+      newFormData.test = option
+      setFormData(newFormData)
     }
     setIsTestOpen(false);
   };

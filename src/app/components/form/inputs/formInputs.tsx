@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ErrorIcon, AddIcon } from "../../../../../public/icons/icons"
+import { ErrorIcon, AddIcon, PrintIcon } from "../../../../../public/icons/icons"
 import { TestControlledDropdown } from "./dropdown/testDropdown";
 import { GenreControlledDropdown } from "./dropdown/genreDropdwon";
 
@@ -49,9 +49,10 @@ interface FormInputsProps {
   setSelectedGenre?: React.Dispatch<React.SetStateAction<string>>
   isGenreOpen: boolean
   setIsGenreOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>
 }
 
-export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, setSelectedOption, selectedOption, isTestOpen, setIsTestOpen, selectedGenre, setSelectedGenre, isGenreOpen,setIsGenreOpen }: FormInputsProps) {
+export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, setSelectedOption, selectedOption, isTestOpen, setIsTestOpen, selectedGenre, setSelectedGenre, isGenreOpen,setIsGenreOpen, setFormData }: FormInputsProps) {
 
   // AVOID e, E, +, -
   const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -102,7 +103,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
 
             {/* PRUEBA */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <TestControlledDropdown isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedOption={selectedOption} setSelectedOption={setSelectedOption} originalFormData={originalFormData}/>
+              <TestControlledDropdown isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedOption={selectedOption} setSelectedOption={setSelectedOption} originalFormData={originalFormData} formData={formData} setFormData={setFormData}/>
               <label htmlFor="test" className={`pb-[2px] text-base font-medium label-default ${isTestOpen ? 'text-[#2563eb]' : 'text-gray-800'}`}>Prueba</label>
             </div>
 
@@ -117,9 +118,8 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
               <label htmlFor="age" className='pb-[2px] text-base text-gray-800 font-medium label-default'>Edad</label>
             </div>
             {/* GENERO */}
-            {/* PRUEBA */}
             <div className="flex flex-col-reverse gap-1 w-full">
-              <GenreControlledDropdown isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen} originalFormData={originalFormData} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre}/>
+              <GenreControlledDropdown isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen} originalFormData={originalFormData} formData={formData} setFormData={setFormData} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre}/>
               <label htmlFor="test" className={`pb-[2px] text-base font-medium label-default ${isTestOpen ? 'text-[#2563eb]' : 'text-gray-800'}`}>Género</label>
             </div>
             {/* CATEGORÍA */}
@@ -244,6 +244,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
                         </div>
                       </div>
                     </div>
+                    
                   </>
                 )
               }

@@ -37,6 +37,8 @@ interface TestControlledDropdownProps {
   selectedGenre?: string;
   setSelectedGenre?: React.Dispatch<React.SetStateAction<string>>;
   originalFormData: FormData | undefined;
+  formData: FormData
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>
 }
 
 export function GenreControlledDropdown ({
@@ -45,6 +47,8 @@ export function GenreControlledDropdown ({
     selectedGenre,
     setSelectedGenre,
     originalFormData,
+    formData, 
+    setFormData
   }: TestControlledDropdownProps ) {
 
   const options = ["HOMBRE", "MUJER"]
@@ -52,6 +56,9 @@ export function GenreControlledDropdown ({
   const handleOptionClick = (option: string) => {
     if (setSelectedGenre) {
       setSelectedGenre(option);
+      const newFormData = {...formData}
+      newFormData.genre = option
+      setFormData(newFormData)
     }
     setIsGenreOpen(false);
   };

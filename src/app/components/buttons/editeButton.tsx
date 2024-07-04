@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FormInputs } from "../form/inputs/formInputs";
 import { useDataStore } from "@/app/store/dataStore";
 import { useFilteredDataStore } from "@/app/store/filteredData";
-import { EditIcon } from "../../../../public/icons/icons";
+import { EditIcon, PrintIcon } from "../../../../public/icons/icons";
 import { log } from "console";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
@@ -124,9 +124,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
           newFormData[action] = newInfo
           break;
 
-        case "test":
         case "employeeNumber":
-        case "genre":
         case "category":
         case "resistance":
           newFormData[action] = newValue; 
@@ -297,9 +295,8 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   }
 
   // APROVE CHANGES
-  const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, action: string) => {
     e.preventDefault();
-    setIsPopoverVisible(false);
     setActiveSection("Información");
 
     try {
@@ -353,12 +350,15 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
           }
           return idA - idB;
         });
-  
+        if (action === 'exit') {
+          setIsPopoverVisible(false);
+          setSelectedOption('')
+          setSelectedGenre('')
+        }
         setExcelData(updatedExcelData);
-        setSelectedOption('')
         setIsTestOpen(false)
-        setSelectedGenre('')
         setIsGenreOpen(false)
+        setOriginalFormData(formData)
       }
       
     } catch (error) {
@@ -370,7 +370,38 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     e.preventDefault()
     const newSection = e.currentTarget.innerHTML
     setActiveSection(newSection)
+    setIsTestOpen(false)
+    setIsGenreOpen(false)
   }
+
+  const handlePrintSection = (e: React.MouseEvent<HTMLButtonElement>, section: string) => {
+    if (section === 'Información') {
+      console.log(formData);
+      console.log(originalFormData)
+      
+      // const [p_surname, m_surname, name, test, employeeNumber, age, genre, category] = row;
+      const currentDate = new Date().toLocaleString('es-ES', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZoneName: 'short'
+      });
+    }    
+    if (section === 'Datos Corporales') {
+
+    }    
+    if (section === 'Rendimiento') {
+
+    }    
+  }
+
+
+  // Deep comparison
+  const isEqual = (obj1: FormData, obj2: FormData) => JSON.stringify(obj1) === JSON.stringify(obj2);
 
   return (
     <>
@@ -382,11 +413,21 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
         <div className={`relative overflow-auto m-auto top-[10%] w-[80%] h-[80%] px-10 py-6 bg-white rounded-md outline outline-gray-300 outline-1 drop-shadow-md transform transition-transform duration-100 ${isPopoverVisible ? 'scale-100' : 'scale-95'}`}>
           <form autoComplete='off' className="flex flex-col justify-around gap-6 h-full">
 
-            <div className="flex flex-row items-center justify-between gap-2">
+            <div className="flex flex-wrap flex-row items-center justify-between gap-2">
                 <div className="flex flex-col gap-2">
                   <h1 className='font-bold text-4xl'>Editar Registro</h1>
                   <p className="text-gray-500">Escoge una sección e ingresa los datos nuevos abajo.</p>
                 </div>
+                {
+                  !isEqual(formData, originalFormData) && (
+                    <>
+                      <div className="bg-red-50 px-6 py-2 rounded-md border-solid border-[1px] border-red-900">
+                        <p className="text-red-900 font-medium">Aviso: Datos no guardados</p>
+                      </div>
+                    </>
+                  )
+                }
+
                 <div className="flex justify-center">
                   <div className="flex text-gray-400 font-medium">
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Información" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Información</h4>
@@ -397,11 +438,11 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
             </div>
 
             <div className="flex flex-col flex-grow">
-              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen}/>   
+              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} setFormData={setFormData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen}/>   
             </div>
 
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap w-full items-end justify-between gap-2">
               <div>
                 <p className="text-xl text-gray-900 px-4 py-2 rounded-md">
                   Total acumulado: 
@@ -409,21 +450,71 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                   puntos
                 </p>
               </div>
+              <div>
+                {
+                  activeSection !== 'Rendimiento' && (
+                    <>
+                      <button type='button' 
+                          onClick={(e) => handlePrintSection(e, activeSection)} className='flex gap-2 h-9 justify-center items-center px-4 py-2 rounded-md bg-[#292C33] transition-all hover:'
+                      >
+                        <p className="text-white">Imprimir</p>
+                        <PrintIcon className="p-[1px] invert"/>
+                      </button>
+                    </>
+                  )
+                }
+                {
+                  activeSection === 'Rendimiento' && (
+                    <>
+                      <div className="flex flex-col flex-grow items-center gap-2">
+                        <div>
+                          <p className="text-lg font-bold text-gray-700">Imprimir</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#EBAF26] transition-all hover:'>
+                            <p className="text-white">Agarre</p>
+                          </button>
 
-              <div className="flex gap-4">
+                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#EB267B] transition-all hover:'>
+                            <p className="text-white">Salto</p>
+                          </button>
+
+                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#4A6296] transition-all hover:'>
+                            <p className="text-white">Agilidad</p>
+                          </button>
+
+                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#476B48] transition-all hover:'>
+                            <p className="text-white">Resistencia</p>
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )
+                }
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+
                 <button type='button' 
-                    onClick={handleCancelChanges} className='flex h-9 justify-center items-center px-4 py-2 rounded-md border-[1.4px] border-solid border-[#E2E8F0] transition-all hover:bg-gray-100'
+                    onClick={handleCancelChanges} className='flex h-9 justify-center items-center px-4 py-2 rounded-md transition-all hover:bg-gray-100'
                 >
                   Cancelar
                 </button>
-
                 <button
                   disabled={isSaveButtonDisabled}  
                   type='button'
-                  onClick={(e) => handleSaveChanges(e) } 
-                  className={`flex h-9 justify-center items-center bg-[#2563EB] text-white font-semibold px-4 py-2 rounded-md transition-all hover:opacity-90 ${isSaveButtonDisabled ? 'bg-slate-400 cursor-not-allowed hover:opacity-100' : ''}`}
+                  onClick={(e) => handleSaveChanges(e, 'save') } 
+                  className={`flex h-9 justify-center items-center px-4 py-2 rounded-md border-[1.4px] border-solid border-[#2626EB] transition-all hover:bg-gray-100 ${isSaveButtonDisabled ? 'cursor-not-allowed opacity-30' : ''}`}
                 >
-                  Guardar cambios
+                  Guardar
+                </button>
+                <button
+                  disabled={isSaveButtonDisabled}  
+                  type='button'
+                  onClick={(e) => handleSaveChanges(e, 'exit') } 
+                  className={`flex h-9 justify-center items-center bg-[#2626EB] text-white px-4 py-2 rounded-md transition-all ${isSaveButtonDisabled ? 'cursor-not-allowed opacity-30' : 'hover:opacity-90'}`}
+                >
+                  Guardar y salir
                 </button>
               </div>
             </div>

@@ -21,6 +21,10 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
     handleGetRow(rowIndex, 'select');
   };
 
+  const handlePrint = () => {
+    window.print()
+  }
+
   return (
     <>
       <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-200/90'}`}>
@@ -37,8 +41,8 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
         ))}
         <div className='table-cell align-middle py-[4px] border-solid border-t-[1px] border-black/20'>
           <div className="flex gap-1 pr-3">
-            <button className='w-[24px] h-full'>
-              <PrintIcon fill="#00890" className='p-1 rounded-md transition-all hover:bg-zinc-50'/>
+            <button onClick={handlePrint} className='flex justify-center w-[24px] h-full'>
+              <PrintIcon className='p-1 rounded-md transition-all hover:bg-zinc-50'/>
             </button>
             <EditButton handleGetRow={handleGetRow} rowIndex={rowIndex}/>
             <DeleteButton handleGetRow={handleGetRow} rowIndex={rowIndex} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
