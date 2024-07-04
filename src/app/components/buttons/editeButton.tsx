@@ -374,28 +374,158 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setIsGenreOpen(false)
   }
 
-  const handlePrintSection = (e: React.MouseEvent<HTMLButtonElement>, section: string) => {
+  const printData = (formattedData: string) => {
+    //Temporal element
+    const printWindow = window.open('', '_blank', 'width=1000,height=600');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Datos para imprimir</title>
+            <style>
+              body { font-family: Arial, sans-serif; }
+            </style>
+          </head>
+          <body>
+            ${formattedData}
+            <script>
+              setTimeout(() => {
+                window.print();
+                window.close();
+              }, 500);
+            </script>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    } else {
+      alert('No se pudo abrir la ventana de impresión. Asegúrate de permitir ventanas emergentes.');
+    }
+  }
+
+  
+  const handlePrintSection = (e: React.MouseEvent<HTMLButtonElement>, section: string, type: string) => {
+    const currentDate = new Date().toLocaleString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
+
     if (section === 'Información') {
-      console.log(formData);
-      console.log(originalFormData)
-      
-      // const [p_surname, m_surname, name, test, employeeNumber, age, genre, category] = row;
-      const currentDate = new Date().toLocaleString('es-ES', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-        timeZoneName: 'short'
-      });
-    }    
+      const { p_surname, m_surname, name, test, employeeNumber, age, genre, category } = formData;
+  
+      const formattedData = `
+        <h1>Datos actualizados</h1>
+        <p><strong>Usuario:</strong> ${p_surname} ${m_surname}, ${name}</p>
+        <p><strong>Prueba:</strong> ${test}</p>
+        <p><strong># Empleado:</strong> ${employeeNumber}</p>
+        <p><strong>Edad:</strong> ${age}</p>
+        <p><strong>Género:</strong> ${genre}</p>
+        <p><strong>Categoría:</strong> ${category}</p>
+        <p><strong>Fecha Actual:</strong> ${currentDate}</p>
+      `;
+
+      printData(formattedData)
+    } 
+
     if (section === 'Datos Corporales') {
+      const { p_surname, m_surname, name, test, employeeNumber, age, genre, height, weight, grease, waist, imc, bmi, bmr, fat_mass, ffm, tbw } = formData;
+  
+      const formattedData = `
+        <h1>Datos actualizados</h1>
+        <p><strong>Usuario:</strong> ${p_surname} ${m_surname}, ${name}</p>
+        <p><strong>Prueba:</strong> ${test}</p>
+        <p><strong># Empleado:</strong> ${employeeNumber}</p>
+        <p><strong>Edad:</strong> ${age}</p>
+        <p><strong>Género:</strong> ${genre}</p>
+        <p><strong>Altura:</strong> ${height} [cm]</p>
+        <p><strong>Peso:</strong> ${weight} [kg]</p>
+        <p><strong>% Grasa:</strong> ${grease} [%]</p>
+        <p><strong>Cintura:</strong> ${waist} [cm]</p>
+        <p><strong>IMC:</strong> ${imc}</p>
+        <p><strong>BMI:</strong> ${bmi}</p>
+        <p><strong>BMR:</strong> ${bmr}</p>
+        <p><strong>Fat mass:</strong> ${fat_mass}</p>
+        <p><strong>FFM:</strong> ${ffm}</p>
+        <p><strong>TBW:</strong> ${tbw}</p>
+        <p><strong>Fecha Actual:</strong> ${currentDate}</p>
+      `;
 
+      printData(formattedData)
     }    
-    if (section === 'Rendimiento') {
 
+    if (section === 'Rendimiento') {
+      const { p_surname, m_surname, name, test, employeeNumber, age, genre, grip, grip_points, jump, jump_points, agility, agility_points, resistance, resistance_points, total } = formData;
+      switch (type) {
+        case 'grip':
+          const formattedGripData = `
+            <h1>Agarre</h1>
+            <p><strong>Usuario:</strong> ${p_surname} ${m_surname}, ${name}</p>
+            <p><strong>Prueba:</strong> ${test}</p>
+            <p><strong># Empleado:</strong> ${employeeNumber}</p>
+            <p><strong>Edad:</strong> ${age}</p>
+            <p><strong>Género:</strong> ${genre}</p>
+            <p><strong>Agarre:</strong> ${grip} [kg/f]</p>
+            <p><strong>Puntos de agarre:</strong> ${grip_points}</p>
+            <p><strong>Total acumulado:</strong> ${total}</p>
+            <p><strong>Fecha Actual:</strong> ${currentDate}</p>
+          `;
+          printData(formattedGripData)
+          break;
+
+        case 'jump':
+          const formattedJumpData = `
+            <h1>Agarre</h1>
+            <p><strong>Usuario:</strong> ${p_surname} ${m_surname}, ${name}</p>
+            <p><strong>Prueba:</strong> ${test}</p>
+            <p><strong># Empleado:</strong> ${employeeNumber}</p>
+            <p><strong>Edad:</strong> ${age}</p>
+            <p><strong>Género:</strong> ${genre}</p>
+            <p><strong>Salto:</strong> ${jump} [cm]</p>
+            <p><strong>Puntos de salto:</strong> ${jump_points}</p>
+            <p><strong>Total acumulado:</strong> ${total}</p>
+            <p><strong>Fecha Actual:</strong> ${currentDate}</p>
+          `;
+          printData(formattedJumpData)
+          break;
+
+        case 'agility':
+          const formattedAgilityData = `
+            <h1>Agarre</h1>
+            <p><strong>Usuario:</strong> ${p_surname} ${m_surname}, ${name}</p>
+            <p><strong>Prueba:</strong> ${test}</p>
+            <p><strong># Empleado:</strong> ${employeeNumber}</p>
+            <p><strong>Edad:</strong> ${age}</p>
+            <p><strong>Género:</strong> ${genre}</p>
+            <p><strong>Agilidad:</strong> ${agility} [s]</p>
+            <p><strong>Puntos de salto:</strong> ${agility_points}</p>
+            <p><strong>Total acumulado:</strong> ${total}</p>
+            <p><strong>Fecha Actual:</strong> ${currentDate}</p>
+          `;
+          printData(formattedAgilityData)
+          break;
+
+        case 'resistance':
+          const formattedResistanceData = `
+            <h1>Agarre</h1>
+            <p><strong>Usuario:</strong> ${p_surname} ${m_surname}, ${name}</p>
+            <p><strong>Prueba:</strong> ${test}</p>
+            <p><strong># Empleado:</strong> ${employeeNumber}</p>
+            <p><strong>Edad:</strong> ${age}</p>
+            <p><strong>Género:</strong> ${genre}</p>
+            <p><strong>Resistencia:</strong> ${resistance} [hh:mm:ss.mmm]</p>
+            <p><strong>Puntos de salto:</strong> ${resistance_points}</p>
+            <p><strong>Total acumulado:</strong> ${total}</p>
+            <p><strong>Fecha Actual:</strong> ${currentDate}</p>
+          `;
+          printData(formattedResistanceData)
+          break;
+      }
     }    
   }
 
@@ -421,8 +551,8 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                 {
                   !isEqual(formData, originalFormData) && (
                     <>
-                      <div className="bg-red-50 px-6 py-2 rounded-md border-solid border-[1px] border-red-900">
-                        <p className="text-red-900 font-medium">Aviso: Datos no guardados</p>
+                      <div className="animate-pulse bg-red-900 px-6 py-2 rounded-md border-solid border-[1px] border-red-900">
+                        <p className="text-red-50 font-semibold">Aviso: Datos no guardados</p>
                       </div>
                     </>
                   )
@@ -455,7 +585,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                   activeSection !== 'Rendimiento' && (
                     <>
                       <button type='button' 
-                          onClick={(e) => handlePrintSection(e, activeSection)} className='flex gap-2 h-9 justify-center items-center px-4 py-2 rounded-md bg-[#292C33] transition-all hover:'
+                          onClick={(e) => handlePrintSection(e, activeSection, '')} className='flex gap-2 h-9 justify-center items-center px-4 py-2 rounded-md bg-[#292C33] transition-all hover:opacity-90'
                       >
                         <p className="text-white">Imprimir</p>
                         <PrintIcon className="p-[1px] invert"/>
@@ -471,19 +601,19 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                           <p className="text-lg font-bold text-gray-700">Imprimir</p>
                         </div>
                         <div className="flex gap-2">
-                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#EBAF26] transition-all hover:'>
+                          <button type='button' onClick={(e) => handlePrintSection(e, activeSection, 'grip')} className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#EBAF26] transition-all hover:'>
                             <p className="text-white">Agarre</p>
                           </button>
 
-                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#EB267B] transition-all hover:'>
+                          <button type='button' onClick={(e) => handlePrintSection(e, activeSection, 'jump')} className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#EB267B] transition-all hover:'>
                             <p className="text-white">Salto</p>
                           </button>
 
-                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#4A6296] transition-all hover:'>
+                          <button type='button' onClick={(e) => handlePrintSection(e, activeSection, 'agility')} className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#4A6296] transition-all hover:'>
                             <p className="text-white">Agilidad</p>
                           </button>
 
-                          <button type='button' className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#476B48] transition-all hover:'>
+                          <button type='button' onClick={(e) => handlePrintSection(e, activeSection, 'resistance')} className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#476B48] transition-all hover:'>
                             <p className="text-white">Resistencia</p>
                           </button>
                         </div>
