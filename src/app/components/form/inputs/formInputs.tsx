@@ -49,7 +49,7 @@ interface FormInputsProps {
   setSelectedGenre?: React.Dispatch<React.SetStateAction<string>>
   isGenreOpen: boolean
   setIsGenreOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>
+  setFormData?: React.Dispatch<React.SetStateAction<FormData>>
 }
 
 export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, setSelectedOption, selectedOption, isTestOpen, setIsTestOpen, selectedGenre, setSelectedGenre, isGenreOpen,setIsGenreOpen, setFormData }: FormInputsProps) {

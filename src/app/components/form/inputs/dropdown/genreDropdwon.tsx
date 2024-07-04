@@ -38,7 +38,7 @@ interface TestControlledDropdownProps {
   setSelectedGenre?: React.Dispatch<React.SetStateAction<string>>;
   originalFormData: FormData | undefined;
   formData: FormData
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>
+  setFormData?: React.Dispatch<React.SetStateAction<FormData>>
 }
 
 export function GenreControlledDropdown ({
@@ -58,7 +58,9 @@ export function GenreControlledDropdown ({
       setSelectedGenre(option);
       const newFormData = {...formData}
       newFormData.genre = option
-      setFormData(newFormData)
+      if (setFormData) {
+        setFormData(newFormData)
+      }
     }
     setIsGenreOpen(false);
   };
