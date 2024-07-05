@@ -62,9 +62,14 @@ export function NavBar() {
         ))}
       </div>
       <div className="flex gap-2">
-        <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-2">
-          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-        </button>
+        { 
+          mounted && (
+            <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="px-2">
+              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            </button>
+          )
+
+        }
         {links.map((link) => {
           const LinkIcon = iconMapping[link.name];
           if (!LinkIcon) return null; // if there is no link

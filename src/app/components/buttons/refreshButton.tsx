@@ -5,7 +5,6 @@ import { useTableLoading } from "@/app/store/tableLoading";
 import { useTheme } from "next-themes";
 
 export function RefreshButton () {
-  const {theme, setTheme } = useTheme()
   const setExcelData = useDataStore((state) => state.setExcelData)
 
   // Refres table
