@@ -53,10 +53,10 @@ export function NavBar() {
   };
 
   return (
-    <div className="flex w-full justify-between items-center px-4 py-1 bg-gray-100 border-b-[1px] border-solid border-gray-200">
+    <div className="flex flex-grow justify-between items-center mx-4 my-4 px-4 py-2 bg-gray-200 border-solid border-[1px] border-gray-300 dark:bg-[#1D232C] dark:border-slate-800 rounded-lg">
       <div>
         {links.map((link) => (
-          <div key={link.name} className="text-3xl text-[#2563EB] font-bold">
+          <div key={link.name} className="text-3xl text-gray-950 font-bold dark:text-white">
             {pathname === link.href ? <p>{link.name}</p> : null}
           </div>
         ))}
@@ -75,7 +75,7 @@ export function NavBar() {
           );
         })}
         <button onClick={logout} className="px-2">
-          <LogOutIcon className="invert dark:invert-0" />
+          <LogOutIcon className="invert dark:invert-0"/>
         </button>
       </div>
     </div>

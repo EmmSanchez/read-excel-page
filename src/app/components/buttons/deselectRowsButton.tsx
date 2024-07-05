@@ -8,7 +8,7 @@ interface DeselectRowsButtonProps {
 export function DeselectRowsButton ({selectedRows, setSelectedRows}: DeselectRowsButtonProps) {
   return (
     <>
-      <button onClick={() => setSelectedRows([])} className="flex rounded-md hover:bg-gray-100">
+      <button onClick={() => setSelectedRows([])} className="flex rounded-md">
         <p className="flex justify-center items-center w-9 h-9 rounded-full bg-blue-500 text-blue-50 border-solid border-[1px] border-gray-400">{selectedRows.length}</p>
       </button>
     </>

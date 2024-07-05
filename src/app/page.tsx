@@ -7,9 +7,7 @@ export default function Home() {
 
   return (
     <>
-      <Providers>
-        <Login/>
-      </Providers>
+      <Login/>
     </>
   );
 }

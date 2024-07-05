@@ -132,9 +132,7 @@ export default function Layout({
 
   return (
     <>
-      <Providers>
-        <NavBar />
-      </Providers>
+      <NavBar />
       {children}
     </>
   );

@@ -128,47 +128,30 @@
   transform: rotate(180deg);
 }
 
-.text-sub {
-  font-size: 1vw;
-}
-
-.text-title {
-  font-size: 2.6vw;
-}
-
-.input-title {
-  font-size: 1.1vw;
-  letter-spacing: 0.02vw;
-}
-
 .text_placeholder-input {
-  height: 6vh;
-  border-radius: 0.3vw;
-  padding: 2% 4%;
-  font-size: 1vw;
-  outline: 0.1vw solid rgb(156, 156, 156);
+  border-radius: 0.4rem;
+  padding: 0.8rem 1rem;
+  font-size: 0.8em;
+  outline: 1px solid rgb(179, 179, 179);
 
   &:focus {
-    outline: 0.15vw solid rgb(0, 0, 0);
+    outline: 2px solid rgb(0, 0, 0);
   }
 }
 
 .text_placeholder-input::placeholder {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  font-size: 1vw;
-  top: 25%;
+  font-size: 1em;
 }
 
 .button-login {
-  height: 60%;
+  height: 50px;
   background-color: black;
   color: white;
-  margin-top: 8%;
-  padding: 2% 0%;
-  font-size: 1.2vw;
-  border-radius: 0.4vw;
+  margin-top: 3rem;
+  padding: 0 2rem;
+  font-size: 1.2em;
+  border-radius: 0.4rem;
   transition: all ease-in-out 40ms;
 
   &:hover {

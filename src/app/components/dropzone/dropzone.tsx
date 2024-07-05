@@ -74,21 +74,21 @@ export function Dropzone() {
         <div className="flex w-[500px] justify-between items-end">
           <p className='font-bold text-sm'>Archivo</p>
           {
-            file && <p className='text-[10px] text-black/60'>{(file?.size / 1024).toFixed(2)} KB</p>
+            file && <p className='text-[10px] text-black/60 dark:text-slate-50'>{(file?.size / 1024).toFixed(2)} KB</p>
           }
         </div>
-        <div className="flex justify-center w-[500px] p-[6px] rounded-lg bg-white drop-shadow-md outline outline-1 outline-gray-300">
+        <div className="flex justify-center w-[500px] p-[6px] rounded-lg bg-white dark:bg-[#3B4758] dark:outline-slate-800 drop-shadow-md outline outline-1 outline-gray-300">
         {
           file ?
           <>
-          <div className="flex flex-row gap-1 justify-between items-center w-[500px] h-[45px] px-4 py-2 bg-blue-100 text-black text-sm rounded-lg border-blue-500 border-solid border-[1px]">
+          <div className="flex flex-row gap-1 justify-between items-center w-[500px] h-[45px] px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-black dark:text-slate-50 text-sm rounded-lg border-blue-500 border-solid border-[1px]">
             <p>
               <span className='font-bold'>{file.name}</span><span className='font-light'> cargado correctamente</span>
             </p>
             {
               userProfile === 'Administrador' ?
               <>
-                <TrashIcon className='cursor-pointer' onClick={handleRemoveFile}/>
+                <TrashIcon className='cursor-pointer dark:invert' onClick={handleRemoveFile}/>
               </>
               :
               <>
@@ -98,7 +98,7 @@ export function Dropzone() {
           </>
             :
           <>
-            <label htmlFor="file-upload" className={`flex flex-row gap-4 bg-gray-100 justify-center items-center w-[500px] h-[45px] text-black text-sm cursor-pointer rounded-lg border-gray-400 border-dashed border-[1px] transition-all hover:bg-blue-100 hover:border-blue-500 ${isDragging ? 'bg-slate-200 border-blue-500 border-solid' : ''}`}
+            <label htmlFor="file-upload" className={`flex flex-row gap-4 bg-gray-100 dark:bg-slate-500 justify-center items-center w-[500px] h-[45px] text-black dark:text-slate-50 text-sm cursor-pointer rounded-lg border-gray-400 border-dashed border-[1px] transition-all hover:bg-blue-100 hover:border-blue-500 dark:hover:bg-blue-900/30 ${isDragging ? 'bg-slate-200 dark:bg-blue-700/20 border-blue-500 border-solid' : ''}`}
             onDragOver={(e) => handleDragOver(e)}
             onDragLeave={(e) => handleDragLeave(e)}
             onDrop={(e) => handleDrop(e)}
@@ -109,7 +109,7 @@ export function Dropzone() {
               :
               <>
                 <span>
-                  <UploadIcon/>
+                  <UploadIcon className="dark:invert"/>
                 </span>
                 <span className='font-light'>
                   Arrastra el archivo .xlsx o <span className='font-bold'>Click para buscar</span>

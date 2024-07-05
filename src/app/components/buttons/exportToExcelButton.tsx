@@ -1,18 +1,22 @@
 import * as XLSX from "xlsx"
 import { FileSpreadsheetIcon } from "../../../../public/icons/icons"
 import { useDataStore } from "@/app/store/dataStore"
+import { useFileStore } from "@/app/store/fileStore"
 
 export function ExportToExcelButton () {
   const excelData = useDataStore((state) => state.excelData)
+  const file = useFileStore((state) => state.file)
 
+  
   const handleExportToExcel = () => {
-    if (excelData) {
-      const workbook = XLSX.utils.book_new()
-      // transform array to worksheet
-      const worksheet = XLSX.utils.aoa_to_sheet(excelData)
-      // Add sheet to workbook
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
-      XLSX.writeFile(workbook, 'datos.xlsx')
+    if (excelData && file) {
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+      // Ensure file.name is not null or undefined
+      const fileName = file.name || 'excel_data'; // Default name if file.name is null or undefined
+      XLSX.writeFile(workbook, `${fileName}`);
     }
   }
 
