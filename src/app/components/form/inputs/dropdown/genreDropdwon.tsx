@@ -75,26 +75,26 @@ export function GenreControlledDropdown ({
         className={`dropdown ${
           isGenreOpen ? 'outline outline-[1.4px] -outline-offset-1 outline-[#2563eb]' : ''
         } ${
-          selectedGenre === originalFormData?.genre ? '' : `${selectedGenre ? 'bg-gray-200' : ''}`
+          selectedGenre === originalFormData?.genre ? '' : `${selectedGenre ? 'bg-gray-200 dark:bg-gray-700' : ''}`
         }`}
       >
         <div className="dropdown-header" onClick={toggleDropdown}>
-          <p className={`${selectedGenre ? 'text-black text-sm font-normal' : ''}`}>
+          <p className={`${selectedGenre ? 'text-black dark:text-gray-100 text-sm font-normal' : ''}`}>
             {selectedGenre || 'Selecciona una opción'}
           </p>
-          <span className={`dropdown-arrow transition-all ease-out ${isGenreOpen ? 'open' : ''}`}>
+          <span className={`dropdown-arrow transition-all ease-out dark:invert ${isGenreOpen ? 'open' : ''}`}>
             <ArrowDropdwonIcon />
           </span>
         </div>
         <div
-          className={`dropdown-menu transition-all duration-100 ease-in-out shadow-lg ${
+          className={`dropdown-menu transition-all duration-100 ease-in-out shadow-lg dark:border-gray-600 dark:bg-gray-800 ${
             isGenreOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
           {options.map((option) => (
             <div
               key={option}
-              className="dropdown-item font-semibold text-gray-600"
+              className="dropdown-item font-semibold text-gray-600 dark:text-gray-100 dark:hover:bg-gray-700"
               onClick={() => handleOptionClick(option)}
             >
               {option}

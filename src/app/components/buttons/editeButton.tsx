@@ -536,17 +536,17 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   return (
     <>
       <button onClick={(e) => handleEditeClick(e)} className='w-[24px] h-full'>
-        <EditIcon fill="#00890" className='p-1 rounded-md transition-all hover:bg-zinc-50'/>
+        <EditIcon fill="#00890" className='p-1 rounded-md transition-all hover:bg-zinc-50 dark:hover:bg-gray-700'/>
       </button>
       {/* POPOVER FORM */}
       <div onClick={(e) => e.stopPropagation()} className={`fixed top-0 left-0 w-full h-full z-10 bg-gray-600/60 transition-opacity duration-200 ${isPopoverVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`relative overflow-auto m-auto top-[10%] w-[80%] h-[80%] px-10 py-6 bg-white rounded-md outline outline-gray-300 outline-1 drop-shadow-md transform transition-transform duration-100 ${isPopoverVisible ? 'scale-100' : 'scale-95'}`}>
+        <div className={`relative overflow-auto m-auto top-[10%] w-[80%] h-[80%] px-10 py-6 bg-white dark:bg-[#1D1E2B] rounded-md outline outline-gray-300 dark:outline-zinc-700 outline-1 drop-shadow-md transform transition-transform duration-100 ${isPopoverVisible ? 'scale-100' : 'scale-95'}`}>
           <form autoComplete='off' className="flex flex-col justify-around gap-6 h-full">
 
             <div className="flex flex-wrap flex-row items-center justify-between gap-2">
                 <div className="flex flex-col gap-2">
                   <h1 className='font-bold text-4xl'>Editar Registro</h1>
-                  <p className="text-gray-500">Escoge una sección e ingresa los datos nuevos abajo.</p>
+                  <p className="text-gray-500 dark:text-gray-400">Escoge una sección e ingresa los datos nuevos abajo.</p>
                 </div>
                 {
                   !isEqual(formData, originalFormData) && (
@@ -559,7 +559,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                 }
 
                 <div className="flex justify-center">
-                  <div className="flex text-gray-400 font-medium">
+                  <div className="flex text-gray-400 dark:text-gray-100 font-medium">
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Información" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Información</h4>
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Datos Corporales" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Datos Corporales</h4>
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Rendimiento" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Rendimiento</h4>
@@ -574,9 +574,9 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
 
             <div className="flex flex-wrap w-full items-end justify-between gap-2">
               <div>
-                <p className="text-xl text-gray-900 px-4 py-2 rounded-md">
+                <p className="text-xl text-gray-900 dark:text-gray-50 px-4 py-2 rounded-md">
                   Total acumulado: 
-                  <span className="text-2xl text-gray-700 text-transparent font-bold bg-gradient-to-br from-blue-900 via-sky-700 to-sky-900 bg-clip-text"> {originalFormData.total} </span> 
+                  <span className="text-2xl text-gray-700 text-transparent font-bold bg-gradient-to-br from-blue-900 dark:from-blue-500 via-sky-700 dark:via-sky-300 to-sky-900 dark:to-sky-500 bg-clip-text"> {originalFormData.total} </span> 
                   puntos
                 </p>
               </div>
@@ -585,9 +585,9 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                   activeSection !== 'Rendimiento' && (
                     <>
                       <button type='button' 
-                          onClick={(e) => handlePrintSection(e, activeSection, '')} className='flex gap-2 h-9 justify-center items-center px-4 py-2 rounded-md bg-[#292C33] transition-all hover:opacity-90'
+                          onClick={(e) => handlePrintSection(e, activeSection, '')} className='flex gap-2 h-9 justify-center items-center px-4 py-2 rounded-md bg-[#292C33] dark:bg-gray-100 transition-all hover:opacity-90'
                       >
-                        <p className="text-white">Imprimir</p>
+                        <p className="text-white dark:text-gray-950">Imprimir</p>
                         <PrintIcon className="p-[1px] invert"/>
                       </button>
                     </>
@@ -598,7 +598,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                     <>
                       <div className="flex flex-col flex-grow items-center gap-2">
                         <div>
-                          <p className="text-lg font-bold text-gray-700">Imprimir</p>
+                          <p className="text-lg font-bold text-gray-700 dark:text-gray-200">Imprimir</p>
                         </div>
                         <div className="flex gap-2">
                           <button type='button' onClick={(e) => handlePrintSection(e, activeSection, 'grip')} className='flex gap-2 w-32 h-9 justify-center items-center px-4 py-2 rounded-full bg-[#EBAF26] transition-all hover:'>
@@ -626,7 +626,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
               <div className="flex flex-wrap gap-2">
 
                 <button type='button' 
-                    onClick={handleCancelChanges} className='flex h-9 justify-center items-center px-4 py-2 rounded-md transition-all hover:bg-gray-100'
+                    onClick={handleCancelChanges} className='flex h-9 justify-center items-center px-4 py-2 rounded-md transition-all hover:bg-gray-100 dark:hover:bg-[#14151e]'
                 >
                   Cancelar
                 </button>
@@ -634,7 +634,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
                   disabled={isSaveButtonDisabled}  
                   type='button'
                   onClick={(e) => handleSaveChanges(e, 'save') } 
-                  className={`flex h-9 justify-center items-center px-4 py-2 rounded-md border-[1.4px] border-solid border-[#2626EB] transition-all hover:bg-gray-100 ${isSaveButtonDisabled ? 'cursor-not-allowed opacity-30' : ''}`}
+                  className={`flex h-9 justify-center items-center px-4 py-2 rounded-md border-[1.4px] border-solid border-[#2626EB] transition-all hover:bg-gray-100 dark:hover:bg-[#14151e] ${isSaveButtonDisabled ? 'cursor-not-allowed opacity-30' : ''}`}
                 >
                   Guardar
                 </button>

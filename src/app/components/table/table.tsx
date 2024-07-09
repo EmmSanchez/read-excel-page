@@ -11,6 +11,7 @@ import { DeselectRowsButton } from "../buttons/deselectRowsButton";
 import { RefreshIcon } from "../../../../public/icons/icons";
 import { RefreshButton } from "../buttons/refreshButton";
 import { useTableLoading } from "@/app/store/tableLoading";
+import { useUserStore } from "@/app/store/userStore";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -326,10 +327,6 @@ export function Table() {
     }
   }, [searchValue, excelData]);
 
-  // TO DO LIST
-  // - Print user
-  // - Pagination to see 100 results
-
   return (
     <>
       {excelData ? (
@@ -433,15 +430,15 @@ export function Table() {
                   </div>
                   {/* TABLE */}
                   <div className="flex justify-start w-full">
-                    <div className='table table-auto m-3 mt-5 bg-slate-50 w-full rounded-md border-solid border-[1px] border-black/20 overflow-hidden'>
-                      <div className='table-header-group bg-[#2563EB]'>
+                    <div className='table table-auto m-3 mt-5 w-full rounded-md border-solid border-[1px] border-black/20 dark:bg-slate-800 overflow-hidden'>
+                      <div className='table-header-group bg-[#2563EB] dark:bg-[#10141a]'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
                           { filteredExcelData && (
                               <>
                                 {
                                   filteredExcelData[0].map((cell, index) => (
-                                    <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>{cell}</div>
+                                    <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>{cell}</div>
                                   ))
                                 }
                               </>

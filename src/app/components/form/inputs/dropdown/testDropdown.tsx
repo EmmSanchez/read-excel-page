@@ -133,26 +133,26 @@ export const TestControlledDropdown = ({
       className={`dropdown ${
         isTestOpen ? 'outline outline-[1.4px] -outline-offset-1 outline-[#2563eb]' : ''
       } ${
-        selectedOption === originalFormData?.test ? '' : `${selectedOption ? 'bg-gray-200' : ''}`
+        selectedOption === originalFormData?.test ? '' : `${selectedOption ? 'bg-gray-200 dark:bg-gray-700' : ''}`
       }`}
     >
       <div className="dropdown-header" onClick={toggleDropdown}>
-        <p className={`${selectedOption ? 'text-black text-sm font-normal' : ''}`}>
+        <p className={`${selectedOption ? 'text-black dark:text-gray-100 text-sm font-normal' : ''}`}>
           {selectedOption || 'Selecciona una opción'}
         </p>
-        <span className={`dropdown-arrow transition-all ease-out ${isTestOpen ? 'open' : ''}`}>
+        <span className={`dropdown-arrow transition-all ease-out dark:invert ${isTestOpen ? 'open' : ''}`}>
           <ArrowDropdwonIcon />
         </span>
       </div>
       <div
-        className={`dropdown-menu transition-all duration-100 ease-in-out shadow-lg ${
+        className={`dropdown-menu transition-all duration-100 ease-in-out shadow-lg dark:border-gray-600 dark:bg-gray-800 ${
           isTestOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
         {options?.map((option) => (
           <div
             key={option}
-            className="dropdown-item font-semibold text-gray-600"
+            className="dropdown-item font-semibold text-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
             onClick={() => handleOptionClick(option)}
           >
             {option}
@@ -164,7 +164,7 @@ export const TestControlledDropdown = ({
               type="text"
               value={newOption}
               onChange={(e) => setNewOption(e.target.value)}
-              className="border border-gray-300 rounded-l-md p-2 w-full focus:outline-none"
+              className="border border-solid border-gray-300 dark:bg-gray-700 rounded-l-md p-2 w-full focus:outline-none"
               placeholder="Nueva opción"
             />
             <button
