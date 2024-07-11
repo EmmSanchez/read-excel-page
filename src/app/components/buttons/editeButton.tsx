@@ -297,8 +297,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   // APROVE CHANGES
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, action: string) => {
     e.preventDefault();
-    setActiveSection("Información");
-
+    
     try {
       if(!originalFormData.id) return
       const originalId = originalFormData.id
@@ -340,7 +339,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
           }
           return row;
         });
-  
+        
         // SORT AGAIN
         updatedExcelData.sort((a, b) => {
           const idA = Number(a[0]);
@@ -354,6 +353,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
           setIsPopoverVisible(false);
           setSelectedOption('')
           setSelectedGenre('')
+          setActiveSection("Información");
         }
         setExcelData(updatedExcelData);
         setIsTestOpen(false)

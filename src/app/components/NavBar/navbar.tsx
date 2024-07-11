@@ -53,7 +53,7 @@ export function NavBar() {
   };
 
   return (
-    <div className="flex flex-grow justify-between items-center mx-4 my-4 px-4 py-2 bg-gray-200 border-solid border-[1px] border-gray-300 dark:bg-[#1D232C] dark:border-slate-800 rounded-lg">
+    <div className="flex flex-grow justify-between items-center mx-4 my-4 px-4 py-2 bg-gray-200 border-solid border-[1px] border-gray-300 dark:bg-neutral-900 dark:border-neutral-800 rounded-lg">
       <div>
         {links.map((link) => (
           <div key={link.name} className="text-3xl text-gray-950 font-bold dark:text-white">
@@ -75,7 +75,7 @@ export function NavBar() {
           if (!LinkIcon) return null; // if there is no link
           return (
             <Link key={link.name} href={link.href} className={`py-2 px-2 rounded-md ${pathname === link.href ? 'bg-[#2563EB]' : ''}`}>
-              <LinkIcon className={`${pathname === link.href ? 'invert' : ''}`} />
+              <LinkIcon className={`${pathname === link.href ? 'invert dark:invert' : 'dark:invert'}`} />
             </Link>
           );
         })}

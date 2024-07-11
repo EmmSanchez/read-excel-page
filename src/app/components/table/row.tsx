@@ -23,7 +23,12 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
 
 
 
-  const handleCheckboxChange = (e: React.MouseEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    handleGetRow(rowIndex, 'select');
+  };
+
+  const handleCheckboxClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
     handleGetRow(rowIndex, 'select');
   };
@@ -39,7 +44,8 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
           <input 
             type="checkbox" 
             checked={isSelected} 
-            onClick={handleCheckboxChange} 
+            onClick={handleCheckboxClick} 
+            readOnly
             className="appearance-none w-4 h-4 align-middle bg-white dark:bg-gray-500 border-solid border-[1.4px] border-zinc-500 rounded-xl cursor-pointer checked:bg-blue-600 dark:checked:bg-blue-800 checked:border-blue-600 checked:bg-[url('../../public/icons/checkIcon.svg')] checked:bg-center checked:bg-cover"
           />
         </div>

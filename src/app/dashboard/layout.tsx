@@ -7,6 +7,7 @@ import { useDataStore } from "../store/dataStore";
 import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
+import { useAgesStore } from "../store/agesStore";
 
 
 
@@ -20,6 +21,10 @@ export default function Layout({
   const setFile = useFileStore((state) => state.setFile)  
   const setOptions = useTestOptionsStore(state => state.setOptions)
   const setUsers = useDataUsersStore(state => state.setUsers)
+
+  // RANGOS DE EDADES
+  const ageRanges = useAgesStore(state => state.ageRanges)
+  const setAgeRanges = useAgesStore(state => state.setAgeRanges)
 
 
 
@@ -109,12 +114,36 @@ export default function Layout({
       }
     }
   }
+
+  const getRanges = async () => {
+    try {
+      const res = await fetch('/api/excelData/ages/getRanges', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'applicaction/json'
+        },
+        next: { revalidate: 5 }
+      })
+
+      if (res.ok) {
+        const { ranges } = await res.json()
+        if (ranges) {
+          setAgeRanges(ranges)
+        } else {
+          setAgeRanges([])
+        }
+      }
+    } catch (error) {
+      console.error('Error al obtener rangos de edades', error)
+    }
+  }
   
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       try {  
-        await getData();
-        await getOptions();
+        getData();
+        getOptions();
+        getRanges()
       } catch (error) {
         console.error('Error fetching data:', error);
       }
