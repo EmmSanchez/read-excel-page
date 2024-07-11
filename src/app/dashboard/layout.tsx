@@ -79,7 +79,7 @@ export default function Layout({
       })
 
       if (res.ok) {
-        const {options} = await res.json()
+        const {options} = await res.json()        
         setOptions(options)                
       } else {
         console.error('Error al obtener las opciones de test')

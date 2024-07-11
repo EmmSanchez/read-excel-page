@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     // just get option and not _id
-    const data = await TestOptionsModel.find({}, 'option -_id')
+    const data = await TestOptionsModel.find({}, 'option -_id').sort({ option: 1})
     const optionsArray = data.map(doc => doc.option)
 
     return NextResponse.json({ message: 'Subido correctamente', options: optionsArray })

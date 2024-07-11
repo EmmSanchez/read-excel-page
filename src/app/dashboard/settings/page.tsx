@@ -83,6 +83,10 @@ export default function Settings () {
     setNewUser(null)
     setIsDropdownOpen(false)
   }
+  const handleEditUser = (user: User) => {
+    console.log(user);
+    
+  }
 
   // DELETE USER
   const deleteUser = async (username: string) => {
@@ -149,7 +153,11 @@ export default function Settings () {
       if (res.ok) {
         if (newOption && newOption.trim() !== '') {
           if (options) {
-            setOptions([...options, newOption]);
+            const newOptions = [...options, newOption]
+            const sortedOptions = newOptions.sort((a, b) => {
+              return a.localeCompare(b)
+            })
+            setOptions(newOptions);
             setNewOption(null);
           } else {
             setOptions([newOption])
@@ -298,7 +306,12 @@ export default function Settings () {
       if (res.ok) {
         if (ageRanges) {
           const newRanges = [ ...ageRanges, newRange ]
-          setAgeRanges(newRanges)
+          const sortedRanges = newRanges.sort((a, b) => {
+            if (a.minAge === null) return 1;
+            if (b.minAge === null) return -1;
+            return a.minAge - b.minAge
+          })
+          setAgeRanges(sortedRanges)
           setNewRange(null)
         }
       }
@@ -376,11 +389,8 @@ export default function Settings () {
                       </div>
                       <div className="w-10 table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <div className="flex justify-end gap-4">
-                          <button className="px-3 py-1 bg-[#2563EB] text-gray-100 rounded transition-all ease-in-out hover:bg-[#244488]">
-                            <p>Editar</p>
-                          </button>
-                          <button onClick={() => handleDeleteUser(user.username)} className="hover:underline hover:decoration-solid decoration-slate-900">
-                            <p>Eliminar</p>
+                          <button onClick={() => handleDeleteUser(user.username)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
+                            <p className="text-white">Eliminar</p>
                           </button>
                         </div>
                       </div>
@@ -443,7 +453,6 @@ export default function Settings () {
                 </div>
               </div>
             </div>
-
         </div>
 
 
@@ -479,11 +488,9 @@ export default function Settings () {
                       </div>
                       <div className="w-10 table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <div className="flex justify-end gap-4">
-                          <button className="px-3 py-1 bg-[#2563EB] text-gray-100 rounded hover:bg-[#244488]">
-                            <p>Editar</p>
-                          </button>
-                          <button onClick={() => handleDeleteTest(option)} className="text-black dark:text-gray-100 rounded hover:underline hover:decoration-solid decoration-slate-900">
-                            <p>Eliminar</p>
+                        
+                          <button onClick={() => handleDeleteTest(option)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
+                            <p className="text-white">Eliminar</p>
                           </button>
                         </div>
                       </div>
@@ -559,11 +566,8 @@ export default function Settings () {
                       </div>
                       <div className="w-10 table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <div className="flex justify-end gap-4">
-                          <button className="px-3 py-1 bg-[#2563EB] text-gray-100 rounded hover:bg-[#244488]">
-                            <p>Editar</p>
-                          </button>
-                          <button onClick={() => handleDeleteRange(range.minAge)} className="text-black dark:text-gray-100 rounded hover:underline hover:decoration-solid decoration-slate-900">
-                            <p>Eliminar</p>
+                          <button onClick={() => handleDeleteRange(range.minAge)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
+                            <p className="text-white">Eliminar</p>
                           </button>
                         </div>
                       </div>
@@ -575,10 +579,10 @@ export default function Settings () {
                         <div className="table-row">
                           {/* INPUTS */}
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.minAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'minAge')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400 ${isMinAgeValid(newRange?.minAge) ? '' : 'outline-red-500'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'outline-red-500' : ''}`} />
+                            <input type="number" value={newRange.minAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'minAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMinAgeValid(newRange?.minAge) ? '' : 'outline-red-500'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'outline-red-400' : ''}`} />
                           </div>
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.maxAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'maxAge')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400 ${isMaxAgeValid(newRange?.maxAge) ? '' : 'outline-red-500'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'outline-red-500' : ''}`} />
+                            <input type="number" value={newRange.maxAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'maxAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMaxAgeValid(newRange?.maxAge) ? '' : 'outline-red-400'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'outline-red-400' : ''}`} />
                           </div>
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                             <input type="number" value={newRange.value?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'value')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400`} />

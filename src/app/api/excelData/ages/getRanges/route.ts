@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const ranges = await RangeAgeModel.find({})
+    const ranges = await RangeAgeModel.find().sort({ minAge: 1})
 
     return NextResponse.json({ ranges })
   } catch (error) {
