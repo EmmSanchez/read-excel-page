@@ -15,7 +15,7 @@ export function DeleteButton ({handleGetRow, rowIndex, rowToDelete, cancelDelete
         <DeleteIcon width={24} height={24} fill='#00890' className='p-1'/>
       </button>
       {rowToDelete === rowIndex && (
-        <div className='fixed w-[500px] text-base right-5 bottom-10 bg-white dark:bg-[#1D1E2B] rounded-md outline outline-gray-300 dark:outline-gray-600 outline-1 drop-shadow-md p-4'>
+        <div className='fixed w-[500px] text-base right-5 bottom-10 bg-white dark:bg-neutral-950 rounded-md outline outline-gray-300 dark:outline-gray-600 outline-1 drop-shadow-md p-4'>
           <div className="flex flex-col gap-4">
             <p>¿Estás seguro de que deseas eliminar este elemento?</p>
             <div className="flex justify-end gap-4">

@@ -39,14 +39,14 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
 
   return (
     <>
-      <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 dark:hover:bg-[#0c0f13] ${rowIndex % 2 === 0 ? 'bg-white dark:bg-[#1D232C]' : 'bg-slate-200/90 dark:bg-[#1D232C]'}`}>
+      <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 dark:hover:bg-neutral-950 ${rowIndex % 2 === 0 ? 'bg-white dark:bg-neutral-900' : 'bg-slate-200/90 dark:bg-neutral-900'}`}>
         <div className="table-cell align-middle pl-1 py-[6px] text-center text-sm border-solid border-t-[1px] border-black/20 dark:border-gray-700/50">
           <input 
             type="checkbox" 
             checked={isSelected} 
             onClick={handleCheckboxClick} 
             readOnly
-            className="appearance-none w-4 h-4 align-middle bg-white dark:bg-gray-500 border-solid border-[1.4px] border-zinc-500 rounded-xl cursor-pointer checked:bg-blue-600 dark:checked:bg-blue-800 checked:border-blue-600 checked:bg-[url('../../public/icons/checkIcon.svg')] checked:bg-center checked:bg-cover"
+            className="appearance-none w-4 h-4 align-middle bg-white dark:bg-gray-500 border-solid border-[1.4px] border-neutral-500 rounded-xl cursor-pointer checked:bg-blue-600 dark:checked:bg-blue-800 checked:border-blue-600 checked:bg-[url('../../public/icons/checkIcon.svg')] checked:bg-center checked:bg-cover"
           />
         </div>
         {row.map((cell, cellIndex) => (
@@ -55,7 +55,7 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
         <div className='table-cell align-middle py-[4px] border-solid border-t-[1px] border-black/20 dark:border-gray-700/50'>
           <div className="flex gap-1 pr-3">
             {/* <button onClick={handlePrint} className='flex justify-center w-[24px] h-full'>
-              <PrintIcon className='p-1 rounded-md transition-all hover:bg-zinc-50'/>
+              <PrintIcon className='p-1 rounded-md transition-all hover:bg-neutral-50'/>
             </button> */}
             <EditButton handleGetRow={handleGetRow} rowIndex={rowIndex}/>
             {

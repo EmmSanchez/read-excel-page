@@ -363,6 +363,7 @@ export function Table() {
                       </div>
                     </div>
                   </div>
+                  
                   {/* TABLE */}
                   <div className="flex justify-start w-full">
                     <div className='table table-auto m-3 mt-5 bg-slate-50 w-full rounded-md border-solid border-[1px] border-black/20 overflow-hidden'>
@@ -430,8 +431,8 @@ export function Table() {
                   </div>
                   {/* TABLE */}
                   <div className="flex justify-start w-full">
-                    <div className='table table-auto m-3 mt-5 w-full rounded-md border-solid border-[1px] border-black/20 dark:bg-slate-800 overflow-hidden'>
-                      <div className='table-header-group bg-[#2563EB] dark:bg-[#10141a]'>
+                    <div className='table table-auto m-3 mt-5 w-full rounded-md border-solid border-[1px] border-black/20 dark:bg-zinc-700 overflow-hidden'>
+                      <div className='table-header-group bg-[#2563EB] dark:bg-neutral-950'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
                           { filteredExcelData && (

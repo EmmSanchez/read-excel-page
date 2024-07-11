@@ -36,7 +36,7 @@ export function RemoveRowsButton({ selectedRows, deleteSelectedRows, isPopoverVi
       </button>
       <div className="relative">
 
-      <div className={`absolute w-[500px] -left-[500px] top-16 bg-white dark:bg-[#1D1E2B] rounded-md outline outline-gray-300 dark:outline-gray-600 outline-1 drop-shadow-md p-4 text-base transition-all ease-in-out duration-100 transform ${isPopoverVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 pointer-events-none scale-[.98] -translate-y-1'}`}>
+      <div className={`absolute w-[500px] -left-[500px] top-16 bg-white dark:bg-neutral-950 rounded-md outline outline-gray-300 dark:outline-gray-600 outline-1 drop-shadow-md p-4 text-base transition-all ease-in-out duration-100 transform ${isPopoverVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 pointer-events-none scale-[.98] -translate-y-1'}`}>
         <div className="flex flex-col gap-4">
           <p>¿Desea borrar los siguientes <span className="font-bold">{selectedRows.length} elementos?</span></p>
           <div className="flex justify-end gap-2">
