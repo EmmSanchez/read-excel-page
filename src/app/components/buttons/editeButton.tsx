@@ -4,6 +4,7 @@ import { useDataStore } from "@/app/store/dataStore";
 import { useFilteredDataStore } from "@/app/store/filteredData";
 import { EditIcon, PrintIcon } from "../../../../public/icons/icons";
 import { log } from "console";
+import { useAgesStore } from "@/app/store/agesStore";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -94,6 +95,9 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [isGenreOpen, setIsGenreOpen] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState('')
+
+  // Ranges of ages
+  const ageRanges = useAgesStore(state => state.ageRanges)
 
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, action: string) => {
@@ -533,13 +537,27 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   // Deep comparison
   const isEqual = (obj1: FormData, obj2: FormData) => JSON.stringify(obj1) === JSON.stringify(obj2);
 
+  // IDENTIFY RANGE OF AGE INSERTED
+  const getValueOfAge = (age: number) => {
+    if (!age) return 1
+    const range = ageRanges.find((range) => age >= range.minAge! && age <= range.maxAge!)
+    return range ? range.value : 1
+  }
+
+  useEffect(() => {
+    const rangeValue = getValueOfAge(formData.age!)
+    const newTotal = (formData.grip_points! + formData.jump_points! + formData.agility_points! + formData.resistance_points!) * rangeValue!
+    const newTotalFixed = fixDecimals(newTotal)!
+    setFormData((prevData) => ({ ...prevData, total: newTotalFixed}))
+  }, [formData.age, formData.grip_points, formData.jump_points, formData.agility_points, formData.resistance_points])
+
   return (
     <>
       <button onClick={(e) => handleEditeClick(e)} className='w-[24px] h-full'>
         <EditIcon fill="#00890" className='p-1 rounded-md transition-all hover:bg-zinc-50 dark:hover:bg-gray-700'/>
       </button>
       {/* POPOVER FORM */}
-      <div onClick={(e) => e.stopPropagation()} className={`fixed top-0 left-0 w-full h-full z-10 bg-gray-600/60 transition-opacity duration-200 ${isPopoverVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <div onClick={(e) => e.stopPropagation()} className={`fixed top-0 left-0 w-full h-full z-10 bg-gray-600/60 transition-opacity duration-75 ${isPopoverVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <div className={`relative overflow-auto m-auto top-[10%] w-[80%] h-[80%] px-10 py-6 bg-white dark:bg-neutral-900 rounded-md outline outline-gray-300 dark:outline-zinc-700 outline-1 drop-shadow-md transform transition-transform duration-100 ${isPopoverVisible ? 'scale-100' : 'scale-95'}`}>
           <form autoComplete='off' className="flex flex-col justify-around gap-6 h-full">
 
@@ -576,7 +594,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
               <div>
                 <p className="text-xl text-gray-900 dark:text-gray-50 px-4 py-2 rounded-md">
                   Total acumulado: 
-                  <span className="text-2xl text-gray-700 text-transparent font-bold bg-gradient-to-br from-blue-900 dark:from-blue-500 via-sky-700 dark:via-sky-300 to-sky-900 dark:to-sky-500 bg-clip-text"> {originalFormData.total} </span> 
+                  <span className="text-2xl text-gray-700 text-transparent font-bold bg-gradient-to-br from-blue-900 dark:from-blue-500 via-sky-700 dark:via-sky-300 to-sky-900 dark:to-sky-500 bg-clip-text"> {formData.total} </span> 
                   puntos
                 </p>
               </div>
