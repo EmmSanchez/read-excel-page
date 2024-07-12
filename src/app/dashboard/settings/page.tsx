@@ -575,10 +575,10 @@ export default function Settings () {
                         <div className="table-row">
                           {/* INPUTS */}
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.minAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'minAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMinAgeValid(newRange?.minAge) ? '' : 'outline-red-500'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'outline-red-400' : ''}`} />
+                            <input type="number" value={newRange.minAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'minAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMinAgeValid(newRange?.minAge) ? '' : 'bg-red-500/20'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'bg-red-500/20' : ''}`} />
                           </div>
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.maxAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'maxAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMaxAgeValid(newRange?.maxAge) ? '' : 'outline-red-400'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'outline-red-400' : ''}`} />
+                            <input type="number" value={newRange.maxAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'maxAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMaxAgeValid(newRange?.maxAge) ? '' : 'bg-red-500/20'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'bg-red-500/20' : ''}`} />
                           </div>
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                             <input type="number" value={newRange.value?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'value')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400`} />

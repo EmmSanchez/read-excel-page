@@ -61,7 +61,6 @@ const participantSchema = new Schema<ParticipantModel>({
   "Puntos_3": { type: Number },
   "Total": { type: Number },
 }, {
-  _id: false,
   versionKey: false,
 });
 
