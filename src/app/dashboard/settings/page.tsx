@@ -83,10 +83,6 @@ export default function Settings () {
     setNewUser(null)
     setIsDropdownOpen(false)
   }
-  const handleEditUser = (user: User) => {
-    console.log(user);
-    
-  }
 
   // DELETE USER
   const deleteUser = async (username: string) => {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useDataStore } from "@/app/store/dataStore"
 import React, { Dispatch, SetStateAction} from "react"
 import { FormInputs } from "./inputs/formInputs"
+import { useAgesStore } from "@/app/store/agesStore";
 
 interface FormData {
   id: number | null;
@@ -49,6 +50,8 @@ interface PopoverForm {
 export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopoverVisible, handleGetNewIndex, formData, setFormData, isAddButtonDisabled, setIsAddButtonDisabled}: PopoverForm) {
   const excelData = useDataStore((state) => state.excelData)
   const setExcelData = useDataStore((state) => state.setExcelData)
+  const ageRanges = useAgesStore(state => state.ageRanges)
+
 
   // DATA INSERTED IN THE FORM
   const initialFormData = {
@@ -94,6 +97,12 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
   const [isGenreOpen, setIsGenreOpen] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState('')
 
+  // IDENTIFY RANGE OF AGE INSERTED
+  const getValueOfAge = (age: number) => {
+    if (!age) return 1
+    const range = ageRanges.find((range) => age >= range.minAge! && age <= range.maxAge!)
+    return range ? range.value : 1
+  }
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, action: string) => {
     const newValue = e.target.value
@@ -142,14 +151,18 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
         case "ffm":
         case "tbw":
         case "grip":
-        case "grip_points":
         case "jump":
-        case "jump_points":
         case "agility":
-        case "agility_points":
-        case "resistance_points":
           const newData = parseFloat(newValue);
           newFormData[action] = isNaN(newData) ? null : newData;
+          break;
+        
+        case "grip_points":
+        case "jump_points":
+        case "agility_points":
+        case "resistance_points":
+          const newPoints = parseFloat(newValue);
+          newFormData[action] = isNaN(newPoints) ? null : newPoints;
           break;
         
     
@@ -257,6 +270,23 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     setSelectedGenre('')
     setIsGenreOpen(false)
   }
+
+  const fixDecimals = (value: number) => {
+    const num = Number(value);
+    if (isNaN(num)) {
+      return
+    }
+    return parseFloat(num.toFixed(2));
+  }
+
+
+  useEffect(() => {
+    const rangeValue = getValueOfAge(formData.age!)
+    const newTotal = (formData.grip_points! + formData.jump_points! + formData.agility_points! + formData.resistance_points!) * rangeValue!
+    const newTotalFixed = fixDecimals(newTotal)!
+    setFormData((prevData) => ({ ...prevData, total: newTotalFixed}))
+    
+  }, [formData.age, formData.grip_points, formData.jump_points, formData.agility_points, formData.resistance_points])
 
   return (
     <>
