@@ -113,6 +113,7 @@ export function Table() {
 
   // CONVERT EXCEL TO JSON
   useEffect(() => {
+    
     if (!file) {
       setExcelData(null);
       setFilteredExcelData(null)
@@ -139,9 +140,11 @@ export function Table() {
           await sendToMongoDB(sortedDataJSON, fileName, fileSize);
         }
       };
+      const fileRenamed = { _id: '', name:file.name, size: file.size} as unknown as File
+      setFile(fileRenamed)
       reader.readAsArrayBuffer(file);
     }
-
+    
     setSelectedRows([])
     setRowToDelete(null)
     setSearchValue('')

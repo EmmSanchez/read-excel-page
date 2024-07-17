@@ -3,8 +3,6 @@ import { useDataUsersStore } from "@/app/store/dataUsers"
 import { useTestOptionsStore } from "@/app/store/testOptions"
 import React, { useState } from "react"
 import { ArrowDropdwonIcon } from "../../../../public/icons/icons";
-import { log } from "console";
-import RangeAgeModel from "@/models/rangeAges";
 import { useAgesStore } from "@/app/store/agesStore";
 
 interface User {

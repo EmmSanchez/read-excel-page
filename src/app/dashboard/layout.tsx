@@ -52,9 +52,9 @@ export default function Layout({
           
           setExcelData(participantsArray)
           const fileInfo = fileInfoArray[0]
-          setFile(fileInfo)
+          console.log(fileInfo);
           
-
+          setFile(fileInfo)
         } else {
           setExcelData(participantsArray)
           const fileInfo = fileInfoArray[0]
