@@ -12,7 +12,7 @@ interface User {
   rol: string;
 }
 
-interface Range {
+export interface Range {
   minAge: number | null;
   maxAge: number | null;
   value: number | null;

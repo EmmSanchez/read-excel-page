@@ -8,12 +8,43 @@ import { Row } from "./row";
 import { Searchbar } from "../searchbar/searchbar";
 import { useFilteredDataStore } from "@/app/store/filteredData";
 import { DeselectRowsButton } from "../buttons/deselectRowsButton";
-import { RefreshIcon } from "../../../../public/icons/icons";
-import { RefreshButton } from "../buttons/refreshButton";
 import { useTableLoading } from "@/app/store/tableLoading";
-import { useUserStore } from "@/app/store/userStore";
+import { useAgesStore } from "@/app/store/agesStore";
+import { Range } from "@/app/dashboard/settings/page";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
+
+interface Participant {
+  _id: string;
+  '#': number;
+  'Apellido paterno': string;
+  'Apellido materno': string;
+  Nombre: string;
+  Prueba: string;
+  '# Empleado': string;
+  Edad: number;
+  Genero: string;
+  Categoria: number;
+  'Altura [cm]': number;
+  'Peso [kg]': number;
+  'Grasa [%]': number;
+  IMC: number;
+  'Cintura [cm]': number;
+  BMI: number;
+  BMR: number;
+  Fatmass: number;
+  FFM: number;
+  TBW: number;
+  Agarre: number;
+  Puntos: number;
+  Salto: number;
+  Puntos_1: number;
+  Agilidad: number;
+  Puntos_2: number;
+  Resistencia: string;
+  Puntos_3: number;
+  Total: number;
+}
 
 // SORT FUNCTION
 export const sortArrayByColumn = (arr: ExcelData, column: string) => {
@@ -41,6 +72,29 @@ export const sortArrayByColumn = (arr: ExcelData, column: string) => {
 
 };
 
+function convertParticipantsToArray(participants: Participant[]): (string | number)[][] {
+  const keys: (keyof Participant)[] = [
+    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', '# Empleado', 'Edad', 'Genero', 'Categoria',
+    'Altura [cm]', 'Peso [kg]', 'Grasa [%]', 'IMC', 'Cintura [cm]', 'BMI', 'BMR', 'Fatmass', 'FFM', 'TBW', 'Agarre',
+    'Puntos', 'Salto', 'Puntos_1', 'Agilidad', 'Puntos_2', 'Resistencia', 'Puntos_3', 'Total'
+  ];
+
+  const headers: (keyof Participant)[] = [
+    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', '# Empleado', 'Edad', 'Genero', 'Categoria',
+    'Altura [cm]', 'Peso [kg]', 'Grasa [%]', 'IMC', 'Cintura [cm]', 'BMI', 'BMR', 'Fatmass', 'FFM', 'TBW', 'Agarre',
+    'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total'
+  ];
+
+  const participantsArray: (string | number)[][] = [headers];
+
+  participants.map(participant => {
+    const values = keys.map(key => participant[key]);
+    participantsArray.push(values);
+  });
+
+  return participantsArray;
+}
+
 export function Table() {
   const file = useFileStore((state) => state.file);
   const setFile = useFileStore((state) => state.setFile);
@@ -59,7 +113,6 @@ export function Table() {
 
   // Manual Refresh
   const isTableLoading = useTableLoading((state) => state.isTableLoading)
-  const setIsTableLoading = useTableLoading((state) => state.setIsTableLoading)
 
   // -----------------------------------------------------------------------------------------------
 
@@ -67,6 +120,10 @@ export function Table() {
   // useEffect(() => {
   //   setFile(null)
   // }, [])
+
+  // Get ranges to update total automatically
+  const ageRanges = useAgesStore(state => state.ageRanges)
+
 
   function arrayToJSON(data: ExcelData) {
     if (data) {
@@ -93,18 +150,25 @@ export function Table() {
     }
   }
   
-  async function sendToMongoDB(data: { [key: string]: any }[] | undefined, fileName: string, fileSize: number) {
+  async function sendToMongoDB(data: { [key: string]: any }[] | undefined, fileName: string, fileSize: number, ageRanges: Range[]) {
     try {
       const response = await fetch("/api/excelData/uploadData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({data, fileName, fileSize}),
+        body: JSON.stringify({data, fileName, fileSize, ageRanges}),
       });
 
       if (!response.ok) {
         throw new Error("Failed to upload data");
+      }
+
+      if (response.ok) {
+        const res = await response.json()
+        const updatedParticipants = res.data
+        const participantsArray = convertParticipantsToArray(updatedParticipants) 
+        setExcelData(participantsArray)
       }
     } catch (error) {
       console.error("Error uploading data to MongoDB:", error);
@@ -131,13 +195,12 @@ export function Table() {
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as ExcelData;
           const sortedData = sortArrayByColumn(jsonData, '#') as ExcelData;
-          setExcelData(sortedData)
           
           const sortedDataJSON = arrayToJSON(sortedData)
           const fileName = file.name
           const fileSize = file.size
           
-          await sendToMongoDB(sortedDataJSON, fileName, fileSize);
+          await sendToMongoDB(sortedDataJSON, fileName, fileSize, ageRanges);
         }
       };
       const fileRenamed = { _id: '', name:file.name, size: file.size} as unknown as File
