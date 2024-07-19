@@ -47,6 +47,11 @@ export async function POST(req: NextRequest) {
     await FileInfoModel.deleteMany({})
     await ParticipantModel.deleteMany({})
 
+    await FileInfoModel.insertMany({
+      name: fileName,
+      size: fileSize,
+    })
+    
     if (ageRanges.length > 0) {
       const updatedData = data.map((participant:  Participant) => {
         
@@ -70,11 +75,6 @@ export async function POST(req: NextRequest) {
     } else {
       // Iterate and upload data
       await ParticipantModel.insertMany(data);
-
-      await FileInfoModel.insertMany({
-        name: fileName,
-        size: fileSize,
-      })
       return NextResponse.json({ message: 'Datos guardados en MongoDB', data: data}, { status: 200 });
     }
   } catch (error) {
