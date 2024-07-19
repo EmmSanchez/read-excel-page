@@ -7,8 +7,8 @@ interface IRange {
 }
 
 const RangeAgeSchema: Schema = new Schema({
-  minAge: { type: Number, required: true },
-  maxAge: { type: Number, required: true},
+  minAge: { type: Number, required: true, unique: true },
+  maxAge: { type: Number, required: true, unique: true},
   value: { type: Number, required: true },
 }, {
   versionKey: false,

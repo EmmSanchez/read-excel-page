@@ -4,6 +4,7 @@ import { useTestOptionsStore } from "@/app/store/testOptions"
 import React, { useState } from "react"
 import { ArrowDropdwonIcon } from "../../../../public/icons/icons";
 import { useAgesStore } from "@/app/store/agesStore";
+import { useDataStore } from "@/app/store/dataStore";
 
 interface User {
   username: string;
@@ -22,8 +23,42 @@ interface AgeRange {
   maxAge: number | null;
 }
 
+interface Participant {
+  _id: string;
+  '#': number;
+  'Apellido paterno': string;
+  'Apellido materno': string;
+  Nombre: string;
+  Prueba: string;
+  '# Empleado': string;
+  Edad: number;
+  Genero: string;
+  Categoria: number;
+  'Altura [cm]': number;
+  'Peso [kg]': number;
+  'Grasa [%]': number;
+  IMC: number;
+  'Cintura [cm]': number;
+  BMI: number;
+  BMR: number;
+  Fatmass: number;
+  FFM: number;
+  TBW: number;
+  Agarre: number;
+  Puntos: number;
+  Salto: number;
+  Puntos_1: number;
+  Agilidad: number;
+  Puntos_2: number;
+  Resistencia: string;
+  Puntos_3: number;
+  Total: number;
+}
+
 
 export default function Settings () {
+  const excelData = useDataStore((state) => state.excelData)
+  const setExcelData = useDataStore((state) => state.setExcelData)
   const options = useTestOptionsStore(state => state.options)
   const users = useDataUsersStore(state => state.users)
   const setUsers = useDataUsersStore(state => state.setUsers)
@@ -32,7 +67,6 @@ export default function Settings () {
   const [newUser, setNewUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
   const roles = ["Administrador", "Invitado"]
-  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   // ADD USER
   const handleRolClick = (option: string) => {
@@ -117,7 +151,6 @@ export default function Settings () {
   // TESTS
   const setOptions = useTestOptionsStore(state => state.setOptions)
   const [newOption, setNewOption] = useState<string | null>(null);
-  const [editingOption, setEditingOption] = useState(null);
 
   const handleCreateOption = () => {
     setNewOption('')
@@ -296,7 +329,8 @@ export default function Settings () {
         },
         body: JSON.stringify({ newRange })
       })
-
+      
+      
       if (res.ok) {
         if (ageRanges) {
           const newRanges = [ ...ageRanges, newRange ]
@@ -305,6 +339,29 @@ export default function Settings () {
             if (b.minAge === null) return -1;
             return a.minAge - b.minAge
           })
+    
+          const response = await res.json()
+          const updatedParticipants: Participant[] = response.updatedParticipants
+          if (updatedParticipants.length > 0) {
+            const excelCopy = excelData ? excelData.map(row => [...row]) : [];
+
+            // Dictionary of id and total
+            const updatedParticipantsMap = updatedParticipants.reduce<{ [key: number]: number }>((acc, participant) => {
+              acc[participant['#']] = participant.Total;
+              return acc;
+            }, {});
+
+            // Mapping of lines and saving new values
+            const updatedExcel = excelCopy.map(row => {
+              const participantId = row[0];
+              if (typeof participantId === 'number' && updatedParticipantsMap[participantId] !== undefined) {
+                row[27] = updatedParticipantsMap[participantId];
+              }
+              return row;
+            });
+            
+            setExcelData(updatedExcel);
+          }
           setAgeRanges(sortedRanges)
           setNewRange(null)
         }
@@ -313,7 +370,7 @@ export default function Settings () {
       console.error('Error', error)
     }
   }
-  const handleDeleteRange = async (minAge: number | null) => {
+  const handleDeleteRange = async (minAge: number | null, maxAge: number | null) => {
     if (!minAge) return
     try {
       const res = await fetch('/api/excelData/ages/deleteRange', {
@@ -321,12 +378,37 @@ export default function Settings () {
         headers: {
           'Content-Type': 'applicaction/json'
         },
-        body: JSON.stringify({ minAge })
+        body: JSON.stringify({ minAge, maxAge })
       })
 
       if (res.ok) {
+        const response = await res.json()
+        const updatedParticipants: Participant[] = response.updatedParticipants
+        
         if (ageRanges) {
           const newRanges = ageRanges.filter(ageRange => ageRange.minAge !== minAge)
+
+          if (updatedParticipants.length > 0) {
+            const excelCopy = excelData ? excelData.map(row => [...row]) : [];
+
+            // Dictionary of id and total
+            const updatedParticipantsMap = updatedParticipants.reduce<{ [key: number]: number }>((acc, participant) => {
+              acc[participant['#']] = participant.Total;
+              return acc;
+            }, {});
+
+            // Mapping of lines and saving new values
+            const updatedExcel = excelCopy.map(row => {
+              const participantId = row[0];
+              if (typeof participantId === 'number' && updatedParticipantsMap[participantId] !== undefined) {
+                row[27] = updatedParticipantsMap[participantId];
+              }
+              return row;
+            });
+            
+            setExcelData(updatedExcel);
+          }
+
           setAgeRanges(newRanges)
           setNewRange(null)
         }
@@ -339,116 +421,6 @@ export default function Settings () {
   return (
     <>
       <div className="flex flex-wrap justify-center gap-8 m-4">
-
-        {/* LISTA DE USUARIOS */}
-        <div className="flex flex-col w-full xl:w-[1200px] p-4 rounded-lg dark:bg-neutral-900 border-collapse border-[1px] border-solid border-gray-300 dark:border-zinc-700">
-          <div className="flex justify-between items-end">
-            <div>
-              <h2 className="text-3xl font-bold">Usuarios</h2>
-              <p className="text-sm mt-2 text-gray-500 dark:text-gray-400">Gestiona la cantidad de usuarios, su rol, nombre y contraseña.</p>
-            </div>
-            <button onClick={handleCreateUser} className="h-fit px-4 py-1 text-sm font-medium text-gray-700 dark:text-gray-100 rounded border-[1px] border-solid border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-              <p>Crear usuario</p>
-            </button>
-          </div>
-          {/* TABLE */}
-          <div className="flex overflow-auto">
-              <div className='table table-auto mt-5 w-full rounded-xl border-[1px] border-solid border-gray-300 dark:border-zinc-800'>
-                <div className='table-header-group bg-gray-900 dark:bg-neutral-950'>
-                  <div className='table-row font-medium text-gray-50'>
-                    <div className='table-cell whitespace-nowrap p-3'>
-                      <p>Rol</p>
-                    </div>
-                    <div className='table-cell whitespace-nowrap p-3'>
-                      <p>Nombre de usuario</p>
-                    </div>
-                    <div className='table-cell p-3'>
-                      <p>Contraseña</p>
-                    </div>
-                    <div className='table-cell p-3'>
-                    </div>
-                  </div>
-                </div>
-                <div className='table-row-group'>
-                  {users.map((user, rowIndex) => (
-                    <div key={user.username} className="table-row">
-                      <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                        <p>{user.rol}</p>
-                      </div>
-                      <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                        <p>{user.username}</p>
-                      </div>
-                      <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                        <p>{user.password}</p>
-                      </div>
-                      <div className="w-10 table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                        <div className="flex justify-end gap-4">
-                          <button onClick={() => handleDeleteUser(user.username)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
-                            <p className="text-white">Eliminar</p>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  {
-                    newUser && (
-                      <>
-                        <div className="table-row">
-                          {/* DROPDOWN */}
-                          <div
-                            className={`dropdown relative ml-2 my-2 w-[200px] ${isDropdownOpen ? 'outline outline-[1.4px] -outline-offset-1 outline-[#2563eb]' : ''}`
-                            }
-                          >
-                            <div className="dropdown-header" onClick={toggleDropdown}>
-                              <p className={`${newUser.rol ? 'text-black dark:text-gray-50 text-sm font-normal' : ''}`}>
-                                {newUser.rol || 'Selecciona una opción'}
-                              </p>
-                              <span className={`dropdown-arrow transition-all ease-out ${isDropdownOpen ? '' : 'open'}`}>
-                                <ArrowDropdwonIcon />
-                              </span>
-                            </div>
-                            <div
-                              className={`absolute bottom-[52px] w-[101%] rounded-md transition-all duration-100 ease-in-out shadow-lg bg-white dark:bg-zinc-800 border-solid border-[1px] border-[#ccc] dark:border-gray-700 overflow-hidden ${
-                                isDropdownOpen ? 'opacity-100' : 'opacity-0 hidden pointer-events-none'
-                              }`}
-                            >
-                              {roles.map((rol) => (
-                                <div
-                                  key={rol}
-                                  className="dropdown-item font-semibold text-gray-600 dark:text-gray-100 dark:hover:bg-zinc-900"
-                                  onClick={() => handleRolClick(rol)}
-                                >
-                                  {rol}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          {/* INPUTS */}
-                          <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} className="w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400" />
-                          </div>
-                          <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="text" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} className="w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400" />
-                          </div>
-                          <div className="w-10 table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <div className="flex gap-4">
-                              <button onClick={handleSaveUser} className="px-3 py-1 bg-[#2563EB] text-gray-100 rounded hover:bg-[#244488]">
-                                <p>Guardar</p>
-                              </button>
-                              <button onClick={handleCancelUser} className="text-black dark:text-gray-100 rounded hover:underline hover:decoration-solid decoration-slate-900">
-                                <p>Cancelar</p>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )
-                  }
-                </div>
-              </div>
-            </div>
-        </div>
-
 
         {/* LISTA DE PRUEBAS  */}
         <div className="w-full xl:w-[1200px] h-fit p-4 rounded-lg dark:bg-neutral-900 border-[1px] border-solid border-gray-300 dark:border-zinc-700">
@@ -560,7 +532,7 @@ export default function Settings () {
                       </div>
                       <div className="w-10 table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <div className="flex justify-end gap-4">
-                          <button onClick={() => handleDeleteRange(range.minAge)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
+                          <button onClick={() => handleDeleteRange(range.minAge, range.maxAge)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
                             <p className="text-white">Eliminar</p>
                           </button>
                         </div>
@@ -579,14 +551,123 @@ export default function Settings () {
                             <input type="number" value={newRange.maxAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'maxAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMaxAgeValid(newRange?.maxAge) ? '' : 'bg-red-500/20'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'bg-red-500/20' : ''}`} />
                           </div>
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.value?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'value')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400`} />
+                            <input type="number" value={newRange.value?.toString() || ''} min={0} onChange={(e) => handleAgeChange(e, 'value')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400`} />
                           </div>
                           <div className="w-10 table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                             <div className="flex gap-4">
-                              <button disabled={isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge })} onClick={() => handleAddRange()} className={`px-3 py-1 bg-[#2563EB] text-gray-100 rounded hover:bg-[#244488] cursor-pointer ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'opacity-10 pointer-events-none' : ''}`}>
+                              <button disabled={isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) || !newRange.value} onClick={() => handleAddRange()} className={`px-3 py-1 bg-[#2563EB] text-gray-100 rounded hover:bg-[#244488] cursor-pointer ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) || !newRange.value ? 'opacity-10 pointer-events-none' : ''}`}>
                                 <p>Guardar</p>
                               </button>
                               <button onClick={handleCancelRange} className="text-black dark:text-gray-100 rounded hover:underline hover:decoration-solid decoration-slate-900">
+                                <p>Cancelar</p>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )
+                  }
+                </div>
+              </div>
+            </div>
+        </div>
+
+        {/* LISTA DE USUARIOS */}
+        <div className="flex flex-col w-full xl:w-[1200px] p-4 rounded-lg dark:bg-neutral-900 border-collapse border-[1px] border-solid border-gray-300 dark:border-zinc-700">
+          <div className="flex justify-between items-end">
+            <div>
+              <h2 className="text-3xl font-bold">Usuarios</h2>
+              <p className="text-sm mt-2 text-gray-500 dark:text-gray-400">Gestiona la cantidad de usuarios, su rol, nombre y contraseña.</p>
+            </div>
+            <button onClick={handleCreateUser} className="h-fit px-4 py-1 text-sm font-medium text-gray-700 dark:text-gray-100 rounded border-[1px] border-solid border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+              <p>Crear usuario</p>
+            </button>
+          </div>
+          {/* TABLE */}
+          <div className="flex overflow-auto">
+              <div className='table table-auto mt-5 w-full rounded-xl border-[1px] border-solid border-gray-300 dark:border-zinc-800'>
+                <div className='table-header-group bg-gray-900 dark:bg-neutral-950'>
+                  <div className='table-row font-medium text-gray-50'>
+                    <div className='table-cell whitespace-nowrap p-3'>
+                      <p>Rol</p>
+                    </div>
+                    <div className='table-cell whitespace-nowrap p-3'>
+                      <p>Nombre de usuario</p>
+                    </div>
+                    <div className='table-cell p-3'>
+                      <p>Contraseña</p>
+                    </div>
+                    <div className='table-cell p-3'>
+                    </div>
+                  </div>
+                </div>
+                <div className='table-row-group'>
+                  {users.map((user, rowIndex) => (
+                    <div key={user.username} className="table-row">
+                      <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
+                        <p>{user.rol}</p>
+                      </div>
+                      <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
+                        <p>{user.username}</p>
+                      </div>
+                      <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
+                        <p>{user.password}</p>
+                      </div>
+                      <div className="w-10 table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
+                        <div className="flex justify-end gap-4">
+                          <button onClick={() => handleDeleteUser(user.username)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
+                            <p className="text-white">Eliminar</p>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {
+                    newUser && (
+                      <>
+                        <div className="table-row">
+                          {/* DROPDOWN */}
+                          <div
+                            className={`dropdown relative ml-2 my-2 w-[200px] ${isDropdownOpen ? 'outline outline-[1.4px] -outline-offset-1 outline-[#2563eb]' : ''}`
+                            }
+                          >
+                            <div className="dropdown-header" onClick={toggleDropdown}>
+                              <p className={`${newUser.rol ? 'text-black dark:text-gray-50 text-sm font-normal' : ''}`}>
+                                {newUser.rol || 'Selecciona una opción'}
+                              </p>
+                              <span className={`dropdown-arrow transition-all ease-out ${isDropdownOpen ? '' : 'open'}`}>
+                                <ArrowDropdwonIcon />
+                              </span>
+                            </div>
+                            <div
+                              className={`absolute bottom-[52px] w-[101%] rounded-md transition-all duration-100 ease-in-out shadow-lg bg-white dark:bg-zinc-800 border-solid border-[1px] border-[#ccc] dark:border-gray-700 overflow-hidden ${
+                                isDropdownOpen ? 'opacity-100' : 'opacity-0 hidden pointer-events-none'
+                              }`}
+                            >
+                              {roles.map((rol) => (
+                                <div
+                                  key={rol}
+                                  className="dropdown-item font-semibold text-gray-600 dark:text-gray-100 dark:hover:bg-zinc-900"
+                                  onClick={() => handleRolClick(rol)}
+                                >
+                                  {rol}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          {/* INPUTS */}
+                          <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
+                            <input type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} className="w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400" />
+                          </div>
+                          <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
+                            <input type="text" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} className="w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400" />
+                          </div>
+                          <div className="w-10 table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
+                            <div className="flex gap-4">
+                              <button onClick={handleSaveUser} className="px-3 py-1 bg-[#2563EB] text-gray-100 rounded hover:bg-[#244488]">
+                                <p>Guardar</p>
+                              </button>
+                              <button onClick={handleCancelUser} className="text-black dark:text-gray-100 rounded hover:underline hover:decoration-solid decoration-slate-900">
                                 <p>Cancelar</p>
                               </button>
                             </div>

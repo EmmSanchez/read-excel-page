@@ -29,13 +29,17 @@ export async function POST(req: NextRequest) {
       return { ...participant, Total: total };
     });
 
-    // Update every participant in DB
-    for (const participant of updatedParticipants) {
-      await ParticipantModel.updateOne(
-        { _id: participant._id },
-        { $set: { Total: participant.Total } }
-      );
-    }
+    // Update every participant of the range in DB
+    const bulkOperations = updatedParticipants.map(participant => {
+      return {
+        updateOne: {
+          filter: { _id: participant._id },
+          update: { $set: { Total: participant.Total } }
+        }
+      };
+    });
+    
+    await ParticipantModel.bulkWrite(bulkOperations);
     
 
     return NextResponse.json({ message: "Rango subido correctamente", updatedParticipants }, { status: 200 });
