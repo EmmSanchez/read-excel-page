@@ -82,6 +82,7 @@ export default function Settings () {
   const handleCreateUser = () =>{ 
     setNewUser({ rol: '', username: '', password: '' })
     setNewOption(null)
+    setNewRange(null)
   }
   const postUser = async (user: User) => {
     try {
@@ -155,6 +156,7 @@ export default function Settings () {
   const handleCreateOption = () => {
     setNewOption('')
     setNewUser(null)
+    setNewRange(null)
     setIsDropdownOpen(false)
   }
   const handleCancelOption = () => {
@@ -295,6 +297,8 @@ export default function Settings () {
       maxAge: 1,
       value: 1
     })
+    setNewUser(null)
+    setNewOption(null)
   }
   const handleCancelRange = () => {
     setNewRange(null)
@@ -313,6 +317,7 @@ export default function Settings () {
       case 'value':
         const newData = parseFloat(newValue)
         rangeCopy[action] = isNaN(newData) ? null : newData
+        
         break;
     }
     setNewRange(rangeCopy as Range)
@@ -545,13 +550,13 @@ export default function Settings () {
                         <div className="table-row">
                           {/* INPUTS */}
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.minAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'minAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMinAgeValid(newRange?.minAge) ? '' : 'bg-red-500/20'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'bg-red-500/20' : ''}`} />
+                            <input type="number" value={newRange.minAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'minAge')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400 ${isMinAgeValid(newRange?.minAge) ? '' : 'bg-red-500/20'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'bg-red-500/20 outline-red-400' : ''}`} />
                           </div>
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.maxAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'maxAge')} className={`w-[80%] h-11 px-3 rounded outline outline-2 outline-slate-400 ${isMaxAgeValid(newRange?.maxAge) ? '' : 'bg-red-500/20'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'bg-red-500/20' : ''}`} />
+                            <input type="number" value={newRange.maxAge?.toString() || ''} min={1} onChange={(e) => handleAgeChange(e, 'maxAge')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400 ${isMaxAgeValid(newRange?.maxAge) ? '' : 'bg-red-500/20'} ${isRangeInvalid({ minAge: newRange.minAge, maxAge: newRange.maxAge }) ? 'bg-red-500/20  outline-red-400' : ''}`} />
                           </div>
                           <div className="table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
-                            <input type="number" value={newRange.value?.toString() || ''} min={0} onChange={(e) => handleAgeChange(e, 'value')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400`} />
+                            <input type="number" min={0} onChange={(e) => handleAgeChange(e, 'value')} className={`w-[80%] h-11 px-3 rounded outline outline-1 outline-slate-400 ${newRange.value === 0 || newRange.value === null ? 'bg-red-500/20  outline-red-400' : ''}`} />
                           </div>
                           <div className="w-10 table-cell align-middle px-3 py-2 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                             <div className="flex gap-4">
