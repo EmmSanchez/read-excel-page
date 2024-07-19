@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
 import FileInfoModel from '@/models/fileInfo';
 import connectDB from '@/app/lib/mongodb';
-export const revalidate = 5
 export const dynamic = 'force-dynamic'
 
 interface Participant {

@@ -35,7 +35,6 @@ export default function Layout({
         headers: {
           'Content-Type': 'application/json'
         },
-        next: { revalidate: 5 }
       });
 
       if (response.ok) {
@@ -75,7 +74,6 @@ export default function Layout({
         headers: {
           'Content-Type': 'application/json'
         },
-        next: { revalidate: 5 }
       })
 
       if (res.ok) {
@@ -122,7 +120,6 @@ export default function Layout({
         headers: {
           'Content-Type': 'applicaction/json'
         },
-        next: { revalidate: 5 }
       })
 
       if (res.ok) {
@@ -139,11 +136,11 @@ export default function Layout({
   }
   
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       try {  
-        getData();
-        getOptions();
-        getRanges()
+        await getData();
+        await getOptions();
+        await getRanges()
       } catch (error) {
         console.error('Error fetching data:', error);
       }

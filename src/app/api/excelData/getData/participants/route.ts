@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
-export const revalidate = 5
 export const dynamic = 'force-dynamic'
 
 interface Participant {

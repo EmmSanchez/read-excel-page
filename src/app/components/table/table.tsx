@@ -322,7 +322,7 @@ export function Table() {
           return ids.includes(cellValue);
         }) as ExcelData;
       } else if (isName(searchValue)) {
-        filteredData = excelData?.filter((row, index) => index === 0 || row[1]?.toString().toLowerCase().includes(searchValue.toLowerCase())) as ExcelData;
+        filteredData = excelData?.filter((row, index) => index === 0 || row[3]?.toString().toLowerCase().includes(searchValue.toLowerCase())) as ExcelData;
       }
   
       setFilteredExcelData(filteredData ? filterColumns(filteredData, columnsToKeep) as ExcelData : null);

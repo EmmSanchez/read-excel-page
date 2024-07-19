@@ -18,7 +18,6 @@ export function RefreshButton () {
         headers: {
           'Content-Type': 'application/json'
         },
-        next: { revalidate: 5 }
       });
 
       if (response.ok) {
