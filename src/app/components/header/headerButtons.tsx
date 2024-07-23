@@ -17,7 +17,7 @@ export function HeaderButtons () {
               <>
 
                 <ExportToExcelButton />
-                <PrintButton />
+                {/* <PrintButton /> */}
               </>
             )
           }

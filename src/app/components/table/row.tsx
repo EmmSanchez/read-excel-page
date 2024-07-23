@@ -37,6 +37,8 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
     window.print()
   }
 
+  
+
   return (
     <>
       <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 dark:hover:bg-neutral-950 ${rowIndex % 2 === 0 ? 'bg-white dark:bg-neutral-900' : 'bg-slate-200/90 dark:bg-neutral-900'}`}>

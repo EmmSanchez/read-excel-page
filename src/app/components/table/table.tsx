@@ -11,6 +11,7 @@ import { DeselectRowsButton } from "../buttons/deselectRowsButton";
 import { useTableLoading } from "@/app/store/tableLoading";
 import { useAgesStore } from "@/app/store/agesStore";
 import { Range } from "@/app/dashboard/settings/page";
+import { ArrowDropdwonIcon, ChevronLeft, ChevronRight } from "../../../../public/icons/icons";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -212,6 +213,7 @@ export function Table() {
     setRowToDelete(null)
     setSearchValue('')
     setFilteredExcelData(null)  
+    setParticipantsPerPage(10)
   }, [file])
   
   
@@ -361,10 +363,12 @@ export function Table() {
     setSelectedRows([]);
     setRowToDelete(null);
     setIsPopoverVisible(false);
+    setInitialNumber(1)
+    setFinalNumber(participantsPerPage)
+    setPage(1)
   
     if (!searchValue) {
       setFilteredExcelData(excelData ? filterColumns(excelData, columnsToKeep) as ExcelData : null);
-
     } else {
       let filteredData: ExcelData | null = null;
   
@@ -392,6 +396,69 @@ export function Table() {
       
     }
   }, [searchValue, excelData]);
+
+  // Pagination
+  const [page, setPage] = useState<number>(1)
+  const [initialNumber, setInitialNumber] = useState<number>(1)
+  const [finalNumber, setFinalNumber] = useState<number>(10)
+  const [participantsPerPage, setParticipantsPerPage] = useState<number>(10)
+  const [totalPages, setTotalPages] = useState<number[]>([1])
+  const [isSelectNumberFilter, setIsSelectNumberFilter] = useState<boolean>(false)
+
+  const calculatePages = (users: number, participantsPerPage: number) => {
+    let newTotalPages: number = users / participantsPerPage
+    if (users % participantsPerPage > 0) {
+      newTotalPages = Math.ceil(newTotalPages)
+    }
+    
+    let array: number[] = []
+    for (let index = 1; index <= newTotalPages; index++) {
+      array.push(index)
+    }
+    
+    return array
+  }
+
+  useEffect(() => {
+    if (filteredExcelData?.slice(1).length === undefined) return
+    setPage(1)
+    const newTotalUsers = filteredExcelData?.slice(1).length
+    const newTotalPages = calculatePages(newTotalUsers, participantsPerPage)
+    setTotalPages(newTotalPages)
+    
+  }, [filteredExcelData, participantsPerPage])
+
+  const handlePage = (action: string, pageNumber?: number) => {
+    if (action === 'Next') {
+      setInitialNumber(prev => prev + 10)
+      setFinalNumber(prev => prev + 10)
+      setPage(prev => prev + 1)
+    }
+
+    if (action === 'Previous') {
+      setInitialNumber(prev => prev - 10)
+      setFinalNumber(prev => prev - 10)
+      setPage(prev => prev - 1)
+    }
+
+    if (pageNumber) {
+      if (action === 'Select') {
+        setPage(pageNumber)
+        const newInitialNumber = (pageNumber - 1) * participantsPerPage + 1
+        setInitialNumber(newInitialNumber)
+        const newFinalNumber = pageNumber * participantsPerPage + 1
+        setFinalNumber(newFinalNumber)
+      }
+    }
+  }
+
+  useEffect(() => {
+    handlePage('Select', 1)
+  }, [participantsPerPage])
+
+  const toggleFilterDropdown = () => {
+    setIsSelectNumberFilter(!isSelectNumberFilter)
+  }
 
   return (
     <>
@@ -495,9 +562,74 @@ export function Table() {
                       </div>
                     </div>
                   </div>
+                  
+                  {/* PAGINATION  */}
+                  <div className="grid grid-flow-col grid-cols-3 px-4 mt-5 mx-3">
+                    <div
+                      className={`relative w-16 bg-gray-200 dark:bg-gray-700 rounded-md ${
+                        isSelectNumberFilter ? 'outline outline-[1.4px] -outline-offset-1 outline-[#2563eb]' : ''
+                      }`}
+                    >
+                      <div className="dropdown-header" onClick={toggleFilterDropdown}>
+                        <p className={`${participantsPerPage ? 'text-black dark:text-gray-100 text-sm font-normal' : ''}`}>
+                          {participantsPerPage || 'Selecciona una opción'}
+                        </p>
+                        <span className={`dropdown-arrow transition-all ease-out dark:invert ${isSelectNumberFilter ? 'open' : ''}`}>
+                          <ArrowDropdwonIcon />
+                        </span>
+                      </div>
+                      <div
+                        className={`dropdown-menu rounded-md transition-all duration-100 ease-in-out shadow-lg outline outline-1 outline-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-800 ${
+                          isSelectNumberFilter ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                        }`}
+                      >
+                        <div onClick={() => {setParticipantsPerPage(10); toggleFilterDropdown()}} className="dropdown-item"><p>10</p></div>
+                        <div onClick={() => {setParticipantsPerPage(20); toggleFilterDropdown()}} className="dropdown-item"><p>20</p></div>
+                        <div onClick={() => {setParticipantsPerPage(50); toggleFilterDropdown()}} className="dropdown-item"><p>50</p></div>
+                      </div>
+                    </div>
+                    <div className="flex justify-center gap-1">
+                      <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-white">
+                        <ChevronLeft />
+                      </button>
+                      {
+                        totalPages.length < 6 ? 
+                          <>
+                            {
+                              totalPages.map((pageNumber, index) => {
+                                return (
+                                  <button onClick={() => handlePage('Select', pageNumber)} key={index} className={`px-3 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 ${pageNumber === page ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>
+                                    {pageNumber.toString()}
+                                  </button>
+                                )
+                              })
+                            }
+                          </>
+                          :
+                          <>
+                            {
+                              totalPages.map((pageNumber, index) => {
+                                return (
+                                  <button onClick={() => handlePage('Select', pageNumber)} key={index} className={`px-3 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 ${pageNumber === page ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>
+                                    {pageNumber.toString()}
+                                  </button>
+                                )
+                              })
+                            }
+                          </>
+                        
+                      }
+                      <button disabled={page === totalPages.length} onClick={() => handlePage('Next')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-transparent">
+                        <ChevronRight />
+                      </button>
+                    </div>
+                    <div className="flex justify-end items-end">
+                      <p className="text-gray-500 dark:text-gray-200 text-[16px]">Mostrando {initialNumber}-{page === totalPages.length ? filteredExcelData?.slice(1).length : finalNumber} de {filteredExcelData?.slice(1).length} resultados</p>
+                    </div>
+                  </div>
                   {/* TABLE */}
                   <div className="flex justify-start w-full">
-                    <div className='table table-auto m-3 mt-5 w-full rounded-md border-solid border-[1px] border-black/20 dark:bg-zinc-700 overflow-hidden'>
+                    <div className='table table-auto m-3 mt-2 w-full rounded-md border-solid border-[1px] border-black/20 dark:bg-zinc-700 overflow-hidden'>
                       <div className='table-header-group bg-[#2563EB] dark:bg-neutral-950'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
@@ -515,12 +647,12 @@ export function Table() {
                         </div>
                       </div>
                       <div className='table-row-group'>
-                        {filteredExcelData?.slice(1).map((row, rowIndex) => (
+                        {filteredExcelData?.slice(initialNumber, finalNumber).map((row, rowIndex) => (
                           <Row key={rowIndex} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} row={row} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </div> 
                 </>
               }
             </>
