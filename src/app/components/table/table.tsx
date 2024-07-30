@@ -14,6 +14,7 @@ import { Range } from "@/app/dashboard/settings/page";
 import { ArrowDropdwonIcon, ChevronLeft, ChevronRight } from "../../../../public/icons/icons";
 import { useParticipantsDataStore } from "@/models/participants";
 import { useFilteredParticipantsDataStore } from "@/models/filteredParticipants";
+import { ParticipantData } from "@/app/types/ClientParticipant";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -96,6 +97,29 @@ function convertParticipantsToArray(participants: Participant[]): (string | numb
   });
 
   return participantsArray;
+}
+
+function filterParticipantsValues(participants: ParticipantData[]) {
+  const newFilteredData = participants.map(participant => ({
+    "#": participant["#"],
+    "Apellido paterno": participant["Apellido paterno"],
+    "Apellido materno": participant["Apellido materno"],
+    "Nombre": participant["Nombre"],
+    "Prueba": participant["Prueba"],
+    "Edad": participant["Edad"],
+    "TBW": participant["TBW"],
+    "Agarre": participant["Agarre"],
+    "Puntos": participant["Puntos"],
+    "Salto": participant["Salto"],
+    "Puntos_1": participant["Puntos_1"],
+    "Agilidad": participant["Agilidad"],
+    "Puntos_2": participant["Puntos_2"],
+    "Resistencia": participant["Resistencia"],
+    "Puntos_3": participant["Puntos_3"],
+    "Total": participant["Total"]
+  }));
+
+  return newFilteredData
 }
 
 export function Table() {
@@ -186,6 +210,7 @@ export function Table() {
     }
   }
 
+  const headers = ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total']
 
 
 
@@ -219,8 +244,6 @@ export function Table() {
   useEffect(() => {
     
     if (!file) {
-      // setExcelData(null);
-      // setFilteredExcelData(null)
       setParticipants(null)
       setFilteredParticipants(null)
       return;
@@ -254,7 +277,7 @@ export function Table() {
     setSelectedRows([])
     setRowToDelete(null)
     setSearchValue('')
-    setFilteredExcelData(null)  
+    setFilteredParticipants(null)
     setParticipantsPerPage(10)
   }, [file])
   
@@ -394,12 +417,6 @@ export function Table() {
     }
   };
   
-
-  const columnsToKeep = [
-    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad',
-    'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total'
-  ];
-
   useEffect(() => {
     
     setSelectedRows([]);
@@ -410,34 +427,36 @@ export function Table() {
     setPage(1)
   
     if (!searchValue) {
-      setFilteredExcelData(excelData ? filterColumns(excelData, columnsToKeep) as ExcelData : null);
+      setFilteredParticipants(participants ? filterParticipantsValues(participants) : null)
     } else {
-      let filteredData: ExcelData | null = null;
+      let filteredParticipants
   
       if (isID(searchValue)) {
-        filteredData = excelData?.filter((row, index) => index === 0 || row[0]?.toString() === searchValue) as ExcelData;
+        filteredParticipants = participants?.filter((row, index) => row["#"]?.toString() === searchValue);
       } else if (isRange(searchValue)) {
         const [start, end] = searchValue.split('-').map(Number);
-        filteredData = excelData?.filter((row, index) => {
-          if (index === 0) return true; // Keep header row
-          const cellValue = Number(row[0]);
+
+        filteredParticipants = participants?.filter((row, index) => {
+          const cellValue = Number(row["#"]);
           return cellValue >= start && cellValue <= end;
-        }) as ExcelData;
+        });
+        
       } else if (isCustomSearch(searchValue)) {
         const ids = searchValue.split(',').map(Number);
-        filteredData = excelData?.filter((row, index) => {
-          if (index === 0) return true; // Keep header row
-          const cellValue = Number(row[0]);
+
+        filteredParticipants = participants?.filter((row, index) => {
+          const cellValue = Number(row["#"]);
           return ids.includes(cellValue);
-        }) as ExcelData;
+        });
+
       } else if (isName(searchValue)) {
-        filteredData = excelData?.filter((row, index) => index === 0 || row[3]?.toString().toLowerCase().includes(searchValue.toLowerCase())) as ExcelData;
+        filteredParticipants = participants?.filter((row, index) => row.Nombre?.toString().toLowerCase().includes(searchValue.toLowerCase()));
       }
   
-      setFilteredExcelData(filteredData ? filterColumns(filteredData, columnsToKeep) as ExcelData : null);
+      setFilteredParticipants(filteredParticipants ? filterParticipantsValues(filteredParticipants) : null);
       
     }
-  }, [searchValue, excelData]);
+  }, [searchValue, participants]);
 
   // Pagination
   const [page, setPage] = useState<number>(1)
@@ -545,11 +564,11 @@ export function Table() {
                       <div className='table-header-group bg-[#2563EB]'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
-                          { filteredExcelData && (
+                          { filteredParticipants && (
                               // CHECAR AQUÍ Y FILTEREDEXCELDATA ------------------------------------------------------------------------
                               <>
                                 {
-                                  filteredExcelData[0].map((cell, index) => (
+                                  Object.keys(filteredParticipants[0]).map((cell, index) => (
                                     <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>{cell}</div>
                                   ))
                                 }
@@ -560,13 +579,13 @@ export function Table() {
                         </div>
                       </div>
                       <div className='table-row-group'>
-                        {filteredExcelData?.slice(1).map((row, rowIndex) => (
+                        {filteredParticipants?.map((item, rowIndex) => (
                           // CHECAR AQUÍ ONCLICK Y FILTEREDEXCELDATA ------------------------------------------------------------------------
                             <div key={rowIndex} onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row pointer-events-none ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-200/90'}`}>
                               <div className="table-cell align-middle pl-3 py-[6px] text-sm border-solid border-t-[1px] border-black/20">
                                 <div className="animate-pulse w-4 h-4 align-middle bg-slate-400/80 rounded-xl"></div>
                               </div>
-                              {row.map((cell, cellIndex) => (
+                              {Object.values(item).map((value, cellIndex) => (
                                 <div key={cellIndex} className={`animate-pulse table-cell align-middle px-3 py-[16px] text-base border-solid border-t-[1px] border-black/20 ${(cellIndex === 3 || cellIndex === 2 || cellIndex === 1) ? 'whitespace-nowrap' : ''} ${cellIndex === 0 ? 'font-semibold text-center pl-0' : ''}`}>
                                   <div className="h-2 bg-slate-400/80 rounded">
                                   </div>
@@ -668,7 +687,7 @@ export function Table() {
                       </button>
                     </div>
                     <div className="flex justify-end items-end">
-                      <p className="text-gray-500 dark:text-gray-200 text-[16px]">Mostrando {initialNumber}-{page === totalPages.length ? filteredExcelData?.slice(1).length : finalNumber} de {filteredExcelData?.slice(1).length} resultados</p>
+                      <p className="text-gray-500 dark:text-gray-200 text-[16px]">Mostrando {initialNumber + 1}-{page === totalPages.length ? filteredParticipants?.length : finalNumber} de {filteredParticipants?.length} resultados</p>
                     </div>
                   </div>
                   {/* TABLE */}
@@ -677,12 +696,12 @@ export function Table() {
                       <div className='table-header-group bg-[#2563EB] dark:bg-neutral-950'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
-                          { filteredParticipants && (
+                          { participants && (
                               <>
                                 {
-                                  Object.keys(filteredParticipants[0]).map((key, index) => (
-                                    <div key={key} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
-                                      {key === 'Puntos_1' || key === 'Puntos_2' || key === 'Puntos_3' ?  <p>Puntos</p> : key}
+                                  headers.map((value, index) => (
+                                    <div key={value} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
+                                      <p>{value}</p>
                                     </div>
                                   ))
                                 }
