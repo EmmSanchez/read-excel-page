@@ -3,6 +3,8 @@ import { useDataStore } from "@/app/store/dataStore"
 import React, { Dispatch, SetStateAction} from "react"
 import { FormInputs } from "./inputs/formInputs"
 import { useAgesStore } from "@/app/store/agesStore";
+import { useParticipantsDataStore } from "@/app/store/participants";
+import { ParticipantData } from "@/app/types/ClientParticipant";
 
 interface FormData {
   id: number | null;
@@ -50,6 +52,11 @@ interface PopoverForm {
 export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopoverVisible, handleGetNewIndex, formData, setFormData, isAddButtonDisabled, setIsAddButtonDisabled}: PopoverForm) {
   const excelData = useDataStore((state) => state.excelData)
   const setExcelData = useDataStore((state) => state.setExcelData)
+
+  // FIXING
+  const participants = useParticipantsDataStore(state => state.participants)
+  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
   const ageRanges = useAgesStore(state => state.ageRanges)
 
 
@@ -111,7 +118,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     switch (action) {
       case "id":
         const newId = parseInt(newValue);   
-        if (excelData?.some((row, index) => index > 0 && row[0] === newId) || !newId) {
+        if (participants?.some((row, index) => row["#"] === newId) || !newId) {
           setIdError(true)
           setIsAddButtonDisabled(true)
         } else {
@@ -173,7 +180,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
   }
 
   // ENDPOINT TO ADD NEW ROW
-  const sendNewRow = async (row: (string | number | null)[]) => {
+  const sendNewRow = async (row: ParticipantData) => {
     try {
       const res = await fetch('/api/excelData/editData/addRow', {
         method: 'POST',
@@ -196,46 +203,46 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     e.preventDefault()
      // Ensure the formData has an id before adding
      if (formData.id !== null) {
-      const newRow = [
-          formData.id,
-          formData.p_surname,
-          formData.m_surname,
-          formData.name,
-          selectedOption,
-          formData.employeeNumber,
-          formData.age,
-          selectedGenre,
-          formData.category,
-          formData.height,
-          formData.weight,
-          formData.imc,
-          formData.waist,
-          formData.bmi,
-          formData.bmr,
-          formData.grease,
-          formData.fat_mass,
-          formData.ffm,
-          formData.tbw,
-          formData.grip,
-          formData.grip_points,
-          formData.jump,
-          formData.jump_points,
-          formData.agility,
-          formData.agility_points,
-          formData.resistance,
-          formData.resistance_points,
-          formData.total,
-      ];
+      const newRow = {
+          "#": formData.id,
+          "Apellido paterno": formData.p_surname,
+          "Apellido materno": formData.m_surname,
+          "Nombre": formData.name,
+          "Prueba": selectedOption,
+          "# Empleado": formData.employeeNumber,
+          "Edad": formData.age,
+          "Genero": selectedGenre,
+          "Categoria": formData.category,
+          "Altura [cm]": formData.height,
+          "Peso [kg]": formData.weight,
+          "IMC": formData.imc,
+          "Cintura [cm]": formData.waist,
+          "BMI": formData.bmi,
+          "BMR": formData.bmr,
+          "Grasa [%]": formData.grease,
+          "Fatmass": formData.fat_mass,
+          "FFM": formData.ffm,
+          "TBW": formData.tbw,
+          "Agarre": formData.grip,
+          "Puntos": formData.grip_points,
+          "Salto": formData.jump,
+          "Puntos_1": formData.jump_points,
+          "Agilidad": formData.agility,
+          "Puntos_2": formData.agility_points,
+          "Resistencia": formData.resistance,
+          "Puntos_3": formData.resistance_points,
+          "Total": formData.total,
+      }
 
       try {
         await sendNewRow(newRow)
         
         // Add new row to the existing excelData
-        const updatedData = excelData ? [...excelData, newRow] : [newRow]  
+        const updatedData = participants ? [...participants, newRow] : [newRow]  
         // Sort the data by id in ascending order
-        updatedData.sort((a, b) => (a[0] as number) - (b[0] as number));
+        updatedData.sort((a, b) => (a["#"] as number) - (b["#"] as number));
         // Update the state with the new sorted data
-        setExcelData(updatedData);
+        setParticipants(updatedData)
       } catch (error) {
         console.error('Error al crear nuevo participante', error)
       }
@@ -282,7 +289,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
 
   useEffect(() => {
     const rangeValue = getValueOfAge(formData.age!)
-    const newTotal = (formData.grip_points! + formData.jump_points! + formData.agility_points! + formData.resistance_points!) * rangeValue!
+    const newTotal = ((formData.grip_points ? formData.grip_points : 0) + (formData.jump_points ? formData.jump_points : 0) + (formData.agility_points ? formData.agility_points : 0) + (formData.resistance_points ? formData.resistance_points : 0)) * rangeValue!
     const newTotalFixed = fixDecimals(newTotal)!
     setFormData((prevData) => ({ ...prevData, total: newTotalFixed}))
     

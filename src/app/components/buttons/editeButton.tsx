@@ -193,7 +193,7 @@ export function EditButton ({handleGetRow, rowIndex, item}: EditButtonProps) {
       }
     }
 
-    if (participants && participants?.length <= 1) {
+    if (participants && participants?.length === 1) {
       newFormData.id = 1
     }
 
@@ -552,8 +552,8 @@ export function EditButton ({handleGetRow, rowIndex, item}: EditButtonProps) {
   }
 
   useEffect(() => {
-    const rangeValue = getValueOfAge(formData.age!)
-    const newTotal = (formData.grip_points! + formData.jump_points! + formData.agility_points! + formData.resistance_points!) * rangeValue!
+    const rangeValue = getValueOfAge(formData.age ? formData.age : 1)
+    const newTotal = ((formData.grip_points ? formData.grip_points : 0) + (formData.jump_points ? formData.jump_points : 0) + (formData.agility_points ? formData.agility_points : 0) + (formData.resistance_points ? formData.resistance_points : 0)) * rangeValue!
     const newTotalFixed = fixDecimals(newTotal)!
     setFormData((prevData) => ({ ...prevData, total: newTotalFixed}))
   }, [formData.age, formData.grip_points, formData.jump_points, formData.agility_points, formData.resistance_points])

@@ -12,7 +12,7 @@ interface DeleteButtonProps {
 export function DeleteButton ({handleGetRow, item, rowToDelete, cancelDelete, confirmDeleteRow}: DeleteButtonProps) {
   return (
     <>
-      <button className='w-[24px] h-full rounded-md transition-all hover:bg-zinc-50 dark:hover:bg-gray-700' onClick={(e) => {e.stopPropagation(); handleGetRow(item["#"], 'delete')}}>
+      <button className='w-[24px] h-full rounded-md transition-all hover:bg-zinc-50 dark:hover:bg-gray-700' onClick={(e) => {e.stopPropagation(); handleGetRow(item["#"]!, 'delete')}}>
         <DeleteIcon width={24} height={24} fill='#00890' className='p-1'/>
       </button>
       {rowToDelete === item["#"] && (

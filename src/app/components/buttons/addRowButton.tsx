@@ -1,7 +1,7 @@
 import { AddIcon } from "../../../../public/icons/icons";
 import { useState } from "react";
-import { useDataStore } from "@/app/store/dataStore";
 import { PopoverForm } from "../form/popoverForm";
+import { useParticipantsDataStore } from "@/app/store/participants";
 
 interface FormData {
   id: number | null;
@@ -39,7 +39,10 @@ interface AddRowButtonProps {
 }
 
 export function AddRowButton ({selectedRows}: AddRowButtonProps) {
-  const excelData = useDataStore((state) => state.excelData)
+  // FIXING
+  const participants = useParticipantsDataStore(state => state.participants)
+  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
   const [isPopoverVisible, setIsPopoverVisible] = useState<boolean>(false)
   const [idError, setIdError] = useState<boolean>(false)
 
@@ -82,16 +85,16 @@ export function AddRowButton ({selectedRows}: AddRowButtonProps) {
     setIsAddButtonDisabled(false)
     const newFormData = { ...formData }
     // LOGIC IF THERE IS NO LIST
-    if (excelData) {
-      const lastEntry = excelData[excelData.length - 1]
-      if (typeof lastEntry[0] === "number") {
-        const lastId = lastEntry[0]
+    if (participants) {
+      const lastEntry = participants[participants.length - 1]["#"]
+      if (typeof lastEntry === "number") {
+        const lastId = lastEntry
         const newId = lastId + 1
         newFormData.id = newId
       }
     }
 
-    if (excelData && excelData?.length <= 1) {
+    if (participants && participants?.length === 0) {
       newFormData.id = 1
     }
 
