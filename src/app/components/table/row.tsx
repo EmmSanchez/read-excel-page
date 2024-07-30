@@ -16,31 +16,30 @@ interface RowProps {
 }
 
 export function Row ({rowIndex, handleGetRow, selectedRows, item, rowToDelete, cancelDelete, confirmDeleteRow}: RowProps) {
-  const isSelected = selectedRows.includes(rowIndex);
+  const isSelected = selectedRows.includes(item["#"]);
   
   // Get rol every table refresh
-  const setUserProfile = useUserStore(state => state.setUserProfile)
   const userProfile = useUserStore(state => state.userProfile)
 
 
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    handleGetRow(rowIndex, 'select');
-  };
+  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   e.stopPropagation();
+  //   handleGetRow(rowIndex, 'select');
+  // };
 
   const handleCheckboxClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
-    handleGetRow(rowIndex, 'select');
+    handleGetRow(item["#"], 'select');
   };
 
-  const handlePrint = () => {
-    window.print()
-  }
+  // const handlePrint = () => {
+  //   window.print()
+  // }
 
   return (
     <>
-      <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 dark:hover:bg-neutral-950 ${rowIndex % 2 === 0 ? 'bg-white dark:bg-neutral-900' : 'bg-slate-200/90 dark:bg-neutral-900'}`}>
+      <div onClick={(e) => {e.stopPropagation(); handleGetRow(item["#"], 'select')}} className={`table-row hover:bg-gray-300 dark:hover:bg-neutral-950 ${rowIndex % 2 === 0 ? 'bg-white dark:bg-neutral-900' : 'bg-slate-200/90 dark:bg-neutral-900'}`}>
         <div className="table-cell align-middle pl-1 py-[6px] text-center text-sm border-solid border-t-[1px] border-black/20 dark:border-gray-700/50">
           <input 
             type="checkbox" 
@@ -61,7 +60,7 @@ export function Row ({rowIndex, handleGetRow, selectedRows, item, rowToDelete, c
             <EditButton handleGetRow={handleGetRow} rowIndex={rowIndex}/>
             {
               userProfile === 'Administrador' && (
-                <DeleteButton handleGetRow={handleGetRow} rowIndex={rowIndex} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
+                <DeleteButton handleGetRow={handleGetRow} item={item} rowIndex={rowIndex} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
               )
             }
           </div>

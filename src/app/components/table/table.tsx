@@ -76,29 +76,6 @@ export const sortArrayByColumn = (arr: ExcelData, column: string) => {
 
 };
 
-function convertParticipantsToArray(participants: Participant[]): (string | number)[][] {
-  const keys: (keyof Participant)[] = [
-    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', '# Empleado', 'Edad', 'Genero', 'Categoria',
-    'Altura [cm]', 'Peso [kg]', 'Grasa [%]', 'IMC', 'Cintura [cm]', 'BMI', 'BMR', 'Fatmass', 'FFM', 'TBW', 'Agarre',
-    'Puntos', 'Salto', 'Puntos_1', 'Agilidad', 'Puntos_2', 'Resistencia', 'Puntos_3', 'Total'
-  ];
-
-  const headers: (keyof Participant)[] = [
-    '#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', '# Empleado', 'Edad', 'Genero', 'Categoria',
-    'Altura [cm]', 'Peso [kg]', 'Grasa [%]', 'IMC', 'Cintura [cm]', 'BMI', 'BMR', 'Fatmass', 'FFM', 'TBW', 'Agarre',
-    'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total'
-  ];
-
-  const participantsArray: (string | number)[][] = [headers];
-
-  participants.map(participant => {
-    const values = keys.map(key => participant[key]);
-    participantsArray.push(values);
-  });
-
-  return participantsArray;
-}
-
 function filterParticipantsValues(participants: ParticipantData[]) {
   const newFilteredData = participants.map(participant => ({
     "#": participant["#"],
@@ -283,7 +260,7 @@ export function Table() {
   
   
   // GET ROW INDEX WITH ACTION
-  const handleGetRow = (rowIndex: number, action: string) => {
+  const handleGetRow = (index: number, action: string) => {
     if(!action) return
 
     // IF ROWTODELETE HAS A NUMBER AND YOU CLICK OTHER ROW, THE ROWTODELETE WILLNOT BE SELECTED
@@ -296,23 +273,24 @@ export function Table() {
       setIsPopoverVisible(false)
       setRowToDelete(null)
       setSelectedRows(prev => {
-        if (prev?.includes(rowIndex)) {
-          return prev.filter(index => index !== rowIndex); // Deselect if already selected
+        if (prev?.includes(index)) {
+          return prev.filter(index => index !== index); // Deselect if already selected
         } else {
-          return [...prev, rowIndex]; // Select if not already selected
+          return [...prev, index]; // Select if not already selected
         }
       });
+      
     }
-
+    
     // DELETE A ROW WITH ROW TRASH BUTTON
     if(action === 'delete') {
-      setSelectedRows([rowIndex])
-      setRowToDelete(rowIndex)
+      setSelectedRows([index])
+      setRowToDelete(index)
       setIsPopoverVisible(false) // rows
     }
 
     if(action === "edit") {
-      setSelectedRows([rowIndex])
+      setSelectedRows([index])
       setRowToDelete(null)
     }
 
@@ -344,12 +322,12 @@ export function Table() {
 
   // DELETE ROW
   const confirmDeleteRow = async () => {
-    if (rowToDelete !== null && filteredExcelData && excelData) {
-        const rowToDeleteId = Number(filteredExcelData[rowToDelete + 1][0]) // Obtener el ID de la fila a eliminar
+    if (rowToDelete !== null && filteredParticipants && participants) {
+        const rowToDeleteId = rowToDelete // Get ID to delete
         try {
-          const res = await deleteRowDB(rowToDeleteId)
-          const newExcelData = excelData.filter((row, index) => index === 0 || row[0] !== rowToDeleteId) as ExcelData;
-          setExcelData(newExcelData);
+          await deleteRowDB(rowToDeleteId)
+          const newData = participants.filter((row, index) => row["#"] !== rowToDeleteId);
+          setParticipants(newData)
           setRowToDelete(null);
           setSelectedRows([]);
         } catch (error) {
@@ -362,19 +340,20 @@ export function Table() {
     setSelectedRows([])
     setRowToDelete(null);
   };
-  // --------
 
   // DELETE MORE THAN 2 ROWS
   const deleteSelectedRows = async () => {
-    if (!selectedRows || !excelData || !filteredExcelData) return;
-    const idsToDelete = selectedRows.map(rowIndex => Number(filteredExcelData[rowIndex + 1][0])); // Obtener los IDs de las filas a eliminar
-    const res = await deleteRowDB(idsToDelete)
-    const newData = excelData.filter((row, index) => index === 0 || !idsToDelete.includes(Number(row[0]))) as ExcelData;
-    setExcelData(newData);
+    if (!selectedRows || !participants || !filteredParticipants) return;
+    const idsToDelete = selectedRows // Obtener los IDs de las filas a eliminar
+    await deleteRowDB(idsToDelete)
+    const newData = participants.filter((row, index) => !idsToDelete.includes(row["#"]));
+    setParticipants(newData)
     setSelectedRows([]);
     setRowToDelete(null);
   };
 
+
+  // SEARCHING ------------------------------------------------------------------------------------------------------------------------------------------------
   const handleSearchbar = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     const newSearchValue = (e.target.value).trimStart()
@@ -386,36 +365,6 @@ export function Table() {
   const isRange = (value: string) => /^\d+-\d+$/.test(value); // Range is in the form "num1-num2"
   const isName = (value: string) => !isID(value) && !isRange(value); // Anything else is a name
   const isCustomSearch = (value: string) => /^(\d+,)*\d+,?$/.test(value); // Custom search in the form "num1,num2,num3,..."
-
-  const filterColumns = (arr: ExcelData, columns: string[]) => {
-    if (arr) {
-      const headerRow = arr[0];
-      // Mapa para mantener el recuento de las columnas duplicadas
-      const columnCount = new Map<string, number>();
-  
-      // Encuentra los índices de las columnas teniendo en cuenta los duplicados
-      const columnIndexes = columns.map((column, idx) => {
-        let count = columnCount.get(column) || 0;
-        let columnIndex = -1;
-        let occurrence = 0;
-  
-        for (let i = 0; i < headerRow.length; i++) {
-          if (headerRow[i] === column) {
-            if (occurrence === count) {
-              columnIndex = i;
-              break;
-            }
-            occurrence++;
-          }
-        }
-  
-        columnCount.set(column, count + 1);
-        return columnIndex;
-      });
-  
-      return arr.map(row => columnIndexes.map(index => row[index]));
-    }
-  };
   
   useEffect(() => {
     
@@ -458,7 +407,7 @@ export function Table() {
     }
   }, [searchValue, participants]);
 
-  // Pagination
+  // PAGINATION ----------------------------------------------------------------------------------------------------------------------------------------------
   const [page, setPage] = useState<number>(1)
   const [initialNumber, setInitialNumber] = useState<number>(0)
   const [finalNumber, setFinalNumber] = useState<number>(10)
