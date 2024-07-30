@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import TestOptionsModel from "@/models/tests";
 
-
-
 export async function DELETE(req: NextRequest) {
   try {
     const { option } = await req.json()

@@ -4,37 +4,6 @@ import FileInfoModel from '@/models/fileInfo';
 import connectDB from '@/app/lib/mongodb';
 export const dynamic = 'force-dynamic'
 
-interface Participant {
-  '#': number;
-  'Apellido paterno': string;
-  'Apellido materno': string;
-  'Nombre': string;
-  'Prueba': string;
-  '# Empleado': number;
-  'Edad': number;
-  'Genero': string;
-  'Categoria': string;
-  'Altura [cm]': number;
-  'Peso [kg]': number;
-  'Grasa [%]': number;
-  'IMC': number;
-  'Cintura [cm]': number;
-  'BMI': number;
-  'BMR': number;
-  'Fatmass': number;
-  'FFM': number;
-  'TBW': number;
-  'Agarre': number;
-  'Puntos': number;
-  'Salto': number;
-  'Puntos_1': number;
-  'Agilidad': number;
-  'Puntos_2': number;
-  'Resistencia': number;
-  'Puntos_3': number;
-  'Total': number;
-}
-
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
     await connectDB();

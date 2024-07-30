@@ -5,7 +5,6 @@ import { AddRowButton } from "../buttons/addRowButton";
 import { RemoveRowsButton } from "../buttons/removeRowsButton";
 import { Row } from "./row";
 import { Searchbar } from "../searchbar/searchbar";
-import { useFilteredDataStore } from "@/app/store/filteredData";
 import { DeselectRowsButton } from "../buttons/deselectRowsButton";
 import { useTableLoading } from "@/app/store/tableLoading";
 import { useAgesStore } from "@/app/store/agesStore";
@@ -76,7 +75,6 @@ export function Table() {
   // ---------------
   const file = useFileStore((state) => state.file);
   const setFile = useFileStore((state) => state.setFile);
-  const filteredExcelData = useFilteredDataStore((state) => state.filteredExcelData)
   const [rowToDelete, setRowToDelete] = useState<number | null>(null);
   const [selectedRows, setSelectedRows] = useState<number[]>([])  
 
@@ -142,8 +140,6 @@ export function Table() {
       if (response.ok) {
         const res = await response.json()
         const updatedParticipants = res.data
-        // const participantsArray = convertParticipantsToArray(updatedParticipants) 
-        // setExcelData(participantsArray)
         setParticipants(updatedParticipants)
       }
     } catch (error) {
@@ -392,13 +388,13 @@ export function Table() {
   }
 
   useEffect(() => {
-    if (filteredExcelData?.slice(1).length === undefined) return
+    if (filteredParticipants?.length === undefined) return
     setPage(1)
-    const newTotalUsers = filteredExcelData?.slice(1).length
+    const newTotalUsers = filteredParticipants?.length
     const newTotalPages = calculatePages(newTotalUsers, participantsPerPage)
     setTotalPages(newTotalPages)
     
-  }, [filteredExcelData, participantsPerPage])
+  }, [filteredParticipants, participantsPerPage])
 
   const handlePage = (action: string, pageNumber?: number) => {
     if (action === 'Next') {

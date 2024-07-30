@@ -1,9 +1,6 @@
 'use client'
 import { NavBar } from "../components/NavBar/navbar";
-import { Providers } from "../themes/themeProvider";
 import { useEffect, useState } from "react";
-import { useUserStore } from "../store/userStore";
-import { useDataStore } from "../store/dataStore";
 import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
@@ -17,8 +14,6 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userProfile = useUserStore(state => state.userProfile)
-  const setExcelData = useDataStore((state) => state.setExcelData)
   const setFile = useFileStore((state) => state.setFile)  
   const setOptions = useTestOptionsStore(state => state.setOptions)
   const setUsers = useDataUsersStore(state => state.setUsers)
