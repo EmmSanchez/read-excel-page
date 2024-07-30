@@ -8,7 +8,7 @@ import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
 import { useAgesStore } from "../store/agesStore";
-import { useParticipantsDataStore } from "@/models/participants";
+import { useParticipantsDataStore } from "@/app/store/participants";
 
 
 

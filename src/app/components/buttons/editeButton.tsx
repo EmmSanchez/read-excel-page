@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FormInputs } from "../form/inputs/formInputs";
-import { useDataStore } from "@/app/store/dataStore";
-import { useFilteredDataStore } from "@/app/store/filteredData";
 import { EditIcon, PrintIcon } from "../../../../public/icons/icons";
-import { log } from "console";
 import { useAgesStore } from "@/app/store/agesStore";
-
-type ExcelData = (string | number | boolean | null)[][] | null;
+import { filteredParticipant } from "@/app/types/filteredParticipant";
+import { useParticipantsDataStore } from "@/app/store/participants";
+import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
+import { ParticipantData } from "@/app/types/ClientParticipant";
 
 interface FormData {
   id: number | null;
@@ -38,18 +37,23 @@ interface FormData {
   resistance_points: number | null;
   total: number | null;
 }
+
 interface EditButtonProps {
   handleGetRow: (rowIndex: number, action: string) => void
   rowIndex: number
+  item: filteredParticipant
 }
 
-export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
+export function EditButton ({handleGetRow, rowIndex, item}: EditButtonProps) {
   const [isPopoverVisible, setIsPopoverVisible] = useState<boolean>(false)
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true)
 
-  const excelData = useDataStore((state) => state.excelData)
-  const setExcelData = useDataStore((state) => state.setExcelData)
-  const filteredExcelData = useFilteredDataStore((state) => state.filteredExcelData)
+  // FIXING
+  const participants = useParticipantsDataStore(state => state.participants)
+  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
+  const filteredParticipants = useFilteredParticipantsDataStore(state => state.filteredParticipants)
+  const setFilteredParticipants = useFilteredParticipantsDataStore(state => state.setFilteredParticipants)
 
   // SECTIONS FORM
   const [activeSection, setActiveSection] = useState<string>("Información")
@@ -111,7 +115,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
         // IS ID === ORIGINAL ID
         if (newId === originalFormData.id) {
           setIdError(false); 
-        } else if (excelData?.some((row, index) => index > 0 && row[0] === newId)) {
+        } else if (participants?.some((row, index) => row["#"] === newId)) {
           setIdError(true); // IF ALREADY EXISTS
         } else {
           setIdError(false);
@@ -180,16 +184,16 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setIsSaveButtonDisabled(false)
     const newFormData = { ...formData }
     // LOGIC IF THERE IS NO LIST
-    if (excelData) {
-      const lastEntry = excelData[excelData.length - 1]
-      if (typeof lastEntry[0] === "number") {
-        const lastId = lastEntry[0]
+    if (participants) {
+      const lastEntry = participants[participants.length - 1]["#"]
+      if (typeof lastEntry === "number") {
+        const lastId = lastEntry
         const newId = lastId + 1
         newFormData.id = newId
       }
     }
 
-    if (excelData && excelData?.length <= 1) {
+    if (participants && participants?.length <= 1) {
       newFormData.id = 1
     }
 
@@ -204,48 +208,49 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     return parseFloat(num.toFixed(2));
   }
 
-  const getRowInfo = (rowIndex: number) => {
+  const getRowInfo = (id: number) => {
     resetInputs();
-    if (filteredExcelData && excelData) {
-      const rowId = filteredExcelData[rowIndex + 1][0];
-      const rowToEdit = excelData.find((row) => row[0] === rowId) as unknown as ExcelData;
+    if (filteredParticipants && participants) {
+      const rowId = id
+      const rowToEdit = participants.find((row) => row["#"] === rowId);
   
-      if (rowToEdit && Array.isArray(rowToEdit)) {
+      if (rowToEdit) {
         const rowInfo: FormData = {
-          id: rowToEdit[0] !== null ? Number(rowToEdit[0]) : null,
-          p_surname: rowToEdit[1] as unknown as string,
-          m_surname: rowToEdit[2] as unknown as string,
-          name: rowToEdit[3] as unknown as string,
-          test: rowToEdit[4] as unknown as string,
-          employeeNumber: rowToEdit[5] as unknown as string,
-          age: rowToEdit[6] !== null ? Number(rowToEdit[6]) : null,
-          genre: rowToEdit[7] as unknown as string,
-          category: rowToEdit[8] as unknown as string,
-          height: rowToEdit[9] !== null ? Number(rowToEdit[9]) : null,
-          weight: rowToEdit[10] !== null ? Number(rowToEdit[10]) : null,
-          grease: rowToEdit[11] !== null ? Number(rowToEdit[11]) : null,
-          imc: rowToEdit[12] !== null ? Number(rowToEdit[12]) : null,
-          waist: rowToEdit[13] !== null ? Number(rowToEdit[13]) : null,
-          bmi: rowToEdit[14] !== null ? Number(rowToEdit[14]) : null,
-          bmr: rowToEdit[15] !== null ? Number(rowToEdit[15]) : null,
-          fat_mass: rowToEdit[16] !== null ? Number(rowToEdit[16]) : null,
-          ffm: rowToEdit[17] !== null ? Number(rowToEdit[17]) : null,
-          tbw: rowToEdit[18] !== null ? Number(rowToEdit[18]) : null,
-          grip: rowToEdit[19] !== null ? Number(rowToEdit[19]) : null,
-          grip_points: rowToEdit[20] !== null ? Number(rowToEdit[20]) : null,
-          jump: rowToEdit[21] !== null ? Number(rowToEdit[21]) : null,
-          jump_points: rowToEdit[22] !== null ? Number(rowToEdit[22]) : null,
-          agility: rowToEdit[23] !== null ? Number(rowToEdit[23]) : null,
-          agility_points: rowToEdit[24] !== null ? Number(rowToEdit[24]) : null,
-          resistance: rowToEdit[25] as unknown  as string,
-          resistance_points: rowToEdit[26] !== null ? Number(rowToEdit[26]) : null,
-          total: rowToEdit[27] !== null ? Number(rowToEdit[27]) : null,
+          id: rowToEdit["#"] !== null ? Number(rowToEdit["#"]) : null,
+          p_surname: rowToEdit["Apellido paterno"] as unknown as string,
+          m_surname: rowToEdit["Apellido materno"] as unknown as string,
+          name: rowToEdit.Nombre as unknown as string,
+          test: rowToEdit.Prueba as unknown as string,
+          employeeNumber: rowToEdit["# Empleado"] as unknown as string,
+          age: rowToEdit.Edad !== null ? Number(rowToEdit.Edad) : null,
+          genre: rowToEdit.Genero as unknown as string,
+          category: rowToEdit.Categoria as unknown as string,
+          height: rowToEdit["Altura [cm]"] !== null ? Number(rowToEdit["Altura [cm]"]) : null,
+          weight: rowToEdit["Peso [kg]"] !== null ? Number(rowToEdit["Peso [kg]"]) : null,
+          grease: rowToEdit["Grasa [%]"] !== null ? Number(rowToEdit["Grasa [%]"]) : null,
+          imc: rowToEdit.IMC !== null ? Number(rowToEdit.IMC) : null,
+          waist: rowToEdit["Cintura [cm]"] !== null ? Number(rowToEdit["Cintura [cm]"]) : null,
+          bmi: rowToEdit.BMI !== null ? Number(rowToEdit.BMI) : null,
+          bmr: rowToEdit.BMR !== null ? Number(rowToEdit.BMR) : null,
+          fat_mass: rowToEdit.Fatmass !== null ? Number(rowToEdit.Fatmass) : null,
+          ffm: rowToEdit.FFM !== null ? Number(rowToEdit.FFM) : null,
+          tbw: rowToEdit.TBW !== null ? Number(rowToEdit.TBW) : null,
+          grip: rowToEdit.Agarre !== null ? Number(rowToEdit.Agarre) : null,
+          grip_points: rowToEdit.Puntos !== null ? Number(rowToEdit.Puntos) : null,
+          jump: rowToEdit.Salto !== null ? Number(rowToEdit.Salto) : null,
+          jump_points: rowToEdit.Puntos_1 !== null ? Number(rowToEdit.Puntos_1) : null,
+          agility: rowToEdit.Agilidad !== null ? Number(rowToEdit.Agilidad) : null,
+          agility_points: rowToEdit.Puntos_2 !== null ? Number(rowToEdit.Puntos_2) : null,
+          resistance: rowToEdit.Resistencia as unknown  as string,
+          resistance_points: rowToEdit.Puntos_3 !== null ? Number(rowToEdit.Puntos_3) : null,
+          total: rowToEdit.Total !== null ? Number(rowToEdit.Total) : null,
         };
+        
           setOriginalFormData(rowInfo);
           setFormData(rowInfo);
           setIsSaveButtonDisabled(false)
-          setSelectedOption(rowToEdit[4] as unknown  as string)
-          setSelectedGenre(rowToEdit[7] as unknown as string)
+          setSelectedOption(rowToEdit.Prueba as unknown  as string)
+          setSelectedGenre(rowToEdit.Genero as unknown as string)
         }
       }
   }
@@ -259,8 +264,8 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
   const handleEditeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     setIsPopoverVisible(!isPopoverVisible)
-    handleGetRow(rowIndex, 'edit')
-    getRowInfo(rowIndex)
+    handleGetRow(item["#"]!, 'edit')
+    getRowInfo(item["#"]!)
   }
 
   const updateRowInDatabase = async (formData: FormData, id: number, selectedOption: string, selectedGenre: string) => {
@@ -291,7 +296,7 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
     setIsSaveButtonDisabled(false)
     setIdError(false)
     setActiveSection("Información")
-    handleGetRow(rowIndex, 'cancel-edit')
+    handleGetRow(item["#"]!, 'cancel-edit')
     setSelectedOption('')
     setIsTestOpen(false)
     setSelectedGenre('')
@@ -307,59 +312,61 @@ export function EditButton ({handleGetRow, rowIndex}: EditButtonProps) {
       const originalId = originalFormData.id
       await updateRowInDatabase(formData, originalId, selectedOption, selectedGenre)
       
-      if (excelData) {
-        const updatedExcelData = excelData.map(row => {
-          if (row[0] === originalFormData.id) {
-            return [
-              formData.id,
-              formData.p_surname,
-              formData.m_surname,
-              formData.name,
-              selectedOption,
-              formData.employeeNumber,
-              formData.age,
-              selectedGenre,
-              formData.category,
-              formData.height,
-              formData.weight,
-              formData.grease,
-              formData.imc,
-              formData.waist,
-              formData.bmi,
-              formData.bmr,
-              formData.fat_mass,
-              formData.ffm,
-              formData.tbw,
-              formData.grip,
-              formData.grip_points,
-              formData.jump,
-              formData.jump_points,
-              formData.agility,
-              formData.agility_points,
-              formData.resistance,
-              formData.resistance_points,
-              formData.total
-            ];
+      // CHECAR PARA ACEPTAR VALORES NULL AL MOMENTO DE ACTUALIZAR DATOS
+      if (participants) {
+        const updatedData = participants.map(row => {
+          if (row["#"] === originalFormData.id) {
+            return {
+              "#": formData.id!,
+              'Apellido paterno': formData.p_surname,
+              'Apellido materno': formData.m_surname,
+              Nombre: formData.name,
+              Prueba: formData.test,
+              '# Empleado': formData.employeeNumber,
+              Edad: formData.age,
+              Genero: formData.genre,
+              Categoria: formData.category,
+              'Altura [cm]': formData.height,
+              'Peso [kg]': formData.weight,
+              'Grasa [%]': formData.grease,
+              IMC: formData.imc,
+              'Cintura [cm]': formData.waist,
+              BMI: formData.bmi,
+              BMR: formData.bmr,
+              Fatmass: formData.fat_mass,
+              FFM: formData.ffm,
+              TBW: formData.tbw,
+              Agarre: formData.grip,
+              Puntos: formData.grip_points,
+              Salto: formData.jump,
+              Puntos_1: formData.jump_points,
+              Agilidad: formData.agility,
+              Puntos_2: formData.agility_points,
+              Resistencia: formData.resistance,
+              Puntos_3: formData.resistance_points,
+              Total: formData.total,
+            }
           }
-          return row;
+          return row as ParticipantData;
         });
         
         // SORT AGAIN
-        updatedExcelData.sort((a, b) => {
-          const idA = Number(a[0]);
-          const idB = Number(b[0]);
+        updatedData.sort((a, b) => {
+          const idA = a["#"];
+          const idB = b["#"];
           if (idA === null || idB === null) {
             return 0;
           }
           return idA - idB;
         });
+
         if (action === 'exit') {
           setIsPopoverVisible(false);
           setSelectedOption('')
           setSelectedGenre('')
           setActiveSection("Información");
         }
-        setExcelData(updatedExcelData);
+        setParticipants(updatedData)
         setIsTestOpen(false)
         setIsGenreOpen(false)
         setOriginalFormData(formData)

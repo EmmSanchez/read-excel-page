@@ -12,8 +12,8 @@ import { useTableLoading } from "@/app/store/tableLoading";
 import { useAgesStore } from "@/app/store/agesStore";
 import { Range } from "@/app/dashboard/settings/page";
 import { ArrowDropdwonIcon, ChevronLeft, ChevronRight } from "../../../../public/icons/icons";
-import { useParticipantsDataStore } from "@/models/participants";
-import { useFilteredParticipantsDataStore } from "@/models/filteredParticipants";
+import { useParticipantsDataStore } from "@/app/store/participants";
+import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
@@ -189,8 +189,6 @@ export function Table() {
 
   const headers = ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total']
 
-
-
   useEffect(() => {
     if (!searchValue) {
       if (!participants) return
@@ -260,7 +258,7 @@ export function Table() {
   
   
   // GET ROW INDEX WITH ACTION
-  const handleGetRow = (index: number, action: string) => {
+  const handleGetRow = (id: number, action: string) => {
     if(!action) return
 
     // IF ROWTODELETE HAS A NUMBER AND YOU CLICK OTHER ROW, THE ROWTODELETE WILLNOT BE SELECTED
@@ -273,10 +271,10 @@ export function Table() {
       setIsPopoverVisible(false)
       setRowToDelete(null)
       setSelectedRows(prev => {
-        if (prev?.includes(index)) {
-          return prev.filter(index => index !== index); // Deselect if already selected
+        if (prev?.includes(id)) {
+          return prev.filter(index => index !== id); // Deselect if already selected
         } else {
-          return [...prev, index]; // Select if not already selected
+          return [...prev, id]; // Select if not already selected
         }
       });
       
@@ -284,13 +282,13 @@ export function Table() {
     
     // DELETE A ROW WITH ROW TRASH BUTTON
     if(action === 'delete') {
-      setSelectedRows([index])
-      setRowToDelete(index)
+      setSelectedRows([id])
+      setRowToDelete(id)
       setIsPopoverVisible(false) // rows
     }
 
     if(action === "edit") {
-      setSelectedRows([index])
+      setSelectedRows([id])
       setRowToDelete(null)
     }
 
@@ -346,7 +344,7 @@ export function Table() {
     if (!selectedRows || !participants || !filteredParticipants) return;
     const idsToDelete = selectedRows // Obtener los IDs de las filas a eliminar
     await deleteRowDB(idsToDelete)
-    const newData = participants.filter((row, index) => !idsToDelete.includes(row["#"]));
+    const newData = participants.filter((row, index) => !idsToDelete.includes(row["#"]!));
     setParticipants(newData)
     setSelectedRows([]);
     setRowToDelete(null);
@@ -639,6 +637,7 @@ export function Table() {
                       <p className="text-gray-500 dark:text-gray-200 text-[16px]">Mostrando {initialNumber + 1}-{page === totalPages.length ? filteredParticipants?.length : finalNumber} de {filteredParticipants?.length} resultados</p>
                     </div>
                   </div>
+
                   {/* TABLE */}
                   <div className="flex justify-start w-full">
                     <div className='table table-auto m-3 mt-2 w-full rounded-md border-solid border-[1px] border-black/20 dark:bg-zinc-700 overflow-hidden'>

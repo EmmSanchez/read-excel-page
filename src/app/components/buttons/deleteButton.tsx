@@ -3,14 +3,13 @@ import { DeleteIcon } from "../../../../public/icons/icons";
 
 interface DeleteButtonProps {
   handleGetRow: (rowIndex: number, action: string) => void;
-  rowIndex: number;
   rowToDelete: number | null; 
   cancelDelete: () => void;
   confirmDeleteRow: () => void;
   item: filteredParticipant
 }
 
-export function DeleteButton ({handleGetRow, item, rowIndex, rowToDelete, cancelDelete, confirmDeleteRow}: DeleteButtonProps) {
+export function DeleteButton ({handleGetRow, item, rowToDelete, cancelDelete, confirmDeleteRow}: DeleteButtonProps) {
   return (
     <>
       <button className='w-[24px] h-full rounded-md transition-all hover:bg-zinc-50 dark:hover:bg-gray-700' onClick={(e) => {e.stopPropagation(); handleGetRow(item["#"], 'delete')}}>

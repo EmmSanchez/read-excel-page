@@ -3,7 +3,7 @@ import { RefreshIcon } from "../../../../public/icons/icons";
 import { useFilteredDataStore } from "@/app/store/filteredData";
 import { useTableLoading } from "@/app/store/tableLoading";
 import { useTheme } from "next-themes";
-import { useParticipantsDataStore } from "@/models/participants";
+import { useParticipantsDataStore } from "@/app/store/participants";
 
 export function RefreshButton () {
   const setExcelData = useDataStore((state) => state.setExcelData)
