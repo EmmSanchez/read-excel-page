@@ -12,6 +12,8 @@ import { useTableLoading } from "@/app/store/tableLoading";
 import { useAgesStore } from "@/app/store/agesStore";
 import { Range } from "@/app/dashboard/settings/page";
 import { ArrowDropdwonIcon, ChevronLeft, ChevronRight } from "../../../../public/icons/icons";
+import { useParticipantsDataStore } from "@/models/participants";
+import { useFilteredParticipantsDataStore } from "@/models/filteredParticipants";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -97,6 +99,13 @@ function convertParticipantsToArray(participants: Participant[]): (string | numb
 }
 
 export function Table() {
+  //FIXING
+  const participants = useParticipantsDataStore(state => state.participants)
+  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
+  const filteredParticipants = useFilteredParticipantsDataStore(state => state.filteredParticipants)
+  const setFilteredParticipants = useFilteredParticipantsDataStore(state => state.setFilteredParticipants)
+  // ---------------
   const file = useFileStore((state) => state.file);
   const setFile = useFileStore((state) => state.setFile);
   const excelData = useDataStore((state) => state.excelData)
@@ -168,20 +177,52 @@ export function Table() {
       if (response.ok) {
         const res = await response.json()
         const updatedParticipants = res.data
-        const participantsArray = convertParticipantsToArray(updatedParticipants) 
-        setExcelData(participantsArray)
+        // const participantsArray = convertParticipantsToArray(updatedParticipants) 
+        // setExcelData(participantsArray)
+        setParticipants(updatedParticipants)
       }
     } catch (error) {
       console.error("Error uploading data to MongoDB:", error);
     }
   }
 
+
+
+
+  useEffect(() => {
+    if (!searchValue) {
+      if (!participants) return
+      const newFilteredData = participants.map(participant => ({
+        "#": participant["#"],
+        "Apellido paterno": participant["Apellido paterno"],
+        "Apellido materno": participant["Apellido materno"],
+        "Nombre": participant["Nombre"],
+        "Prueba": participant["Prueba"],
+        "Edad": participant["Edad"],
+        "TBW": participant["TBW"],
+        "Agarre": participant["Agarre"],
+        "Puntos": participant["Puntos"],
+        "Salto": participant["Salto"],
+        "Puntos_1": participant["Puntos_1"],
+        "Agilidad": participant["Agilidad"],
+        "Puntos_2": participant["Puntos_2"],
+        "Resistencia": participant["Resistencia"],
+        "Puntos_3": participant["Puntos_3"],
+        "Total": participant["Total"]
+      }));
+      setFilteredParticipants(newFilteredData)
+    }
+
+  }, [searchValue, participants])
+
   // CONVERT EXCEL TO JSON
   useEffect(() => {
     
     if (!file) {
-      setExcelData(null);
-      setFilteredExcelData(null)
+      // setExcelData(null);
+      // setFilteredExcelData(null)
+      setParticipants(null)
+      setFilteredParticipants(null)
       return;
     }
 
@@ -195,6 +236,7 @@ export function Table() {
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as ExcelData;
+          
           const sortedData = sortArrayByColumn(jsonData, '#') as ExcelData;
           
           const sortedDataJSON = arrayToJSON(sortedData)
@@ -363,7 +405,7 @@ export function Table() {
     setSelectedRows([]);
     setRowToDelete(null);
     setIsPopoverVisible(false);
-    setInitialNumber(1)
+    setInitialNumber(0)
     setFinalNumber(participantsPerPage)
     setPage(1)
   
@@ -399,7 +441,7 @@ export function Table() {
 
   // Pagination
   const [page, setPage] = useState<number>(1)
-  const [initialNumber, setInitialNumber] = useState<number>(1)
+  const [initialNumber, setInitialNumber] = useState<number>(0)
   const [finalNumber, setFinalNumber] = useState<number>(10)
   const [participantsPerPage, setParticipantsPerPage] = useState<number>(10)
   const [totalPages, setTotalPages] = useState<number[]>([1])
@@ -444,9 +486,9 @@ export function Table() {
     if (pageNumber) {
       if (action === 'Select') {
         setPage(pageNumber)
-        const newInitialNumber = (pageNumber - 1) * participantsPerPage + 1
+        const newInitialNumber = (pageNumber - 1) * participantsPerPage
         setInitialNumber(newInitialNumber)
-        const newFinalNumber = pageNumber * participantsPerPage + 1
+        const newFinalNumber = pageNumber * participantsPerPage
         setFinalNumber(newFinalNumber)
       }
     }
@@ -462,7 +504,7 @@ export function Table() {
 
   return (
     <>
-      {excelData ? (
+      {excelData || participants ? (
         <>
           <div className="flex flex-col justify-start w-full my-4">
             <>
@@ -504,6 +546,7 @@ export function Table() {
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
                           { filteredExcelData && (
+                              // CHECAR AQUÍ Y FILTEREDEXCELDATA ------------------------------------------------------------------------
                               <>
                                 {
                                   filteredExcelData[0].map((cell, index) => (
@@ -518,6 +561,7 @@ export function Table() {
                       </div>
                       <div className='table-row-group'>
                         {filteredExcelData?.slice(1).map((row, rowIndex) => (
+                          // CHECAR AQUÍ ONCLICK Y FILTEREDEXCELDATA ------------------------------------------------------------------------
                             <div key={rowIndex} onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row pointer-events-none ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-200/90'}`}>
                               <div className="table-cell align-middle pl-3 py-[6px] text-sm border-solid border-t-[1px] border-black/20">
                                 <div className="animate-pulse w-4 h-4 align-middle bg-slate-400/80 rounded-xl"></div>
@@ -633,11 +677,13 @@ export function Table() {
                       <div className='table-header-group bg-[#2563EB] dark:bg-neutral-950'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
-                          { filteredExcelData && (
+                          { filteredParticipants && (
                               <>
                                 {
-                                  filteredExcelData[0].map((cell, index) => (
-                                    <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>{cell}</div>
+                                  Object.keys(filteredParticipants[0]).map((key, index) => (
+                                    <div key={key} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
+                                      {key === 'Puntos_1' || key === 'Puntos_2' || key === 'Puntos_3' ?  <p>Puntos</p> : key}
+                                    </div>
                                   ))
                                 }
                               </>
@@ -647,8 +693,8 @@ export function Table() {
                         </div>
                       </div>
                       <div className='table-row-group'>
-                        {filteredExcelData?.slice(initialNumber, finalNumber).map((row, rowIndex) => (
-                          <Row key={rowIndex} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} row={row} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
+                        {filteredParticipants?.slice(initialNumber, finalNumber).map((item, rowIndex) => (
+                          <Row key={item["#"]} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} item={item} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
                         ))}
                       </div>
                     </div>
@@ -670,3 +716,6 @@ export function Table() {
     </>
   );
 }
+
+// THINGS TO DO
+// new participants and filteredParticipants are rendering well, manage edit, select and remove

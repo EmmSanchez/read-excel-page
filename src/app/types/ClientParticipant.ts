@@ -1,0 +1,30 @@
+export interface ParticipantData {
+  "#": number;
+  "Apellido paterno": string;
+  "Apellido materno": string;
+  "Nombre": string;
+  "Prueba": string;
+  "# Empleado": string;
+  "Edad": number;
+  "Genero": string;
+  "Categoria": number;
+  "Altura [cm]": number;
+  "Peso [kg]": number;
+  "Grasa [%]": number;
+  "IMC": number;
+  "Cintura [cm]": number;
+  "BMI": number;
+  "BMR": number;
+  "Fatmass": number;
+  "FFM": number;
+  "TBW": number;
+  "Agarre": number;
+  "Puntos": number;
+  "Salto": number;
+  "Puntos_1": number;
+  "Agilidad": number;
+  "Puntos_2": number;
+  "Resistencia": string;
+  "Puntos_3": number;
+  "Total": number;
+}

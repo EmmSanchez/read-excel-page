@@ -8,6 +8,7 @@ import { useFileStore } from "../store/fileStore";
 import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
 import { useAgesStore } from "../store/agesStore";
+import { useParticipantsDataStore } from "@/models/participants";
 
 
 
@@ -26,6 +27,8 @@ export default function Layout({
   const ageRanges = useAgesStore(state => state.ageRanges)
   const setAgeRanges = useAgesStore(state => state.setAgeRanges)
 
+  // FIXING
+  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
 
 
   const getData = async () => {
@@ -38,10 +41,10 @@ export default function Layout({
       });
 
       if (response.ok) {
-        const {participantsArray, fileInfoArray} = await response.json();
+        const {sortedParticipants, fileInfoArray} = await response.json();
         
         // if there is no data or just the columns
-        if (participantsArray.length === 1) {
+        if (sortedParticipants.length === 1) {
           console.log('No hay datos de partipantes');
           
           // there is a file with no data
@@ -49,13 +52,13 @@ export default function Layout({
             return
           }
           
-          setExcelData(participantsArray)
+          setParticipants(sortedParticipants)
           const fileInfo = fileInfoArray[0]
           console.log(fileInfo);
           
           setFile(fileInfo)
         } else {
-          setExcelData(participantsArray)
+          setParticipants(sortedParticipants)
           const fileInfo = fileInfoArray[0]
           setFile(fileInfo)
         }

@@ -3,9 +3,12 @@ import { RefreshIcon } from "../../../../public/icons/icons";
 import { useFilteredDataStore } from "@/app/store/filteredData";
 import { useTableLoading } from "@/app/store/tableLoading";
 import { useTheme } from "next-themes";
+import { useParticipantsDataStore } from "@/models/participants";
 
 export function RefreshButton () {
   const setExcelData = useDataStore((state) => state.setExcelData)
+
+  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
 
   // Refres table
   const isTableLoading = useTableLoading((state) => state.isTableLoading)
@@ -21,8 +24,8 @@ export function RefreshButton () {
       });
 
       if (response.ok) {
-        const {participantsArray} = await response.json();
-        setExcelData(participantsArray)
+        const {sortedParticipants} = await response.json();
+        setParticipants(sortedParticipants)
       } else {
         console.error('Error al obtener los datos de participantes')
       }

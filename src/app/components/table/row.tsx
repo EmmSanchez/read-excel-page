@@ -3,18 +3,19 @@ import { DeleteButton } from "../buttons/deleteButton";
 import React, { useEffect } from "react";
 import { EditButton } from "../buttons/editeButton";
 import { useUserStore } from "@/app/store/userStore";
+import { filteredParticipant } from "@/app/types/filteredParticipant";
 
 interface RowProps {
   rowIndex: number; 
   handleGetRow: (rowIndex: number, action: string) => void; 
   selectedRows: number[]
-  row: (string | number | boolean | null)[]
+  item: filteredParticipant
   rowToDelete: number | null;
   cancelDelete: () => void;
   confirmDeleteRow: () => void
 }
 
-export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, cancelDelete, confirmDeleteRow}: RowProps) {
+export function Row ({rowIndex, handleGetRow, selectedRows, item, rowToDelete, cancelDelete, confirmDeleteRow}: RowProps) {
   const isSelected = selectedRows.includes(rowIndex);
   
   // Get rol every table refresh
@@ -37,8 +38,6 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
     window.print()
   }
 
-  
-
   return (
     <>
       <div onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row hover:bg-gray-300 dark:hover:bg-neutral-950 ${rowIndex % 2 === 0 ? 'bg-white dark:bg-neutral-900' : 'bg-slate-200/90 dark:bg-neutral-900'}`}>
@@ -51,8 +50,8 @@ export function Row ({rowIndex, handleGetRow, selectedRows, row, rowToDelete, ca
             className="appearance-none w-4 h-4 align-middle bg-white dark:bg-gray-500 border-solid border-[1.4px] border-neutral-500 rounded-xl cursor-pointer checked:bg-blue-600 dark:checked:bg-blue-800 checked:border-blue-600 checked:bg-[url('../../public/icons/checkIcon.svg')] checked:bg-center checked:bg-cover"
           />
         </div>
-        {row.map((cell, cellIndex) => (
-          <div key={cellIndex} className={`table-cell align-middle px-3 py-[8px] text-base dark:text-slate-200 border-solid border-t-[1px] border-black/20 dark:border-gray-700/50 ${(cellIndex === 3 || cellIndex === 2 || cellIndex === 1) ? 'whitespace-nowrap' : ''} ${cellIndex === 0 ? 'font-semibold text-center pl-0' : ''}`}>{cell}</div>
+        {Object.values(item).map((value, cellIndex) => (
+          <div key={item["#"]} className={`table-cell align-middle px-3 py-[8px] text-base dark:text-slate-200 border-solid border-t-[1px] border-black/20 dark:border-gray-700/50 ${(cellIndex === 3 || cellIndex === 2 || cellIndex === 1) ? 'whitespace-nowrap' : ''} ${cellIndex === 0 ? 'font-semibold text-center pl-0' : ''}`}>{value}</div>
         ))}
         <div className='table-cell align-middle py-[4px] border-solid border-t-[1px] border-black/20 dark:border-gray-700/50'>
           <div className="flex gap-1 pr-3">
