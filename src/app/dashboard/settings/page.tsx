@@ -4,7 +4,7 @@ import { useTestOptionsStore } from "@/app/store/testOptions"
 import React, { useState } from "react"
 import { ArrowDropdwonIcon } from "../../../../public/icons/icons";
 import { useAgesStore } from "@/app/store/agesStore";
-import { useDataStore } from "@/app/store/dataStore";
+import { useParticipantsDataStore } from "@/app/store/participants";
 
 interface User {
   username: string;
@@ -57,8 +57,10 @@ interface Participant {
 
 
 export default function Settings () {
-  const excelData = useDataStore((state) => state.excelData)
-  const setExcelData = useDataStore((state) => state.setExcelData)
+  // FIXING
+  const participants = useParticipantsDataStore(state => state.participants)
+  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
   const options = useTestOptionsStore(state => state.options)
   const users = useDataUsersStore(state => state.users)
   const setUsers = useDataUsersStore(state => state.setUsers)
@@ -186,7 +188,7 @@ export default function Settings () {
             const sortedOptions = newOptions.sort((a, b) => {
               return a.localeCompare(b)
             })
-            setOptions(newOptions);
+            setOptions(sortedOptions);
             setNewOption(null);
           } else {
             setOptions([newOption])
@@ -337,6 +339,7 @@ export default function Settings () {
       
       
       if (res.ok) {
+        // After save range
         if (ageRanges) {
           const newRanges = [ ...ageRanges, newRange ]
           const sortedRanges = newRanges.sort((a, b) => {
@@ -344,11 +347,18 @@ export default function Settings () {
             if (b.minAge === null) return -1;
             return a.minAge - b.minAge
           })
+
+          setAgeRanges(sortedRanges)
+          setNewRange(null)
     
           const response = await res.json()
           const updatedParticipants: Participant[] = response.updatedParticipants
+
+          console.log(updatedParticipants.length);
+          
           if (updatedParticipants.length > 0) {
-            const excelCopy = excelData ? excelData.map(row => [...row]) : [];
+            
+            const dataCopy = participants ? [...participants] : [];
 
             // Dictionary of id and total
             const updatedParticipantsMap = updatedParticipants.reduce<{ [key: number]: number }>((acc, participant) => {
@@ -357,18 +367,16 @@ export default function Settings () {
             }, {});
 
             // Mapping of lines and saving new values
-            const updatedExcel = excelCopy.map(row => {
-              const participantId = row[0];
+            const updatedExcel = dataCopy.map(row => {
+              const participantId = row["#"];
               if (typeof participantId === 'number' && updatedParticipantsMap[participantId] !== undefined) {
-                row[27] = updatedParticipantsMap[participantId];
+                row.Total = updatedParticipantsMap[participantId];
               }
               return row;
             });
-            
-            setExcelData(updatedExcel);
+
+            setParticipants(updatedExcel)
           }
-          setAgeRanges(sortedRanges)
-          setNewRange(null)
         }
       }
     } catch (error) {
@@ -394,7 +402,7 @@ export default function Settings () {
           const newRanges = ageRanges.filter(ageRange => ageRange.minAge !== minAge)
 
           if (updatedParticipants.length > 0) {
-            const excelCopy = excelData ? excelData.map(row => [...row]) : [];
+            const dataCopy = participants ? [...participants] : [];
 
             // Dictionary of id and total
             const updatedParticipantsMap = updatedParticipants.reduce<{ [key: number]: number }>((acc, participant) => {
@@ -403,15 +411,15 @@ export default function Settings () {
             }, {});
 
             // Mapping of lines and saving new values
-            const updatedExcel = excelCopy.map(row => {
-              const participantId = row[0];
+            const updatedExcel = dataCopy.map(row => {
+              const participantId = row["#"];
               if (typeof participantId === 'number' && updatedParticipantsMap[participantId] !== undefined) {
-                row[27] = updatedParticipantsMap[participantId];
+                row.Total = updatedParticipantsMap[participantId];
               }
               return row;
             });
             
-            setExcelData(updatedExcel);
+            setParticipants(updatedExcel)
           }
 
           setAgeRanges(newRanges)

@@ -2,9 +2,12 @@ import * as XLSX from "xlsx"
 import { FileSpreadsheetIcon } from "../../../../public/icons/icons"
 import { useDataStore } from "@/app/store/dataStore"
 import { useFileStore } from "@/app/store/fileStore"
+import { useParticipantsDataStore } from "@/app/store/participants"
 
 export function ExportToExcelButton () {
   const excelData = useDataStore((state) => state.excelData)
+  const participants = useParticipantsDataStore(state => state.participants)
+
   const file = useFileStore((state) => state.file)
 
   

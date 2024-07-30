@@ -1,5 +1,4 @@
 import { useFileStore } from "@/app/store/fileStore";
-import { useDataStore } from "@/app/store/dataStore";
 import React, {useState, useEffect, ChangeEvent} from "react";
 import * as XLSX from "xlsx"
 import { AddRowButton } from "../buttons/addRowButton";
@@ -17,38 +16,6 @@ import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipan
 import { ParticipantData } from "@/app/types/ClientParticipant";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
-
-interface Participant {
-  _id: string;
-  '#': number;
-  'Apellido paterno': string;
-  'Apellido materno': string;
-  Nombre: string;
-  Prueba: string;
-  '# Empleado': string;
-  Edad: number;
-  Genero: string;
-  Categoria: number;
-  'Altura [cm]': number;
-  'Peso [kg]': number;
-  'Grasa [%]': number;
-  IMC: number;
-  'Cintura [cm]': number;
-  BMI: number;
-  BMR: number;
-  Fatmass: number;
-  FFM: number;
-  TBW: number;
-  Agarre: number;
-  Puntos: number;
-  Salto: number;
-  Puntos_1: number;
-  Agilidad: number;
-  Puntos_2: number;
-  Resistencia: string;
-  Puntos_3: number;
-  Total: number;
-}
 
 // SORT FUNCTION
 export const sortArrayByColumn = (arr: ExcelData, column: string) => {
@@ -109,10 +76,7 @@ export function Table() {
   // ---------------
   const file = useFileStore((state) => state.file);
   const setFile = useFileStore((state) => state.setFile);
-  const excelData = useDataStore((state) => state.excelData)
-  const setExcelData = useDataStore((state) => state.setExcelData)
   const filteredExcelData = useFilteredDataStore((state) => state.filteredExcelData)
-  const setFilteredExcelData = useFilteredDataStore((state) => state.setFilteredExcelData)
   const [rowToDelete, setRowToDelete] = useState<number | null>(null);
   const [selectedRows, setSelectedRows] = useState<number[]>([])  
 
@@ -470,7 +434,7 @@ export function Table() {
 
   return (
     <>
-      {excelData || participants ? (
+      {participants ? (
         <>
           <div className="flex flex-col justify-start w-full my-4">
             <>

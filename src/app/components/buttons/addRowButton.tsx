@@ -41,7 +41,6 @@ interface AddRowButtonProps {
 export function AddRowButton ({selectedRows}: AddRowButtonProps) {
   // FIXING
   const participants = useParticipantsDataStore(state => state.participants)
-  const setParticipants = useParticipantsDataStore(state => state.setParticipants)
 
   const [isPopoverVisible, setIsPopoverVisible] = useState<boolean>(false)
   const [idError, setIdError] = useState<boolean>(false)

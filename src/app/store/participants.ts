@@ -3,7 +3,7 @@ import { ParticipantData } from "@/app/types/ClientParticipant";
 
 interface ParticipantsDataSate {
   participants: ParticipantData[] | null
-  setParticipants: (excelData: ParticipantData[] | null) => void
+  setParticipants: (participants: ParticipantData[] | null) => void
 }
 
 export const useParticipantsDataStore = create<ParticipantsDataSate>((set) => ({

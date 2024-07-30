@@ -3,7 +3,7 @@ import { filteredParticipant } from "@/app/types/filteredParticipant";
 
 interface FilteredParticipantsDataSate {
   filteredParticipants: filteredParticipant[] | null
-  setFilteredParticipants: (excelData: filteredParticipant[] | null) => void
+  setFilteredParticipants: (filteredParticipants: filteredParticipant[] | null) => void
 }
 
 export const useFilteredParticipantsDataStore = create<FilteredParticipantsDataSate>((set) => ({

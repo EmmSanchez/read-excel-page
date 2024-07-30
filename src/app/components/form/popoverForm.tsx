@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { useDataStore } from "@/app/store/dataStore"
 import React, { Dispatch, SetStateAction} from "react"
 import { FormInputs } from "./inputs/formInputs"
 import { useAgesStore } from "@/app/store/agesStore";
@@ -50,9 +49,6 @@ interface PopoverForm {
 }
 
 export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopoverVisible, handleGetNewIndex, formData, setFormData, isAddButtonDisabled, setIsAddButtonDisabled}: PopoverForm) {
-  const excelData = useDataStore((state) => state.excelData)
-  const setExcelData = useDataStore((state) => state.setExcelData)
-
   // FIXING
   const participants = useParticipantsDataStore(state => state.participants)
   const setParticipants = useParticipantsDataStore(state => state.setParticipants)
@@ -237,7 +233,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
       try {
         await sendNewRow(newRow)
         
-        // Add new row to the existing excelData
+        // Add new row to the existing data
         const updatedData = participants ? [...participants, newRow] : [newRow]  
         // Sort the data by id in ascending order
         updatedData.sort((a, b) => (a["#"] as number) - (b["#"] as number));

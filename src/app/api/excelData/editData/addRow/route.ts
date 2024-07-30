@@ -8,11 +8,11 @@ export async function POST(req: NextRequest) {
 
     const newParticipant = row
 
-    const res = await ParticipantModel.insertMany(row)  
+    const res = await ParticipantModel.insertMany(newParticipant)  
   
-    // if (!res) {
-    //   return NextResponse.json({ message: "Hubo algún problema al subir" }, { status: 404 });
-    // }
+    if (!res) {
+      return NextResponse.json({ message: "Hubo algún problema al subir" }, { status: 404 });
+    }
 
     return NextResponse.json({ message: 'Añadido correctamente'}, { status: 200 })
   } catch (error) {
