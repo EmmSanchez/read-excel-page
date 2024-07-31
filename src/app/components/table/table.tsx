@@ -363,6 +363,7 @@ export function Table() {
       setFilteredParticipants(filteredParticipants ? filterParticipantsValues(filteredParticipants) : null);
       
     }
+    // "participants" deleted to avoid setPage to 1 every delete or edit
   }, [searchValue, participants]);
 
   // PAGINATION ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -394,18 +395,18 @@ export function Table() {
     const newTotalPages = calculatePages(newTotalUsers, participantsPerPage)
     setTotalPages(newTotalPages)
     
-  }, [filteredParticipants, participantsPerPage])
+  }, [participantsPerPage, filteredParticipants])
 
   const handlePage = (action: string, pageNumber?: number) => {
     if (action === 'Next') {
-      setInitialNumber(prev => prev + 10)
-      setFinalNumber(prev => prev + 10)
+      setInitialNumber(prev => prev + participantsPerPage)
+      setFinalNumber(prev => prev + participantsPerPage)
       setPage(prev => prev + 1)
     }
 
     if (action === 'Previous') {
-      setInitialNumber(prev => prev - 10)
-      setFinalNumber(prev => prev - 10)
+      setInitialNumber(prev => prev - participantsPerPage)
+      setFinalNumber(prev => prev - participantsPerPage)
       setPage(prev => prev - 1)
     }
 

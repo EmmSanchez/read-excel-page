@@ -55,13 +55,11 @@ export async function POST(req: NextRequest) {
     if (ageRanges.length > 0) {
       const updatedData = data.map((participant:  Participant) => {
         
-        let total = 0;
+        let total = participant.Total
         for (const range of ageRanges) {
           if (participant.Edad >= range.minAge && participant.Edad <= range.maxAge) {
             total = (participant.Puntos + participant.Puntos_1 + participant.Puntos_2 + participant.Puntos_3) * range.value;
-          } else {
-            total = participant.Total
-          }
+          } 
         }
 
         return {

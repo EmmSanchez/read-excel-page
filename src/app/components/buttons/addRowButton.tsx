@@ -83,8 +83,7 @@ export function AddRowButton ({selectedRows}: AddRowButtonProps) {
     setIdError(false)
     setIsAddButtonDisabled(false)
     const newFormData = { ...formData }
-    // LOGIC IF THERE IS NO LIST
-    if (participants) {
+    if (participants && participants.length > 0) {
       const lastEntry = participants[participants.length - 1]["#"]
       if (typeof lastEntry === "number") {
         const lastId = lastEntry
@@ -92,7 +91,8 @@ export function AddRowButton ({selectedRows}: AddRowButtonProps) {
         newFormData.id = newId
       }
     }
-
+    
+    // LOGIC IF THERE IS NO LIST
     if (participants && participants?.length === 0) {
       newFormData.id = 1
     }
