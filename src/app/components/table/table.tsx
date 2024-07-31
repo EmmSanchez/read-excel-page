@@ -325,13 +325,9 @@ export function Table() {
   const isCustomSearch = (value: string) => /^(\d+,)*\d+,?$/.test(value); // Custom search in the form "num1,num2,num3,..."
   
   useEffect(() => {
-    
     setSelectedRows([]);
     setRowToDelete(null);
     setIsPopoverVisible(false);
-    setInitialNumber(0)
-    setFinalNumber(participantsPerPage)
-    setPage(1)
   
     if (!searchValue) {
       setFilteredParticipants(participants ? filterParticipantsValues(participants) : null)
@@ -366,6 +362,14 @@ export function Table() {
     // "participants" deleted to avoid setPage to 1 every delete or edit
   }, [searchValue, participants]);
 
+  useEffect(() => {
+    setPage(1)
+    setInitialNumber(0)
+    setFinalNumber(participantsPerPage)
+  }, [searchValue])
+
+  
+  
   // PAGINATION ----------------------------------------------------------------------------------------------------------------------------------------------
   const [page, setPage] = useState<number>(1)
   const [initialNumber, setInitialNumber] = useState<number>(0)
@@ -390,7 +394,6 @@ export function Table() {
 
   useEffect(() => {
     if (filteredParticipants?.length === undefined) return
-    setPage(1)
     const newTotalUsers = filteredParticipants?.length
     const newTotalPages = calculatePages(newTotalUsers, participantsPerPage)
     setTotalPages(newTotalPages)
@@ -434,29 +437,21 @@ export function Table() {
   const [finalPage, setFinalPage] = useState<number>(5)
 
   useEffect(() => {
-    if (page <= 3) {
+    if (totalPages.length <= 4) {
+      setInitialPage(0)
+      setFinalPage(totalPages.length)
+    } else if (page <= 3) {
       setInitialPage(0)
       setFinalPage(4)
-    }
-    if (page === 4) {
-      setInitialPage(2)
-      setFinalPage(prev => prev + 1)
-    }
-    if (page > 4) {
-      setInitialPage(prev => prev + 1)
-      setFinalPage(prev => prev + 1)
-    }
-    if (page > totalPages.length - 3) {
-      setInitialPage(7)
+    } else if (page > totalPages.length - 3) {
+      setInitialPage(totalPages.length - 4)
       setFinalPage(totalPages.length)
+    } else {
+      setInitialPage(page - 2)
+      setFinalPage(page + 1)
     }
+  }, [page, totalPages.length])
 
-  }, [page])
-
-  // console.log(initialPage, finalPage);
-  // console.log(page);
-  
-  
   return (
     <>
       {participants ? (
@@ -699,6 +694,3 @@ export function Table() {
     </>
   );
 }
-
-// THINGS TO DO
-// new participants and filteredParticipants are rendering well, manage edit, select and remove
