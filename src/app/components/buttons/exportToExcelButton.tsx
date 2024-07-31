@@ -1,6 +1,5 @@
 import * as XLSX from "xlsx"
 import { FileSpreadsheetIcon } from "../../../../public/icons/icons"
-import { useDataStore } from "@/app/store/dataStore"
 import { useFileStore } from "@/app/store/fileStore"
 import { useParticipantsDataStore } from "@/app/store/participants"
 import { ParticipantData } from "@/app/types/ClientParticipant"

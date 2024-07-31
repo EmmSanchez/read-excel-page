@@ -429,6 +429,34 @@ export function Table() {
     setIsSelectNumberFilter(!isSelectNumberFilter)
   }
 
+  // MOVE INTO PAGES
+  const [initialPage, setInitialPage] = useState<number>(0)
+  const [finalPage, setFinalPage] = useState<number>(5)
+
+  useEffect(() => {
+    if (page <= 3) {
+      setInitialPage(0)
+      setFinalPage(4)
+    }
+    if (page === 4) {
+      setInitialPage(2)
+      setFinalPage(prev => prev + 1)
+    }
+    if (page > 4) {
+      setInitialPage(prev => prev + 1)
+      setFinalPage(prev => prev + 1)
+    }
+    if (page > totalPages.length - 3) {
+      setInitialPage(7)
+      setFinalPage(totalPages.length)
+    }
+
+  }, [page])
+
+  // console.log(initialPage, finalPage);
+  // console.log(page);
+  
+  
   return (
     <>
       {participants ? (
@@ -487,7 +515,7 @@ export function Table() {
                         </div>
                       </div>
                       <div className='table-row-group'>
-                        {filteredParticipants?.map((item, rowIndex) => (
+                        {filteredParticipants?.slice(0,10).map((item, rowIndex) => (
                           // CHECAR AQUÍ ONCLICK Y FILTEREDEXCELDATA ------------------------------------------------------------------------
                             <div key={rowIndex} onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row pointer-events-none ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-200/90'}`}>
                               <div className="table-cell align-middle pl-3 py-[6px] text-sm border-solid border-t-[1px] border-black/20">
@@ -554,13 +582,14 @@ export function Table() {
                           isSelectNumberFilter ? 'opacity-100' : 'opacity-0 pointer-events-none'
                         }`}
                       >
+                        <div onClick={() => {setParticipantsPerPage(5); toggleFilterDropdown()}} className="dropdown-item"><p>5</p></div>
                         <div onClick={() => {setParticipantsPerPage(10); toggleFilterDropdown()}} className="dropdown-item"><p>10</p></div>
                         <div onClick={() => {setParticipantsPerPage(20); toggleFilterDropdown()}} className="dropdown-item"><p>20</p></div>
                         <div onClick={() => {setParticipantsPerPage(50); toggleFilterDropdown()}} className="dropdown-item"><p>50</p></div>
                       </div>
                     </div>
                     <div className="flex justify-center gap-1">
-                      <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-white">
+                      <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-transparent">
                         <ChevronLeft />
                       </button>
                       {
@@ -578,8 +607,22 @@ export function Table() {
                           </>
                           :
                           <>
+                            { 
+                              page > 3 &&
+                              <>
+                                <button onClick={() => handlePage('Select', totalPages[0])} className={`px-3 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 ${totalPages[0] === page ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>
+                                  {
+                                    totalPages[0]
+                                  }
+                                </button>
+                                <p className="flex p-2 items-end tracking-widest">
+                                  ...
+                                </p>
+                              </>
+
+                            }
                             {
-                              totalPages.map((pageNumber, index) => {
+                              totalPages.slice(initialPage, finalPage).map((pageNumber, index) => {
                                 return (
                                   <button onClick={() => handlePage('Select', pageNumber)} key={index} className={`px-3 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 ${pageNumber === page ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>
                                     {pageNumber.toString()}
@@ -587,8 +630,20 @@ export function Table() {
                                 )
                               })
                             }
+                            {
+                              page < (totalPages.length - 2) &&
+                              <>
+                                <p className="flex p-2 items-end tracking-widest">
+                                  ...
+                                </p>
+                                <button onClick={() => handlePage('Select', totalPages.length)} className={`px-3 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 ${totalPages.length === page ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>
+                                  {
+                                    totalPages.length
+                                  }
+                                </button>
+                              </>
+                            }
                           </>
-                        
                       }
                       <button disabled={page === totalPages.length} onClick={() => handlePage('Next')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-transparent">
                         <ChevronRight />
