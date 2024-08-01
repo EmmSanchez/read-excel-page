@@ -13,8 +13,34 @@ import { ArrowDropdwonIcon, ChevronLeft, ChevronRight } from "../../../../public
 import { useParticipantsDataStore } from "@/app/store/participants";
 import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
+import { filteredParticipant } from "@/app/types/filteredParticipant";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
+
+function arrayToJSON(data: ExcelData) {
+  if (data) {
+    const headers: string[] = data[0] as string[];
+    const jsonData: { [key: string]: any }[] = [];
+    for (let i = 1; i < data.length; i++) {
+      let obj: { [key: string]: any } = {};
+      for (let j = 0; j < headers.length; j++) {
+        let propName = headers[j];
+        // Check if the property already exists in the object
+        if (obj.hasOwnProperty(propName)) {
+          // Append an index to make the property name unique
+          let index = 1;
+          while (obj.hasOwnProperty(propName + '_' + index)) {
+            index++;
+          }
+          propName = propName + '_' + index;
+        }
+        obj[propName] = data[i][j];
+      }
+      jsonData.push(obj);
+    }
+    return jsonData;
+  }
+}
 
 // SORT FUNCTION
 export const sortArrayByColumn = (arr: ExcelData, column: string) => {
@@ -65,6 +91,39 @@ function filterParticipantsValues(participants: ParticipantData[]) {
   return newFilteredData
 }
 
+type ParticipantKeys = keyof filteredParticipant;  
+
+function sortParticipantsByColumn (data: filteredParticipant[], column: ParticipantKeys) {
+  const newData = data.sort((a: filteredParticipant , b: filteredParticipant) => {
+    const aValue = a[column]
+    const bValue = b[column]
+
+    if (aValue === null || bValue === null || aValue === undefined || bValue === undefined) {
+      return 0;
+    }  
+
+    if (typeof aValue === 'string' || typeof bValue === 'string') {
+      const a = aValue.toString().trim()
+      const b = bValue.toString().trim()
+      return b.localeCompare(a)         
+    }
+
+    if (typeof aValue === 'number' || typeof bValue === 'number') {
+      return bValue - aValue
+    }
+    
+    return 0
+  }) 
+  return newData
+}
+
+
+const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-") {
+    e.preventDefault();
+  }
+};
+
 export function Table() {
   //FIXING
   const participants = useParticipantsDataStore(state => state.participants)
@@ -96,32 +155,6 @@ export function Table() {
 
   // Get ranges to update total automatically
   const ageRanges = useAgesStore(state => state.ageRanges)
-
-
-  function arrayToJSON(data: ExcelData) {
-    if (data) {
-      const headers: string[] = data[0] as string[];
-      const jsonData: { [key: string]: any }[] = [];
-      for (let i = 1; i < data.length; i++) {
-        let obj: { [key: string]: any } = {};
-        for (let j = 0; j < headers.length; j++) {
-          let propName = headers[j];
-          // Check if the property already exists in the object
-          if (obj.hasOwnProperty(propName)) {
-            // Append an index to make the property name unique
-            let index = 1;
-            while (obj.hasOwnProperty(propName + '_' + index)) {
-              index++;
-            }
-            propName = propName + '_' + index;
-          }
-          obj[propName] = data[i][j];
-        }
-        jsonData.push(obj);
-      }
-      return jsonData;
-    }
-  }
   
   async function sendToMongoDB(data: { [key: string]: any }[] | undefined, fileName: string, fileSize: number, ageRanges: Range[]) {
     try {
@@ -148,6 +181,7 @@ export function Table() {
   }
 
   const headers = ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total']
+  const TableHeaders = ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos_1', 'Agilidad', 'Puntos_2', 'Resistencia', 'Puntos_3', 'Total']
 
   useEffect(() => {
     if (!searchValue) {
@@ -367,8 +401,6 @@ export function Table() {
     setInitialNumber(0)
     setFinalNumber(participantsPerPage)
   }, [searchValue])
-
-  
   
   // PAGINATION ----------------------------------------------------------------------------------------------------------------------------------------------
   const [page, setPage] = useState<number>(1)
@@ -468,11 +500,17 @@ export function Table() {
     }
   }
 
-  const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-") {
-      e.preventDefault();
-    }
-  };
+  // SORT BY COLUMN
+  const handleSortByHeader = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+    e.preventDefault()
+    const column = TableHeaders[index] as ParticipantKeys
+    const filteredParticipantsCopy = filteredParticipants ? [...filteredParticipants] : null 
+    if (!filteredParticipantsCopy) return
+    const sortedData = sortParticipantsByColumn(filteredParticipantsCopy, column)    
+    setFilteredParticipants(sortedData)
+    handlePage('Select', 1)
+  }
+
 
   return (
     <>
@@ -580,7 +618,7 @@ export function Table() {
                   </div>
                   
                   {/* PAGINATION  */}
-                  <div className="grid grid-flow-col grid-cols-3 px-4 mt-5 mx-3">
+                  <div className="grid grid-flow-row grid-cols-2 place-items-start lg:grid-flow-col lg:grid-cols-3 lg:items-end lg:place-items-stretch px-4 mt-5 mx-3 gap-1">
                     <div
                       className={`relative w-16 bg-gray-200 dark:bg-gray-700 rounded-md ${
                         isSelectNumberFilter ? 'outline outline-[1.4px] -outline-offset-1 outline-[#2563eb]' : ''
@@ -606,8 +644,8 @@ export function Table() {
                       </div>
                     </div>
                     <div className="flex justify-center gap-1">
-                      <input type="number" onChange={(e) => handleChangePageInput(e)} min={1} max={totalPages.length} onKeyDown={preventInvalidChars} className="w-16 p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 focus:hover:bg-transparent"/>
-                      <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-transparent">
+                      <input type="number" onChange={(e) => handleChangePageInput(e)} min={1} max={totalPages.length} onKeyDown={preventInvalidChars} placeholder="Page" className="w-18 mr-2 p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 focus:hover:bg-transparent"/>
+                      <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent">
                         <ChevronLeft />
                       </button>
                       {
@@ -663,7 +701,7 @@ export function Table() {
                             }
                           </>
                       }
-                      <button disabled={page === totalPages.length} onClick={() => handlePage('Next')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-transparent">
+                      <button disabled={page === totalPages.length} onClick={() => handlePage('Next')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent">
                         <ChevronRight />
                       </button>
                     </div>
@@ -678,11 +716,11 @@ export function Table() {
                       <div className='table-header-group bg-[#2563EB] dark:bg-neutral-950'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
-                          { participants && (
+                          { file && (
                               <>
                                 {
                                   headers.map((value, index) => (
-                                    <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
+                                    <div key={index} onClick={(e) => handleSortByHeader(e, index)} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 hover:cursor-pointer ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
                                       <p>{value}</p>
                                     </div>
                                   ))

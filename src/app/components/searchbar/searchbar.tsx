@@ -31,8 +31,8 @@ export function Searchbar ({handleSearchbar}: SearchbarProps) {
         {/* TOOLTIP */}
         <InfoIcon width={12} height={12} stroke='#6c757d' onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="hover:cursor-pointer" />
         <div onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="relative">
-          <div className={`absolute w-96 p-2 -top-14 left-2 text-sm bg-white rounded-md outline outline-gray-300 outline-1 drop-shadow-md transition-all ease-in-out duration-150 transform  ${showTooltip ? 'opacity-100 scale-100 translate-x-0' : 'opacity-0 pointer-events-none scale-[.98] -translate-x-1'}`}>
-            <ul className="text-[12px] text-gray-600">
+          <div className={`absolute w-96 p-2 -top-14 left-2 text-sm bg-white dark:bg-zinc-900 rounded-md outline outline-gray-300 dark:outline-zinc-700 outline-1 drop-shadow-md transition-all ease-in-out duration-150 transform  ${showTooltip ? 'opacity-100 scale-100 translate-x-0' : 'opacity-0 pointer-events-none scale-[.98] -translate-x-1'}`}>
+            <ul className="text-[12px] text-gray-600 dark:text-zinc-300">
               <li><span className="font-bold">ID:</span> Escribe un ID específico (e.g., &quot;5&quot;).</li>
               <li><span className="font-bold">Rango:</span> Escribe un rango de IDs (e.g., &quot;5-10&quot;).</li>
               <li><span className="font-bold">Nombre:</span> Escribe un nombre completo o parcial (e.g., &quot;Luis&quot;).</li>
