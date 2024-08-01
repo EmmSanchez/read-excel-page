@@ -9,7 +9,7 @@ export function DeselectRowsButton ({selectedRows, setSelectedRows}: DeselectRow
   return (
     <>
       <button onClick={() => setSelectedRows([])} className="flex rounded-md">
-        <p className="flex justify-center items-center w-9 h-9 rounded-full bg-blue-500 text-blue-50 border-solid border-[1px] border-gray-400">{selectedRows.length}</p>
+        <p className="flex justify-center items-center w-9 h-9 rounded-full bg-blue-500 text-blue-50">{selectedRows.length}</p>
       </button>
     </>
   );

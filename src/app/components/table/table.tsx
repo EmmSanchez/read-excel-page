@@ -452,6 +452,28 @@ export function Table() {
     }
   }, [page, totalPages.length])
 
+  const handleChangePageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    const newPage = parseInt(e.target.value)
+
+    if (!newPage || newPage === 0) return setPage(1);
+    
+    if (newPage > totalPages.length) {
+      const fixedPage = totalPages.length
+      setPage(fixedPage)
+      handlePage('Select', fixedPage)
+    } else {
+      setPage(newPage)
+      handlePage('Select', newPage)
+    }
+  }
+
+  const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
       {participants ? (
@@ -584,6 +606,7 @@ export function Table() {
                       </div>
                     </div>
                     <div className="flex justify-center gap-1">
+                      <input type="number" onChange={(e) => handleChangePageInput(e)} min={1} max={totalPages.length} onKeyDown={preventInvalidChars} className="w-16 p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 focus:hover:bg-transparent"/>
                       <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-transparent">
                         <ChevronLeft />
                       </button>
@@ -659,7 +682,7 @@ export function Table() {
                               <>
                                 {
                                   headers.map((value, index) => (
-                                    <div key={value} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
+                                    <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
                                       <p>{value}</p>
                                     </div>
                                   ))

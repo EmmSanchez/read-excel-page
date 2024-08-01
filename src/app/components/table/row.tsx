@@ -43,7 +43,7 @@ export function Row ({rowIndex, handleGetRow, selectedRows, item, rowToDelete, c
           />
         </div>
         {Object.values(item).map((value, cellIndex) => (
-          <div key={item["#"]} className={`table-cell align-middle px-3 py-[8px] text-base dark:text-slate-200 border-solid border-t-[1px] border-black/20 dark:border-gray-700/50 ${(cellIndex === 3 || cellIndex === 2 || cellIndex === 1) ? 'whitespace-nowrap' : ''} ${cellIndex === 0 ? 'font-semibold text-center pl-0' : ''}`}>{value}</div>
+          <div key={cellIndex} className={`table-cell align-middle px-3 py-[8px] text-base dark:text-slate-200 border-solid border-t-[1px] border-black/20 dark:border-gray-700/50 ${(cellIndex === 3 || cellIndex === 2 || cellIndex === 1) ? 'whitespace-nowrap' : ''} ${cellIndex === 0 ? 'font-semibold text-center pl-0' : ''}`}>{value}</div>
         ))}
         <div className='table-cell align-middle py-[4px] border-solid border-t-[1px] border-black/20 dark:border-gray-700/50'>
           <div className="flex gap-1 pr-3">
