@@ -9,7 +9,7 @@ import { DeselectRowsButton } from "../buttons/deselectRowsButton";
 import { useTableLoading } from "@/app/store/tableLoading";
 import { useAgesStore } from "@/app/store/agesStore";
 import { Range } from "@/app/dashboard/settings/page";
-import { ArrowDropdwonIcon, ChevronLeft, ChevronRight } from "../../../../public/icons/icons";
+import { ArrowDropdwonIcon, AscArrow, ChevronLeft, ChevronRight, DescArrow } from "../../../../public/icons/icons";
 import { useParticipantsDataStore } from "@/app/store/participants";
 import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
@@ -93,28 +93,30 @@ function filterParticipantsValues(participants: ParticipantData[]) {
 
 type ParticipantKeys = keyof filteredParticipant;  
 
-function sortParticipantsByColumn (data: filteredParticipant[], column: ParticipantKeys) {
-  const newData = data.sort((a: filteredParticipant , b: filteredParticipant) => {
-    const aValue = a[column]
-    const bValue = b[column]
+type Participant = filteredParticipant | ParticipantData;
+
+export function sortParticipantsByColumn(data: any[], column: ParticipantKeys, direction: 'asc' | 'desc') {
+  const newData = data.sort((a: Participant, b: Participant) => {
+    const aValue = a[column];
+    const bValue = b[column];
 
     if (aValue === null || bValue === null || aValue === undefined || bValue === undefined) {
       return 0;
-    }  
-
-    if (typeof aValue === 'string' || typeof bValue === 'string') {
-      const a = aValue.toString().trim()
-      const b = bValue.toString().trim()
-      return b.localeCompare(a)         
     }
 
-    if (typeof aValue === 'number' || typeof bValue === 'number') {
-      return bValue - aValue
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      const a = aValue.toString().trim();
+      const b = bValue.toString().trim();
+      return direction === 'asc' ? a.localeCompare(b) : b.localeCompare(a);
     }
-    
-    return 0
-  }) 
-  return newData
+
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return direction === 'asc' ? bValue - aValue : aValue - bValue;
+    }
+
+    return 0;
+  });
+  return newData;
 }
 
 
@@ -500,18 +502,32 @@ export function Table() {
     }
   }
 
-  // SORT BY COLUMN
+  // SORTING -----------------------------------------------------------------------------------------------------------------------------------------
+  const [columnToSortIndex, setColumnToSortIndex] = useState<number>(0)
+  const [columnToSort, setColumnToSort] = useState<string>('#')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+
   const handleSortByHeader = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
     e.preventDefault()
-    const column = TableHeaders[index] as ParticipantKeys
-    const filteredParticipantsCopy = filteredParticipants ? [...filteredParticipants] : null 
-    if (!filteredParticipantsCopy) return
-    const sortedData = sortParticipantsByColumn(filteredParticipantsCopy, column)    
-    setFilteredParticipants(sortedData)
-    handlePage('Select', 1)
+    setColumnToSortIndex(index)
+
+    setSortDirection((prev) => {
+      const newDirection = prev === 'asc' && columnToSortIndex === index ? 'desc' : 'asc';
+
+      const column = TableHeaders[index] as ParticipantKeys
+      setColumnToSort(column)
+      const filteredParticipantsCopy = filteredParticipants ? [...filteredParticipants] : null 
+      if (!filteredParticipantsCopy) return prev
+      const sortedData = sortParticipantsByColumn(filteredParticipantsCopy, column, newDirection)    
+      setFilteredParticipants(sortedData)
+      handlePage('Select', 1)
+
+      return newDirection
+    })
   }
 
-
+  
+  
   return (
     <>
       {participants ? (
@@ -610,7 +626,7 @@ export function Table() {
 
                       {/* ADD - REMOVE */}
                       <div className="flex h-full w-full justify-end gap-3 text-sm">
-                        <AddRowButton selectedRows={selectedRows}/>
+                        <AddRowButton selectedRows={selectedRows} columnToSort={columnToSort} sortDirection={sortDirection}/>
                         <RemoveRowsButton selectedRows={selectedRows} deleteSelectedRows={deleteSelectedRows} isPopoverVisible={isPopoverVisible} setIsPopoverVisible={setIsPopoverVisible}  
                         setRowToDelete={setRowToDelete}/>
                       </div>
@@ -720,8 +736,18 @@ export function Table() {
                               <>
                                 {
                                   headers.map((value, index) => (
-                                    <div key={index} onClick={(e) => handleSortByHeader(e, index)} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 dark:text-slate-200 hover:cursor-pointer ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
-                                      <p>{value}</p>
+                                    <div key={index} onClick={(e) => handleSortByHeader(e, index)} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-200 dark:text-slate-200 hover:cursor-pointer hover:text-white ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>
+                                      <div className="flex items-center gap-1">
+                                        <p className={`${columnToSortIndex === index ? 'text-white transition-all ease-in-out' : ''}`}>{value}</p>
+                                        {
+                                          columnToSortIndex === index && (
+                                            <div className="flex flex-col h-[16px] gap-[2px]">
+                                              <AscArrow stroke={`${sortDirection === 'asc' ? '#fff' : '#e2e8f0'}`} strokeWidth={sortDirection === 'asc' ? '2' : '1'}/>
+                                              <DescArrow stroke={`${sortDirection === 'desc' ? '#fff' : '#e2e8f0'}`} strokeWidth={sortDirection === 'desc' ? '2' : '1'}/>
+                                            </div>
+                                          )
+                                        }
+                                      </div>
                                     </div>
                                   ))
                                 }
@@ -733,7 +759,7 @@ export function Table() {
                       </div>
                       <div className='table-row-group'>
                         {filteredParticipants?.slice(initialNumber, finalNumber).map((item, rowIndex) => (
-                          <Row key={item["#"]} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} item={item} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>
+                          <Row key={item["#"]} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} item={item} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow} columnToSort={columnToSort} sortDirection={sortDirection}/>
                         ))}
                       </div>
                     </div>

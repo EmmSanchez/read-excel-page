@@ -261,3 +261,14 @@ export const ChevronLeft = (props: SVGProps<SVGSVGElement>) => (
 export const ChevronRight = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
 )
+
+export const AscArrow = (props: SVGProps<SVGSVGElement>) => (
+  <svg {...props} width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 7.32532L7 1.32532L13 7.32532" stroke={props.stroke} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+export const DescArrow = (props: SVGProps<SVGSVGElement>) => (
+  <svg {...props} width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 1.32532L7 7.32532L13 1.32532" stroke={props.stroke} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)

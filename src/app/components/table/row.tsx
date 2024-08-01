@@ -12,10 +12,12 @@ interface RowProps {
   item: filteredParticipant
   rowToDelete: number | null;
   cancelDelete: () => void;
-  confirmDeleteRow: () => void
+  confirmDeleteRow: () => void;
+  columnToSort: string;
+  sortDirection: 'asc' | 'desc'
 }
 
-export function Row ({rowIndex, handleGetRow, selectedRows, item, rowToDelete, cancelDelete, confirmDeleteRow}: RowProps) {
+export function Row ({rowIndex, handleGetRow, selectedRows, item, rowToDelete, cancelDelete, confirmDeleteRow, columnToSort, sortDirection}: RowProps) {
   const isSelected = selectedRows.includes(item["#"]!);
   
   // Get rol every table refresh
@@ -50,7 +52,7 @@ export function Row ({rowIndex, handleGetRow, selectedRows, item, rowToDelete, c
             {/* <button onClick={handlePrint} className='flex justify-center w-[24px] h-full'>
               <PrintIcon className='p-1 rounded-md transition-all hover:bg-neutral-50'/>
             </button> */}
-            <EditButton handleGetRow={handleGetRow} rowIndex={rowIndex} item={item}/>
+            <EditButton handleGetRow={handleGetRow} rowIndex={rowIndex} item={item} columnToSort={columnToSort} sortDirection={sortDirection}/>
             {
               userProfile === 'Administrador' && (
                 <DeleteButton handleGetRow={handleGetRow} item={item} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow}/>

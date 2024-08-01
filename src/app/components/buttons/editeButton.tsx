@@ -6,6 +6,7 @@ import { filteredParticipant } from "@/app/types/filteredParticipant";
 import { useParticipantsDataStore } from "@/app/store/participants";
 import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
+import { sortParticipantsByColumn } from "../table/table";
 
 interface FormData {
   id: number | null;
@@ -42,9 +43,14 @@ interface EditButtonProps {
   handleGetRow: (rowIndex: number, action: string) => void
   rowIndex: number
   item: filteredParticipant
+  columnToSort: string;
+  sortDirection: 'asc' | 'desc'
 }
 
-export function EditButton ({handleGetRow, rowIndex, item}: EditButtonProps) {
+type ParticipantKeys = keyof filteredParticipant;  
+
+
+export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDirection}: EditButtonProps) {
   const [isPopoverVisible, setIsPopoverVisible] = useState<boolean>(false)
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true)
 
@@ -349,16 +355,9 @@ export function EditButton ({handleGetRow, rowIndex, item}: EditButtonProps) {
           }
           return row as ParticipantData;
         });
-        
-        // SORT AGAIN
-        updatedData.sort((a, b) => {
-          const idA = a["#"];
-          const idB = b["#"];
-          if (idA === null || idB === null) {
-            return 0;
-          }
-          return idA - idB;
-        });
+
+        // Sort the data by id in ascending order ------------------------------------------------- PROBABLY THE REASON OF AUTO SORT BY ID
+        const sortedData = sortParticipantsByColumn(updatedData, columnToSort as ParticipantKeys, sortDirection)
 
         if (action === 'exit') {
           setIsPopoverVisible(false);
@@ -366,7 +365,7 @@ export function EditButton ({handleGetRow, rowIndex, item}: EditButtonProps) {
           setSelectedGenre('')
           setActiveSection("Información");
         }
-        setParticipants(updatedData)
+        setParticipants(sortedData)
         setIsTestOpen(false)
         setIsGenreOpen(false)
         setOriginalFormData(formData)

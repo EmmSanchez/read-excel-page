@@ -36,9 +36,11 @@ interface FormData {
 
 interface AddRowButtonProps {
   selectedRows: number[];
+  columnToSort: string;
+  sortDirection: 'asc' | 'desc'
 }
 
-export function AddRowButton ({selectedRows}: AddRowButtonProps) {
+export function AddRowButton ({selectedRows, columnToSort, sortDirection}: AddRowButtonProps) {
   // FIXING
   const participants = useParticipantsDataStore(state => state.participants)
 
@@ -108,7 +110,7 @@ export function AddRowButton ({selectedRows}: AddRowButtonProps) {
           <p>Añadir</p>
         </div>
       </button>
-      <PopoverForm idError={idError} setIdError={setIdError} setIsPopoverVisible={setIsPopoverVisible} isPopoverVisible={isPopoverVisible} handleGetNewIndex={handleGetNewIndex} formData={formData} setFormData={setFormData} isAddButtonDisabled={isAddButtonDisabled} setIsAddButtonDisabled={setIsAddButtonDisabled}/>
+      <PopoverForm idError={idError} setIdError={setIdError} setIsPopoverVisible={setIsPopoverVisible} isPopoverVisible={isPopoverVisible} handleGetNewIndex={handleGetNewIndex} formData={formData} setFormData={setFormData} isAddButtonDisabled={isAddButtonDisabled} setIsAddButtonDisabled={setIsAddButtonDisabled} columnToSort={columnToSort} sortDirection={sortDirection}/>
     </>
   )
 }

@@ -4,6 +4,8 @@ import { FormInputs } from "./inputs/formInputs"
 import { useAgesStore } from "@/app/store/agesStore";
 import { useParticipantsDataStore } from "@/app/store/participants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
+import { sortParticipantsByColumn } from "../table/table";
+import { filteredParticipant } from "@/app/types/filteredParticipant";
 
 interface FormData {
   id: number | null;
@@ -36,7 +38,7 @@ interface FormData {
   total: number | null;
 }
 
-interface PopoverForm {
+interface PopoverFormProps {
   idError: boolean;
   setIdError: Dispatch<SetStateAction<boolean>>;
   setIsPopoverVisible: Dispatch<SetStateAction<boolean>>;
@@ -46,9 +48,14 @@ interface PopoverForm {
   setFormData: Dispatch<SetStateAction<FormData>>;
   isAddButtonDisabled: boolean;
   setIsAddButtonDisabled: Dispatch<SetStateAction<boolean>>
+  columnToSort: string;
+  sortDirection: 'asc' | 'desc'
 }
 
-export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopoverVisible, handleGetNewIndex, formData, setFormData, isAddButtonDisabled, setIsAddButtonDisabled}: PopoverForm) {
+type ParticipantKeys = keyof filteredParticipant;  
+
+
+export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopoverVisible, handleGetNewIndex, formData, setFormData, isAddButtonDisabled, setIsAddButtonDisabled, columnToSort, sortDirection}: PopoverFormProps) {
   // FIXING
   const participants = useParticipantsDataStore(state => state.participants)
   const setParticipants = useParticipantsDataStore(state => state.setParticipants)
@@ -235,10 +242,12 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
         
         // Add new row to the existing data
         const updatedData = participants ? [...participants, newRow] : [newRow]  
-        // Sort the data by id in ascending order
-        updatedData.sort((a, b) => (a["#"] as number) - (b["#"] as number));
+        // Sort the data by id in ascending order ------------------------------------------------- PROBABLY THE REASON OF AUTO SORT BY ID
+        // updatedData.sort((a, b) => (a["#"] as number) - (b["#"] as number));
+        const sortedData = sortParticipantsByColumn(updatedData, columnToSort as ParticipantKeys, sortDirection)
+
         // Update the state with the new sorted data
-        setParticipants(updatedData)
+        setParticipants(sortedData)
       } catch (error) {
         console.error('Error al crear nuevo participante', error)
       }
