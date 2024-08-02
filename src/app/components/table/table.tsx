@@ -552,7 +552,7 @@ export function Table() {
                   <div className="flex w-full justify-center">
                     <div className="flex items-center h-12 mx-4 w-full pr-5 gap-4">
                       {/* SEARCHBAR SKELETON*/}
-                      <div className="flex animate-pulse bg-gray-200 h-full py-2 px-3 gap-4 border-solid border-[1px] border-gray-300 rounded-lg items-center outline outline-2 outline-transparent ">
+                      <div className="flex animate-pulse bg-gray-200 dark:bg-gray-800 h-full py-2 px-3 gap-4 border-solid border-[1px] border-gray-300 dark:border-gray-700 rounded-lg items-center outline outline-2 outline-transparent ">
                         <div className="animate-pulse bg-slate-400/80 w-[20px] h-[20px] rounded"></div>
                         <input disabled type="text" placeholder="" className="animate-pulse appearance-none w-72 bg-slate-400/80 rounded"/>
                         {/* TOOLTIP */}
@@ -575,19 +575,81 @@ export function Table() {
                       </div>
                     </div>
                   </div>
+
+                  {/* PAGINATION */}
+                  <div className="grid grid-flow-row grid-cols-2 place-items-start lg:grid-flow-col lg:grid-cols-3 lg:items-end lg:place-items-stretch px-4 mt-5 mx-3 gap-1">
+                    <div className={`relative animate-pulse w-16 h-10 bg-gray-300 dark:bg-gray-700 rounded-md`}>
+                    </div>
+
+                    <div className="flex justify-center gap-1">
+                      <input disabled type="number" className="w-24 mr-2 p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600 transition-all"/>
+                      <button disabled className="w-[38px] p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600">
+                      </button>
+                      {
+                        totalPages.length < 6 ? 
+                          <>
+                            {
+                              totalPages.map((pageNumber, index) => {
+                                return (
+                                  <button disabled key={index} className={`w-[36px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
+                                  </button>
+                                )
+                              })
+                            }
+                          </>
+                          :
+                          <>
+                            { 
+                              page > 3 &&
+                              <>
+                                <button disabled className={`w-[36px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
+                                </button>
+                                <p className="flex p-2 items-end tracking-widest">
+                                  ...
+                                </p>
+                              </>
+
+                            }
+                            {
+                              totalPages.slice(initialPage, finalPage).map((pageNumber, index) => {
+                                return (
+                                  <button disabled key={index} className={`w-[36px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
+                                  </button>
+                                )
+                              })
+                            }
+                            {
+                              page < (totalPages.length - 2) &&
+                              <>
+                                <p className="flex p-2 items-end tracking-widest">
+                                  ...
+                                </p>
+                                <button disabled className={`w-[36px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
+                                </button>
+                              </>
+                            }
+                          </>
+                      }
+                      <button disabled className="w-[38px] p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600">
+                      </button>
+                    </div>
+                    <div className="flex justify-end items-end">
+                      <p className="text-gray-500 dark:text-gray-200 text-[16px]">Cargando ...</p>
+                    </div>
+                  </div>
+
                   
                   {/* TABLE */}
                   <div className="flex justify-start w-full">
-                    <div className='table table-auto m-3 mt-5 bg-slate-50 w-full rounded-md border-solid border-[1px] border-black/20 overflow-hidden'>
-                      <div className='table-header-group bg-[#2563EB]'>
+                    <div className='table table-auto m-3 mt-2 bg-slate-50 w-full rounded-md border-solid border-[1px] border-black/20 dark:bg-zinc-700 overflow-hidden'>
+                      <div className='table-header-group bg-[#2563EB] dark:bg-neutral-950'>
                         <div className='table-row'>
                           <div className='table-cell pl-10 py-3'></div>
                           { filteredParticipants && (
-                              // CHECAR AQUÍ Y FILTEREDEXCELDATA ------------------------------------------------------------------------
                               <>
                                 {
-                                  Object.keys(filteredParticipants[0]).map((cell, index) => (
-                                    <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-50 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>{cell}</div>
+                                  headers.map((cell, index) => (
+                                    <div key={index} className={`table-cell align-middle px-3 py-3 text-base text-left font-medium text-blue-200 dark:text-slate-200 ${(index === 2 || index === 1) ? 'whitespace-nowrap' : '' } ${index === 0 ? 'text-center' : ''}`}>{cell}</div>
                                   ))
                                 }
                               </>
@@ -597,9 +659,8 @@ export function Table() {
                         </div>
                       </div>
                       <div className='table-row-group'>
-                        {filteredParticipants?.slice(0,10).map((item, rowIndex) => (
-                          // CHECAR AQUÍ ONCLICK Y FILTEREDEXCELDATA ------------------------------------------------------------------------
-                            <div key={rowIndex} onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row pointer-events-none ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-200/90'}`}>
+                        {filteredParticipants?.slice(initialNumber,finalNumber).map((item, rowIndex) => (
+                            <div key={rowIndex} onClick={(e) => {e.stopPropagation(); handleGetRow(rowIndex, 'select')}} className={`table-row pointer-events-none ${rowIndex % 2 === 0 ? 'bg-white dark:bg-neutral-900' : 'bg-slate-200/90 dark:bg-neutral-900'}`}>
                               <div className="table-cell align-middle pl-3 py-[6px] text-sm border-solid border-t-[1px] border-black/20">
                                 <div className="animate-pulse w-4 h-4 align-middle bg-slate-400/80 rounded-xl"></div>
                               </div>
