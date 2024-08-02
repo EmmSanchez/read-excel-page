@@ -116,8 +116,7 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
 
     switch (action) {
       case "id":
-        const newId = parseInt(newValue);
-
+        const newId = parseInt(newValue)
         // IS ID === ORIGINAL ID
         if (newId === originalFormData.id) {
           setIdError(false); 
@@ -128,6 +127,11 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
           setIsSaveButtonDisabled(false);
         }
         
+        if (!newId) {
+          setIdError(false)
+          setIsSaveButtonDisabled(true)
+        }
+
         newFormData.id = newId;
         break;
         

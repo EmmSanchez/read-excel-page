@@ -6,7 +6,6 @@ import { useTheme } from "next-themes";
 import { useState, useEffect, SVGProps } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUserStore } from "@/app/store/userStore";
 import { useNavLinksStore } from "@/app/store/navLinks";
 
 export function NavBar() {

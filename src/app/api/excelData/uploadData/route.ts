@@ -51,11 +51,46 @@ export async function POST(req: NextRequest) {
       name: fileName,
       size: fileSize,
     })
-    
+
+    // Fill excel empty cells
+    const updatedData = data.map((participant: Participant) => {
+      return {
+        '#': participant['#'],
+        'Apellido paterno': participant['Apellido paterno'] ?? null,
+        'Apellido materno': participant['Apellido materno'] ?? null,
+        Nombre: participant['Nombre'] ?? null,
+        Prueba: participant['Prueba'] ?? null,
+        '# Empleado': participant['# Empleado'],
+        Edad: participant['Edad'] ?? null,
+        Genero: participant['Genero'] ?? null,
+        Categoria: participant['Categoria'] ?? null,
+        'Altura [cm]': participant['Altura [cm]'] ?? null,
+        'Peso [kg]': participant['Peso [kg]'] ?? null,
+        'Grasa [%]': participant['Grasa [%]'] ?? null,
+        IMC: participant['IMC'] ?? null,
+        'Cintura [cm]': participant['Cintura [cm]'] ?? null,
+        BMI: participant['BMI'] ?? null,
+        BMR: participant['BMR'] ?? null,
+        Fatmass: participant['Fatmass'] ?? null,
+        FFM: participant['FFM'] ?? null,
+        TBW: participant['TBW'] ?? null,
+        Agarre: participant['Agarre'] ?? null,
+        Puntos: participant['Puntos'] ?? null,
+        Salto: participant['Salto'] ?? null,
+        Puntos_1: participant['Puntos_1'] ?? null,
+        Agilidad: participant['Agilidad'] ?? null,
+        Puntos_2: participant['Puntos_2'] ?? null,
+        Resistencia: participant['Resistencia'] ?? null,
+        Puntos_3: participant['Puntos_3'] ?? null,
+        Total: participant['Total'] ?? null,
+      };
+    });
+
+    // Calculates new total if there are ranges where is necessary
     if (ageRanges.length > 0) {
-      const updatedData = data.map((participant:  Participant) => {
+      const calculatedData = updatedData.map((participant:  Participant) => {
         
-        let total = participant.Total
+        let total = participant.Total ? participant.Total : 0
         for (const range of ageRanges) {
           if (participant.Edad >= range.minAge && participant.Edad <= range.maxAge) {
             total = (participant.Puntos + participant.Puntos_1 + participant.Puntos_2 + participant.Puntos_3) * range.value;
@@ -68,12 +103,12 @@ export async function POST(req: NextRequest) {
         };
       });
 
-      await ParticipantModel.insertMany(updatedData);
-      return NextResponse.json({ message: 'Datos guardados en MongoDB', data: updatedData }, { status: 200 });
+      await ParticipantModel.insertMany(calculatedData);
+      return NextResponse.json({ message: 'Datos guardados en MongoDB', data: calculatedData }, { status: 200 });
     } else {
       // Iterate and upload data
-      await ParticipantModel.insertMany(data);
-      return NextResponse.json({ message: 'Datos guardados en MongoDB', data: data}, { status: 200 });
+      await ParticipantModel.insertMany(updatedData);
+      return NextResponse.json({ message: 'Datos guardados en MongoDB', data: updatedData}, { status: 200 });
     }
   } catch (error) {
     console.error('Error al guardar datos en MongoDB:', error);

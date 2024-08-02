@@ -1,3 +1,4 @@
+import { useSearchParams } from "next/navigation";
 import { SearchIcon, InfoIcon } from "../../../../public/icons/icons"
 import { useState, useRef, ChangeEvent } from "react";
 
@@ -6,6 +7,8 @@ interface SearchbarProps {
 }
 
 export function Searchbar ({handleSearchbar}: SearchbarProps) {
+  const searchParams = useSearchParams()
+
 
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const hideTooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -27,7 +30,7 @@ export function Searchbar ({handleSearchbar}: SearchbarProps) {
     <>
       <div className="flex bg-gray-200 dark:bg-[#3B4758] h-full py-2 pl-3 gap-4 border-solid border-[1px] border-gray-300 dark:border-slate-800 rounded-lg items-center transition-all duration-300 ease-in-out outline outline-2 outline-transparent focus-within:outline-gray-400 focus-within:outline-offset-2 focus-within:bg-white dar">
         <SearchIcon width={14} height={14} stroke='#6c757d'/>
-        <input type="text" placeholder="Buscar..." onChange={(e) => handleSearchbar(e)} className="appearance-none w-72 bg-transparent text-lg text-gray-600 dark:text-gray-100 focus:outline-none placeholder:text-lg placeholder:text-gray-500 dark:placeholder:text-slate-300  placeholder:align-bottom"/>
+        <input type="text" placeholder="Buscar..." onChange={(e) => handleSearchbar(e)} defaultValue={searchParams.get('search')?.toString()} className="appearance-none w-72 bg-transparent text-lg text-gray-600 dark:text-gray-100 focus:outline-none placeholder:text-lg placeholder:text-gray-500 dark:placeholder:text-slate-300  placeholder:align-bottom"/>
         {/* TOOLTIP */}
         <InfoIcon width={12} height={12} stroke='#6c757d' onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="hover:cursor-pointer" />
         <div onMouseEnter={() => tooltipToggle("enter")} onMouseLeave={() => tooltipToggle("leave")} className="relative">

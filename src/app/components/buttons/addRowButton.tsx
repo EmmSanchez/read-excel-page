@@ -87,6 +87,7 @@ export function AddRowButton ({selectedRows, columnToSort, sortDirection}: AddRo
     const newFormData = { ...formData }
     if (participants && participants.length > 0) {
       const lastEntry = participants[participants.length - 1]["#"]
+      
       if (typeof lastEntry === "number") {
         const lastId = lastEntry
         const newId = lastId + 1

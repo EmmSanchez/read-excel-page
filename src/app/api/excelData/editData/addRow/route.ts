@@ -8,6 +8,12 @@ export async function POST(req: NextRequest) {
 
     const newParticipant = row
 
+    // Verifiy if ID is repeated
+    const existingParticipant = await ParticipantModel.findOne({ '#': newParticipant.id });
+    if (existingParticipant) {
+      return NextResponse.json({ message: "El ID del participante ya existe" }, { status: 400 });
+    }
+
     const res = await ParticipantModel.insertMany(newParticipant)  
   
     if (!res) {

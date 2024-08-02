@@ -210,7 +210,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
      // Ensure the formData has an id before adding
      if (formData.id !== null) {
       const newRow = {
-          "#": formData.id,
+          "#": formData.id!,
           "Apellido paterno": formData.p_surname,
           "Apellido materno": formData.m_surname,
           "Nombre": formData.name,

@@ -14,6 +14,7 @@ import { useParticipantsDataStore } from "@/app/store/participants";
 import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
 import { filteredParticipant } from "@/app/types/filteredParticipant";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -143,17 +144,13 @@ export function Table() {
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
 
   // Searchbar
-  const [searchValue, setSearchValue] = useState<string>('')
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const { replace } = useRouter()
+  const [searchValue, setSearchValue] = useState<string>(searchParams.get('search') ? searchParams.get('search')!.toString() : '')
 
   // Manual Refresh
   const isTableLoading = useTableLoading((state) => state.isTableLoading)
-
-  // -----------------------------------------------------------------------------------------------
-
-  // USED TO FIX UPLOAD TO OR 3 TIMES DATA
-  // useEffect(() => {
-  //   setFile(null)
-  // }, [])
 
   // Get ranges to update total automatically
   const ageRanges = useAgesStore(state => state.ageRanges)
@@ -169,6 +166,7 @@ export function Table() {
       });
 
       if (!response.ok) {
+        setFile(null)
         throw new Error("Failed to upload data");
       }
 
@@ -216,6 +214,7 @@ export function Table() {
     setColumnToSortIndex(0)
     setColumnToSort('#')
     setSortDirection('asc')
+    setPage(1)
     if (!file) {
       setParticipants(null)
       setFilteredParticipants(null)
@@ -244,12 +243,13 @@ export function Table() {
       };
       const fileRenamed = { _id: '', name:file.name, size: file.size} as unknown as File
       setFile(fileRenamed)
+      setSearchValue('')
+      replace(`${pathName}`)
       reader.readAsArrayBuffer(file);
     }
     
     setSelectedRows([])
     setRowToDelete(null)
-    setSearchValue('')
     setFilteredParticipants(null)
     setParticipantsPerPage(10)
   }, [file])
@@ -352,8 +352,16 @@ export function Table() {
   // SEARCHING ------------------------------------------------------------------------------------------------------------------------------------------------
   const handleSearchbar = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
+    const params = new URLSearchParams(searchParams)
     const newSearchValue = (e.target.value).trimStart()
+    if (newSearchValue) {
+      params.set('search', newSearchValue)
+    } else {
+      params.delete('search')
+    }
+    
     setSearchValue(newSearchValue)
+    replace(`${pathName}?${params.toString()}`)
   }
 
   // Determine the type of search
@@ -415,6 +423,7 @@ export function Table() {
   const [participantsPerPage, setParticipantsPerPage] = useState<number>(10)
   const [totalPages, setTotalPages] = useState<number[]>([1])
   const [isSelectNumberFilter, setIsSelectNumberFilter] = useState<boolean>(false)
+
 
   const calculatePages = (users: number, participantsPerPage: number) => {
     let newTotalPages: number = users / participantsPerPage
