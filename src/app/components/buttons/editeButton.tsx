@@ -365,7 +365,8 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
           setSelectedGenre('')
           setActiveSection("Información");
         }
-        setParticipants(sortedData)
+        setParticipants(updatedData)
+        setFilteredParticipants(sortedData)
         setIsTestOpen(false)
         setIsGenreOpen(false)
         setOriginalFormData(formData)

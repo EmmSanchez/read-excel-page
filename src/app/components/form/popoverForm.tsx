@@ -6,6 +6,7 @@ import { useParticipantsDataStore } from "@/app/store/participants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
 import { sortParticipantsByColumn } from "../table/table";
 import { filteredParticipant } from "@/app/types/filteredParticipant";
+import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
 
 interface FormData {
   id: number | null;
@@ -59,6 +60,8 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
   // FIXING
   const participants = useParticipantsDataStore(state => state.participants)
   const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
+  const setFilteredParticipants = useFilteredParticipantsDataStore(state => state.setFilteredParticipants)
 
   const ageRanges = useAgesStore(state => state.ageRanges)
 
@@ -247,7 +250,8 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
         const sortedData = sortParticipantsByColumn(updatedData, columnToSort as ParticipantKeys, sortDirection)
 
         // Update the state with the new sorted data
-        setParticipants(sortedData)
+        setParticipants(updatedData)
+        setFilteredParticipants(sortedData)
       } catch (error) {
         console.error('Error al crear nuevo participante', error)
       }

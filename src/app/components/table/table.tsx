@@ -111,7 +111,7 @@ export function sortParticipantsByColumn(data: any[], column: ParticipantKeys, d
     }
 
     if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return direction === 'asc' ? bValue - aValue : aValue - bValue;
+      return direction === 'asc' ? aValue - bValue : bValue - aValue;
     }
 
     return 0;
@@ -213,7 +213,9 @@ export function Table() {
 
   // CONVERT EXCEL TO JSON
   useEffect(() => {
-    
+    setColumnToSortIndex(0)
+    setColumnToSort('#')
+    setSortDirection('asc')
     if (!file) {
       setParticipants(null)
       setFilteredParticipants(null)
@@ -364,11 +366,13 @@ export function Table() {
     setSelectedRows([]);
     setRowToDelete(null);
     setIsPopoverVisible(false);
+    if (!participants) return
+    const sortedParticipants = sortParticipantsByColumn(participants, columnToSort as ParticipantKeys, sortDirection)
   
     if (!searchValue) {
-      setFilteredParticipants(participants ? filterParticipantsValues(participants) : null)
+      setFilteredParticipants(participants ? filterParticipantsValues(sortedParticipants) : null)
     } else {
-      let filteredParticipants
+      let filteredParticipants = sortedParticipants
   
       if (isID(searchValue)) {
         filteredParticipants = participants?.filter((row, index) => row["#"]?.toString() === searchValue);
@@ -526,8 +530,6 @@ export function Table() {
     })
   }
 
-  
-  
   return (
     <>
       {participants ? (
