@@ -6,6 +6,7 @@ import { useTestOptionsStore } from "../store/testOptions";
 import { useDataUsersStore } from "../store/dataUsers";
 import { useAgesStore } from "../store/agesStore";
 import { useParticipantsDataStore } from "@/app/store/participants";
+import { useUserStore } from "../store/userStore";
 
 
 
@@ -24,6 +25,9 @@ export default function Layout({
 
   // FIXING
   const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
+  const setUserProfile = useUserStore(state => state.setUserProfile)
+
 
 
   const getData = async () => {
@@ -95,7 +99,7 @@ export default function Layout({
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({rol})
+          body: JSON.stringify(rol)
         })
 
         if (res.ok) {
@@ -135,24 +139,25 @@ export default function Layout({
   
   useEffect(() => {
     const fetchData = async () => {
-      try {  
+      try {
         await getData();
         await getOptions();
-        await getRanges()
+        await getRanges();
+
+        const storedUserRol = localStorage.getItem('userProfile');
+        if (!storedUserRol) return;
+        const userRol = JSON.parse(storedUserRol);
+        setUserProfile(userRol);
+
+        if (userRol !== 'Administrador') return;
+        await validateRol(userRol);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    
-    fetchData();
-    
-    const storedUserRol = localStorage.getItem('userProfile')
-    if (!storedUserRol) return
-    const userRol = JSON.parse(storedUserRol)
-    if (userRol !== 'Administrador') return
-    validateRol(userRol)
 
-  }, [])
+    fetchData();
+  }, []);
 
   return (
     <>
