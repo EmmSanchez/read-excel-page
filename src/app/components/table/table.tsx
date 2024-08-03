@@ -212,9 +212,6 @@ export function Table() {
 
   // CONVERT EXCEL TO JSON
   useEffect(() => {
-    setColumnToSortIndex(0)
-    setColumnToSort('#')
-    setSortDirection('asc')
     setPage(1)
     if (!file) {
       setParticipants(null)
@@ -245,6 +242,9 @@ export function Table() {
       const fileRenamed = { _id: '', name:file.name, size: file.size} as unknown as File
       setFile(fileRenamed)
       setSearchValue('')
+      setColumnToSort('#')
+      setColumnToSortIndex(0)
+      setSortDirection('asc')
       replace(`${pathName}`)
       reader.readAsArrayBuffer(file);
     }
@@ -522,19 +522,33 @@ export function Table() {
   }
 
   // SORTING -----------------------------------------------------------------------------------------------------------------------------------------
-  const [columnToSortIndex, setColumnToSortIndex] = useState<number>(0)
-  const [columnToSort, setColumnToSort] = useState<string>('#')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [columnToSortIndex, setColumnToSortIndex] = useState<number>(searchParams?.get('sortIndex') ? parseInt(searchParams.get('sortIndex')!.toString()) : 0)
+  const [columnToSort, setColumnToSort] = useState<string>(searchParams?.get('sort') ? searchParams.get('sort')!.toString() : '#')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(searchParams?.get('direction')?.toString() === 'asc' ? 'asc' : 'desc')
 
   const handleSortByHeader = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+    const params = new URLSearchParams(searchParams)
+
     e.preventDefault()
     setColumnToSortIndex(index)
+    // params to save index header
+    params.set('sortIndex', index.toString())
 
     setSortDirection((prev) => {
-      const newDirection = prev === 'asc' && columnToSortIndex === index ? 'desc' : 'asc';
 
+      const newDirection = prev === 'asc' && columnToSortIndex === index ? 'desc' : 'asc';
+      
       const column = TableHeaders[index] as ParticipantKeys
       setColumnToSort(column)
+      
+      // params of sort header
+      params.set('sort', column)
+      
+      // params to save sort direction
+      params.set('direction', newDirection)
+
+      replace(`${pathName}?${params.toString()}`)
+
       const filteredParticipantsCopy = filteredParticipants ? [...filteredParticipants] : null 
       if (!filteredParticipantsCopy) return prev
       const sortedData = sortParticipantsByColumn(filteredParticipantsCopy, column, newDirection)    
@@ -544,11 +558,6 @@ export function Table() {
       return newDirection
     })
   }
-
-  console.log(participants);
-  console.log(filteredParticipants);
-  
-  
 
   return (
     <>
