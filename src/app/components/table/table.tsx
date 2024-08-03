@@ -205,6 +205,7 @@ export function Table() {
         "Total": participant["Total"]
       }));
       setFilteredParticipants(newFilteredData)
+      
     }
 
   }, [searchValue, participants])
@@ -374,20 +375,24 @@ export function Table() {
     setSelectedRows([]);
     setRowToDelete(null);
     setIsPopoverVisible(false);
+
     if (!participants) return
-    const sortedParticipants = sortParticipantsByColumn(participants, columnToSort as ParticipantKeys, sortDirection)
+    // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------????
+    const participantsCopy = [...participants]
+    const sortedParticipants = sortParticipantsByColumn(participantsCopy, columnToSort as ParticipantKeys, sortDirection)
   
     if (!searchValue) {
       setFilteredParticipants(participants ? filterParticipantsValues(sortedParticipants) : null)
     } else {
       let filteredParticipants = sortedParticipants
-  
+      
       if (isID(searchValue)) {
-        filteredParticipants = participants?.filter((row, index) => row["#"]?.toString() === searchValue);
+        filteredParticipants = participantsCopy?.filter((row, index) => row["#"]?.toString() === searchValue);
       } else if (isRange(searchValue)) {
         const [start, end] = searchValue.split('-').map(Number);
-
-        filteredParticipants = participants?.filter((row, index) => {
+        const participantsCopy = [...participants]
+        
+        filteredParticipants = participantsCopy?.filter((row, index) => {
           const cellValue = Number(row["#"]);
           return cellValue >= start && cellValue <= end;
         });
@@ -395,18 +400,19 @@ export function Table() {
       } else if (isCustomSearch(searchValue)) {
         const ids = searchValue.split(',').map(Number);
 
-        filteredParticipants = participants?.filter((row, index) => {
+        filteredParticipants = participantsCopy?.filter((row, index) => {
           const cellValue = Number(row["#"]);
           return ids.includes(cellValue);
         });
 
       } else if (isName(searchValue)) {
-        filteredParticipants = participants?.filter((row, index) => row.Nombre?.toString().toLowerCase().includes(searchValue.toLowerCase()));
+        filteredParticipants = participantsCopy?.filter((row, index) => row.Nombre?.toString().toLowerCase().includes(searchValue.toLowerCase()));
       }
   
       setFilteredParticipants(filteredParticipants ? filterParticipantsValues(filteredParticipants) : null);
       
     }
+    
     // "participants" deleted to avoid setPage to 1 every delete or edit
   }, [searchValue, participants]);
 
@@ -538,6 +544,11 @@ export function Table() {
       return newDirection
     })
   }
+
+  console.log(participants);
+  console.log(filteredParticipants);
+  
+  
 
   return (
     <>

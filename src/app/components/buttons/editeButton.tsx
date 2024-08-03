@@ -7,6 +7,7 @@ import { useParticipantsDataStore } from "@/app/store/participants";
 import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
 import { ParticipantData } from "@/app/types/ClientParticipant";
 import { sortParticipantsByColumn } from "../table/table";
+import { getMaxNumber } from "./addRowButton";
 
 interface FormData {
   id: number | null;
@@ -195,9 +196,12 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
     const newFormData = { ...formData }
     // LOGIC IF THERE IS NO LIST
     if (participants) {
-      const lastEntry = participants[participants.length - 1]["#"]
-      if (typeof lastEntry === "number") {
-        const lastId = lastEntry
+      const participantsCopy = [...participants]
+
+      const maxNumber = getMaxNumber(participantsCopy)
+
+      if (typeof maxNumber === "number") {
+        const lastId = maxNumber
         const newId = lastId + 1
         newFormData.id = newId
       }
@@ -360,8 +364,8 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
           return row as ParticipantData;
         });
 
-        // Sort the data by id in ascending order ------------------------------------------------- PROBABLY THE REASON OF AUTO SORT BY ID
-        const sortedData = sortParticipantsByColumn(updatedData, columnToSort as ParticipantKeys, sortDirection)
+        const updatedDataCopy = [...updatedData]
+        const sortedData = sortParticipantsByColumn(updatedDataCopy, columnToSort as ParticipantKeys, sortDirection)
 
         if (action === 'exit') {
           setIsPopoverVisible(false);

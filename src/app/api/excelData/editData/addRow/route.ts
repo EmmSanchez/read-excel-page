@@ -7,9 +7,9 @@ export async function POST(req: NextRequest) {
     if(!row) return NextResponse.json({ message: "Datos inválidos" }, { status: 400 });
 
     const newParticipant = row
-
+    
     // Verifiy if ID is repeated
-    const existingParticipant = await ParticipantModel.findOne({ '#': newParticipant.id });
+    const existingParticipant = await ParticipantModel.findOne({ '#': newParticipant["#"] });
     if (existingParticipant) {
       return NextResponse.json({ message: "El ID del participante ya existe" }, { status: 400 });
     }

@@ -53,8 +53,6 @@ export default function Layout({
           
           setParticipants(sortedParticipants)
           const fileInfo = fileInfoArray[0]
-          console.log(fileInfo);
-          
           setFile(fileInfo)
         } else {
           setParticipants(sortedParticipants)

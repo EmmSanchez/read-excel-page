@@ -2,6 +2,7 @@ import { AddIcon } from "../../../../public/icons/icons";
 import { useState } from "react";
 import { PopoverForm } from "../form/popoverForm";
 import { useParticipantsDataStore } from "@/app/store/participants";
+import { ParticipantData } from "@/app/types/ClientParticipant";
 
 interface FormData {
   id: number | null;
@@ -38,6 +39,22 @@ interface AddRowButtonProps {
   selectedRows: number[];
   columnToSort: string;
   sortDirection: 'asc' | 'desc'
+}
+
+export const getMaxNumber = (participants: ParticipantData[]): number | null => {
+  if (!participants || participants.length === 0) {
+    return null;
+  }
+
+  const maxNumber = participants.reduce((max, participant) => {
+    const current = participant["#"];
+    if (current !== null && current > max!) { 
+      return current;
+    }
+    return max;
+  }, participants[0]["#"]);
+
+  return maxNumber === Number.MIN_VALUE ? null : maxNumber;
 }
 
 export function AddRowButton ({selectedRows, columnToSort, sortDirection}: AddRowButtonProps) {
@@ -86,10 +103,13 @@ export function AddRowButton ({selectedRows, columnToSort, sortDirection}: AddRo
     setIsAddButtonDisabled(false)
     const newFormData = { ...formData }
     if (participants && participants.length > 0) {
-      const lastEntry = participants[participants.length - 1]["#"]
+      const participantsCopy = [...participants]
+
+      const maxNumber = getMaxNumber(participantsCopy)
       
-      if (typeof lastEntry === "number") {
-        const lastId = lastEntry
+      
+      if (typeof maxNumber === "number") {
+        const lastId = maxNumber
         const newId = lastId + 1
         newFormData.id = newId
       }

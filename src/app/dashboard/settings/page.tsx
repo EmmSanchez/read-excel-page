@@ -354,10 +354,7 @@ export default function Settings () {
           const response = await res.json()
           const updatedParticipants: Participant[] = response.updatedParticipants
 
-          console.log(updatedParticipants.length);
-          
           if (updatedParticipants.length > 0) {
-            
             const dataCopy = participants ? [...participants] : [];
 
             // Dictionary of id and total

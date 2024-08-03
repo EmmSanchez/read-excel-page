@@ -197,7 +197,10 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
       })
   
       if (!res.ok) {
-        throw new Error("Failed to upload data");
+        return {
+          success: false,
+          message: `Failed to upload data. Server responded with status: ${res.status} ${res.statusText}`,
+        };
       }
     } catch (error) {
       console.error("Error uploading data to MongoDB:", error);
@@ -241,22 +244,25 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
       }
 
       try {
-        await sendNewRow(newRow)
+        const result = await sendNewRow(newRow)
+        if (result?.success === false ) return
         
         // Add new row to the existing data
         const updatedData = participants ? [...participants, newRow] : [newRow]  
+        const copyUpdatedData = [...updatedData]
+        
         // Sort the data by id in ascending order ------------------------------------------------- PROBABLY THE REASON OF AUTO SORT BY ID
         // updatedData.sort((a, b) => (a["#"] as number) - (b["#"] as number));
-        const sortedData = sortParticipantsByColumn(updatedData, columnToSort as ParticipantKeys, sortDirection)
-
+        const sortedData = sortParticipantsByColumn(copyUpdatedData, columnToSort as ParticipantKeys, sortDirection)
+        
         // Update the state with the new sorted data
         setParticipants(updatedData)
         setFilteredParticipants(sortedData)
       } catch (error) {
         console.error('Error al crear nuevo participante', error)
       }
-
-
+      
+      
       // Reset the form inputs
       resetInputs();
       setIsPopoverVisible(false);

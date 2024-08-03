@@ -42,7 +42,7 @@ export function NavBar() {
       localStorage.clear();
       setLinks([]);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
