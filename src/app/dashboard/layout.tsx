@@ -95,7 +95,7 @@ export default function Layout({
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(rol)
+          body: JSON.stringify({rol})
         })
 
         if (res.ok) {
