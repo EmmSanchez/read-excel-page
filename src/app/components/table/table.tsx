@@ -377,9 +377,10 @@ export function Table() {
     setIsPopoverVisible(false);
 
     if (!participants) return
-    // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------????
     const participantsCopy = [...participants]
     const sortedParticipants = sortParticipantsByColumn(participantsCopy, columnToSort as ParticipantKeys, sortDirection)
+    console.log(sortedParticipants);
+    
   
     if (!searchValue) {
       setFilteredParticipants(participants ? filterParticipantsValues(sortedParticipants) : null)
@@ -390,7 +391,7 @@ export function Table() {
         filteredParticipants = participantsCopy?.filter((row, index) => row["#"]?.toString() === searchValue);
       } else if (isRange(searchValue)) {
         const [start, end] = searchValue.split('-').map(Number);
-        const participantsCopy = [...participants]
+        const participantsCopy = [...sortedParticipants]
         
         filteredParticipants = participantsCopy?.filter((row, index) => {
           const cellValue = Number(row["#"]);
@@ -413,7 +414,6 @@ export function Table() {
       
     }
     
-    // "participants" deleted to avoid setPage to 1 every delete or edit
   }, [searchValue, participants]);
 
   useEffect(() => {
