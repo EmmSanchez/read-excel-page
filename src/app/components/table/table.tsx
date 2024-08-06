@@ -522,7 +522,7 @@ export function Table() {
   // SORTING -----------------------------------------------------------------------------------------------------------------------------------------
   const [columnToSortIndex, setColumnToSortIndex] = useState<number>(searchParams?.get('sortIndex') ? parseInt(searchParams.get('sortIndex')!.toString()) : 0)
   const [columnToSort, setColumnToSort] = useState<string>(searchParams?.get('sort') ? searchParams.get('sort')!.toString() : '#')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(searchParams?.get('direction')?.toString() === 'asc' ? 'asc' : 'desc')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(searchParams?.get('direction') ? (searchParams.get('direction')!.toString() === 'asc' ? 'asc': 'desc') : 'asc')
 
   const handleSortByHeader = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
     const params = new URLSearchParams(searchParams)
