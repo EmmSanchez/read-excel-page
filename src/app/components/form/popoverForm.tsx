@@ -18,25 +18,25 @@ interface FormData {
   age: number | null;
   genre: string;
   category: string;
-  height: number | null;
-  weight: number | null;
-  imc: number | null;
-  waist: number | null;
-  bmi: number | null;
-  bmr: number | null;
-  grease: number | null;
-  fat_mass: number | null;
-  ffm: number | null;
-  tbw: number | null;
-  grip: number | null;
-  grip_points: number | null;
-  jump: number | null;
-  jump_points: number | null;
-  agility: number | null;
-  agility_points: number | null;
+  height: string | null;
+  weight: string | null;
+  imc: string | null;
+  waist: string | null;
+  bmi: string | null;
+  bmr: string | null;
+  grease: string | null;
+  fat_mass: string | null;
+  ffm: string | null;
+  tbw: string | null;
+  grip: string | null;
+  grip_points: string | null;
+  jump: string | null;
+  jump_points: string | null;
+  agility: string | null;
+  agility_points: string | null;
   resistance: string;
-  resistance_points: number | null;
-  total: number | null;
+  resistance_points: string | null;
+  total: string | null;
 }
 
 interface PopoverFormProps {
@@ -77,25 +77,25 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     age: null,
     genre: '',
     category: '',
-    height: null,
-    weight: null,
-    imc: null,
-    waist: null,
-    bmi: null,
-    bmr: null,
-    grease: null,
-    fat_mass: null,
-    ffm: null,
-    tbw: null,
-    grip: null,
-    grip_points: null,
-    jump: null,
-    jump_points: null,
-    agility: null,
-    agility_points: null,
+    height: '',
+    weight: '',
+    imc: '',
+    waist: '',
+    bmi: '',
+    bmr: '',
+    grease: '',
+    fat_mass: '',
+    ffm: '',
+    tbw: '',
+    grip: '',
+    grip_points: '',
+    jump: '',
+    jump_points: '',
+    agility: '',
+    agility_points: '',
     resistance: '',
-    resistance_points: null,
-    total: null
+    resistance_points: '',
+    total: ''
   };
   const originalFormData = {...initialFormData}
 
@@ -134,57 +134,54 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
         newFormData.id = newId;
         break;
         
-        case "p_surname" :
-        case "m_surname" :
-        case "name" :
-          const newInfo = newValue.trimStart().replace(/[^a-zA-Z\s]/g, '');
-          newFormData[action] = newInfo
-          break;
-
-        case "employeeNumber":
-        case "genre":
-        case "category":
-        case "resistance":
-          newFormData[action] = newValue; 
-          break;
-    
-        case "age":
-          const newAge = parseInt(newValue);
-          newFormData.age = isNaN(newAge) ? null: newAge;
-          break;
-    
-        case "height":
-        case "weight":
-        case "imc":
-        case "waist":
-        case "bmi":
-        case "bmr":
-        case "grease":
-        case "fat_mass":
-        case "ffm":
-        case "tbw":
-        case "grip":
-        case "jump":
-        case "agility":
-          const newData = parseFloat(newValue);
-          newFormData[action] = isNaN(newData) ? null : newData;
-          break;
+      case "p_surname" :
+      case "m_surname" :
+      case "name" :
+        const newInfo = newValue.trimStart().replace(/[^a-zA-Z\s]/g, '');
+        newFormData[action] = newInfo
+        break;
         
-        case "grip_points":
-        case "jump_points":
-        case "agility_points":
-        case "resistance_points":
-          const newPoints = parseFloat(newValue);
-          newFormData[action] = isNaN(newPoints) ? null : newPoints;
-          break;
-        
-    
-        default:
-          break;
+      case "employeeNumber":
+      case "genre":
+      case "category":
+      case "resistance":
+            newFormData[action] = newValue; 
+            break;
+            
+      case "age":
+        const newAge = parseInt(newValue);
+        newFormData.age = isNaN(newAge) ? null: newAge;
+        break;
+  
+      case "height":
+      case "weight":
+      case "imc":
+      case "waist":
+      case "bmi":
+      case "bmr":
+      case "grease":
+      case "fat_mass":
+      case "ffm":
+      case "tbw":
+      case "grip":
+      case "jump":
+      case "agility":
+      case "grip_points":
+      case "jump_points":
+      case "agility_points":
+      case "resistance_points":
+        const newData = newValue
+        newFormData[action] = newData ? newData : null;
+        break;
+      
+  
+      default:  
+        break;
     }
     setFormData(newFormData)
+    
   }
-
+  
   // ENDPOINT TO ADD NEW ROW
   const sendNewRow = async (row: ParticipantData) => {
     try {
@@ -222,25 +219,25 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
           "Edad": formData.age,
           "Genero": selectedGenre,
           "Categoria": formData.category,
-          "Altura [cm]": formData.height,
-          "Peso [kg]": formData.weight,
-          "IMC": formData.imc,
-          "Cintura [cm]": formData.waist,
-          "BMI": formData.bmi,
-          "BMR": formData.bmr,
-          "Grasa [%]": formData.grease,
-          "Fatmass": formData.fat_mass,
-          "FFM": formData.ffm,
-          "TBW": formData.tbw,
-          "Agarre": formData.grip,
-          "Puntos": formData.grip_points,
-          "Salto": formData.jump,
-          "Puntos_1": formData.jump_points,
-          "Agilidad": formData.agility,
-          "Puntos_2": formData.agility_points,
+          "Altura [cm]": formData.height ? parseFloat(formData.height) : null,
+          "Peso [kg]": formData.weight ? parseFloat(formData.weight) : null,
+          "IMC": formData.imc ? parseFloat(formData.imc) : null,
+          "Cintura [cm]": formData.waist ? parseFloat(formData.waist) : null,
+          "BMI": formData.bmi ? parseFloat(formData.bmi) : null,
+          "BMR": formData.bmr ? parseFloat(formData.bmr) : null,
+          "Grasa [%]": formData.grease ? parseFloat(formData.grease) : null,
+          "Fatmass": formData.fat_mass ? parseFloat(formData.fat_mass) : null,
+          "FFM": formData.ffm ? parseFloat(formData.ffm) : null,
+          "TBW": formData.tbw ? parseFloat(formData.tbw) : null,
+          "Agarre": formData.grip ? parseFloat(formData.grip) : null,
+          "Puntos": formData.grip_points ? parseFloat(formData.grip_points) : null,
+          "Salto": formData.jump ? parseFloat(formData.jump) : null,
+          "Puntos_1": formData.jump_points ? parseFloat(formData.jump_points) : null,
+          "Agilidad": formData.agility ? parseFloat(formData.agility) : null,
+          "Puntos_2": formData.agility_points ? parseFloat(formData.agility_points) : null,
           "Resistencia": formData.resistance,
-          "Puntos_3": formData.resistance_points,
-          "Total": formData.total,
+          "Puntos_3": formData.resistance_points ? parseFloat(formData.resistance_points) : null,
+          "Total": formData.total ? parseFloat(formData.total) : null,
       }
 
       try {
@@ -303,9 +300,18 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
 
 
   useEffect(() => {
-    const rangeValue = getValueOfAge(formData.age!)
-    const newTotal = ((formData.grip_points ? formData.grip_points : 0) + (formData.jump_points ? formData.jump_points : 0) + (formData.agility_points ? formData.agility_points : 0) + (formData.resistance_points ? formData.resistance_points : 0)) * rangeValue!
-    const newTotalFixed = fixDecimals(newTotal)!
+    const rangeValue = getValueOfAge(formData.age ? formData.age : 1)
+    const getNewTotal = () => {
+      const g_points = formData.grip_points ? parseFloat(formData.grip_points) : 0 
+      const j_points = formData.jump_points ? parseFloat(formData.jump_points) : 0 
+      const a_points = formData.agility_points ? parseFloat(formData.agility_points) : 0 
+      const r_points = formData.resistance_points ? parseFloat(formData.resistance_points) : 0 
+      const newTotal = (g_points + j_points + a_points + r_points) * (rangeValue ? rangeValue : 1)
+      return newTotal
+    }
+    
+    const newTotal = getNewTotal()
+    const newTotalFixed = fixDecimals(newTotal)?.toString() || null
     setFormData((prevData) => ({ ...prevData, total: newTotalFixed}))
     
   }, [formData.age, formData.grip_points, formData.jump_points, formData.agility_points, formData.resistance_points])
@@ -323,7 +329,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
                 <div className="flex justify-center">
                   <div className="flex text-gray-400 dark:text-gray-100 font-medium">
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Información" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Información</h4>
-                    <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Datos Corporales" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Datos Corporales</h4>
+                    <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Composición Corporal" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Composición Corporal</h4>
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Rendimiento" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Rendimiento</h4>
                   </div>
                 </div>

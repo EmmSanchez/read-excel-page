@@ -19,25 +19,25 @@ interface FormData {
   age: number | null;
   genre: string;
   category: string;
-  height: number | null;
-  weight: number | null;
-  imc: number | null;
-  waist: number | null;
-  bmi: number | null;
-  bmr: number | null;
-  grease: number | null;
-  fat_mass: number | null;
-  ffm: number | null;
-  tbw: number | null;
-  grip: number | null;
-  grip_points: number | null;
-  jump: number | null;
-  jump_points: number | null;
-  agility: number | null;
-  agility_points: number | null;
+  height: string | null;
+  weight: string | null;
+  imc: string | null;
+  waist: string | null;
+  bmi: string | null;
+  bmr: string | null;
+  grease: string | null;
+  fat_mass: string | null;
+  ffm: string | null;
+  tbw: string | null;
+  grip: string | null;
+  grip_points: string | null;
+  jump: string | null;
+  jump_points: string | null;
+  agility: string | null;
+  agility_points: string | null;
   resistance: string;
-  resistance_points: number | null;
-  total: number | null;
+  resistance_points: string | null;
+  total: string | null;
 }
 
 interface EditButtonProps {
@@ -171,8 +171,8 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
         case "agility":
         case "agility_points":
         case "resistance_points":
-          const newData = parseFloat(newValue);
-          newFormData[action] = isNaN(newData) ? null : newData;
+          const newData = newValue;
+          newFormData[action] = newData ? newData : null;
           break;
         
     
@@ -239,36 +239,36 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
           age: rowToEdit.Edad !== null ? Number(rowToEdit.Edad) : null,
           genre: rowToEdit.Genero as unknown as string,
           category: rowToEdit.Categoria as unknown as string,
-          height: rowToEdit["Altura [cm]"] !== null ? Number(rowToEdit["Altura [cm]"]) : null,
-          weight: rowToEdit["Peso [kg]"] !== null ? Number(rowToEdit["Peso [kg]"]) : null,
-          grease: rowToEdit["Grasa [%]"] !== null ? Number(rowToEdit["Grasa [%]"]) : null,
-          imc: rowToEdit.IMC !== null ? Number(rowToEdit.IMC) : null,
-          waist: rowToEdit["Cintura [cm]"] !== null ? Number(rowToEdit["Cintura [cm]"]) : null,
-          bmi: rowToEdit.BMI !== null ? Number(rowToEdit.BMI) : null,
-          bmr: rowToEdit.BMR !== null ? Number(rowToEdit.BMR) : null,
-          fat_mass: rowToEdit.Fatmass !== null ? Number(rowToEdit.Fatmass) : null,
-          ffm: rowToEdit.FFM !== null ? Number(rowToEdit.FFM) : null,
-          tbw: rowToEdit.TBW !== null ? Number(rowToEdit.TBW) : null,
-          grip: rowToEdit.Agarre !== null ? Number(rowToEdit.Agarre) : null,
-          grip_points: rowToEdit.Puntos !== null ? Number(rowToEdit.Puntos) : null,
-          jump: rowToEdit.Salto !== null ? Number(rowToEdit.Salto) : null,
-          jump_points: rowToEdit.Puntos_1 !== null ? Number(rowToEdit.Puntos_1) : null,
-          agility: rowToEdit.Agilidad !== null ? Number(rowToEdit.Agilidad) : null,
-          agility_points: rowToEdit.Puntos_2 !== null ? Number(rowToEdit.Puntos_2) : null,
+          height: rowToEdit["Altura [cm]"] !== null ? rowToEdit["Altura [cm]"].toString() : null,
+          weight: rowToEdit["Peso [kg]"] !== null ? rowToEdit["Peso [kg]"].toString() : null,
+          grease: rowToEdit["Grasa [%]"] !== null ? rowToEdit["Grasa [%]"].toString() : null,
+          imc: rowToEdit.IMC !== null ? rowToEdit.IMC.toString() : null,
+          waist: rowToEdit["Cintura [cm]"] !== null ? rowToEdit["Cintura [cm]"].toString() : null,
+          bmi: rowToEdit.BMI !== null ? rowToEdit.BMI.toString() : null,
+          bmr: rowToEdit.BMR !== null ? rowToEdit.BMR.toString() : null,
+          fat_mass: rowToEdit.Fatmass !== null ? rowToEdit.Fatmass.toString() : null,
+          ffm: rowToEdit.FFM !== null ? rowToEdit.FFM.toString() : null,
+          tbw: rowToEdit.TBW !== null ? rowToEdit.TBW.toString() : null,
+          grip: rowToEdit.Agarre !== null ? rowToEdit.Agarre.toString() : null,
+          grip_points: rowToEdit.Puntos !== null ? rowToEdit.Puntos.toString() : null,
+          jump: rowToEdit.Salto !== null ? rowToEdit.Salto.toString() : null,
+          jump_points: rowToEdit.Puntos_1 !== null ? rowToEdit.Puntos_1.toString() : null,
+          agility: rowToEdit.Agilidad !== null ? rowToEdit.Agilidad.toString() : null,
+          agility_points: rowToEdit.Puntos_2 !== null ? rowToEdit.Puntos_2.toString() : null,
           resistance: rowToEdit.Resistencia as unknown  as string,
-          resistance_points: rowToEdit.Puntos_3 !== null ? Number(rowToEdit.Puntos_3) : null,
-          total: rowToEdit.Total !== null ? Number(rowToEdit.Total) : null,
+          resistance_points: rowToEdit.Puntos_3 !== null ? rowToEdit.Puntos_3.toString() : null,
+          total: rowToEdit.Total !== null ? rowToEdit.Total.toString() : null,
         };
-        
-          setOriginalFormData(rowInfo);
-          setFormData(rowInfo);
-          setIsSaveButtonDisabled(false)
-          setSelectedOption(rowToEdit.Prueba as unknown  as string)
-          setSelectedGenre(rowToEdit.Genero as unknown as string)
-        }
+        setOriginalFormData(rowInfo);
+        setFormData(rowInfo);
+        setIsSaveButtonDisabled(false)
+        setSelectedOption(rowToEdit.Prueba as unknown  as string)
+        setSelectedGenre(rowToEdit.Genero as unknown as string)
       }
+    }
+      
   }
-
+    
   const resetInputs = () => {
     setFormData(initialFormData)
     setOriginalFormData(initialFormData)
@@ -340,25 +340,25 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
               Edad: formData.age,
               Genero: formData.genre,
               Categoria: formData.category,
-              'Altura [cm]': formData.height,
-              'Peso [kg]': formData.weight,
-              'Grasa [%]': formData.grease,
-              IMC: formData.imc,
-              'Cintura [cm]': formData.waist,
-              BMI: formData.bmi,
-              BMR: formData.bmr,
-              Fatmass: formData.fat_mass,
-              FFM: formData.ffm,
-              TBW: formData.tbw,
-              Agarre: formData.grip,
-              Puntos: formData.grip_points,
-              Salto: formData.jump,
-              Puntos_1: formData.jump_points,
-              Agilidad: formData.agility,
-              Puntos_2: formData.agility_points,
+              'Altura [cm]': formData.height ? parseFloat(formData.height) : null,
+              'Peso [kg]': formData.weight ? parseFloat(formData.weight) : null,
+              'Grasa [%]': formData.grease ? parseFloat(formData.grease) : null,
+              IMC: formData.imc ? parseFloat(formData.imc) : null,
+              'Cintura [cm]': formData.waist ? parseFloat(formData.waist) : null,
+              BMI: formData.bmi ? parseFloat(formData.bmi) : null,
+              BMR: formData.bmr ? parseFloat(formData.bmr) : null,
+              Fatmass: formData.fat_mass ? parseFloat(formData.fat_mass) : null,
+              FFM: formData.ffm ? parseFloat(formData.ffm) : null,
+              TBW: formData.tbw ? parseFloat(formData.tbw) : null,
+              Agarre: formData.grip ? parseFloat(formData.grip) : null,
+              Puntos: formData.grip_points ? parseFloat(formData.grip_points) : null,
+              Salto: formData.jump ? parseFloat(formData.jump) : null,
+              Puntos_1: formData.jump_points ? parseFloat(formData.jump_points) : null,
+              Agilidad: formData.agility ? parseFloat(formData.agility) : null,
+              Puntos_2: formData.agility_points ? parseFloat(formData.agility_points) : null,
               Resistencia: formData.resistance,
-              Puntos_3: formData.resistance_points,
-              Total: formData.total,
+              Puntos_3: formData.resistance_points ? parseFloat(formData.resistance_points) : null,
+              Total: formData.total ? parseFloat(formData.total) : null,
             }
           }
           return row as ParticipantData;
@@ -452,7 +452,7 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
       printData(formattedData)
     } 
 
-    if (section === 'Datos Corporales') {
+    if (section === 'Composición Corporal') {
       const { p_surname, m_surname, name, test, employeeNumber, age, genre, height, weight, grease, waist, imc, bmi, bmr, fat_mass, ffm, tbw } = formData;
   
       const formattedData = `
@@ -561,8 +561,17 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
 
   useEffect(() => {
     const rangeValue = getValueOfAge(formData.age ? formData.age : 1)
-    const newTotal = ((formData.grip_points ? formData.grip_points : 0) + (formData.jump_points ? formData.jump_points : 0) + (formData.agility_points ? formData.agility_points : 0) + (formData.resistance_points ? formData.resistance_points : 0)) * rangeValue!
-    const newTotalFixed = fixDecimals(newTotal)!
+    const getNewTotal = () => {
+      const g_points = formData.grip_points ? parseFloat(formData.grip_points) : 0 
+      const j_points = formData.jump_points ? parseFloat(formData.jump_points) : 0 
+      const a_points = formData.agility_points ? parseFloat(formData.agility_points) : 0 
+      const r_points = formData.resistance_points ? parseFloat(formData.resistance_points) : 0 
+      const newTotal = (g_points + j_points + a_points + r_points) * (rangeValue ? rangeValue : 1)
+      return newTotal
+    }
+    
+    const newTotal = getNewTotal()
+    const newTotalFixed = fixDecimals(newTotal)?.toString() || null
     setFormData((prevData) => ({ ...prevData, total: newTotalFixed}))
   }, [formData.age, formData.grip_points, formData.jump_points, formData.agility_points, formData.resistance_points])
 
@@ -594,7 +603,7 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
                 <div className="flex justify-center">
                   <div className="flex text-gray-400 dark:text-gray-100 font-medium">
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Información" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Información</h4>
-                    <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Datos Corporales" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Datos Corporales</h4>
+                    <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Composición Corporal" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Composición Corporal</h4>
                     <h4 onClick={(e) => handleChangeSection(e)} className={`px-6 py-1 hover:cursor-pointer border-b-[2px] transition-all ease-in-out ${activeSection === "Rendimiento" ? 'text-[#2563EB] border-[#2563EB]' : ''}`}>Rendimiento</h4>
                   </div>
                 </div>

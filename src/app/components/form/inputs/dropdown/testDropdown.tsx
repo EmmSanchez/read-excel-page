@@ -12,25 +12,25 @@ interface FormData {
   age: number | null;
   genre: string;
   category: string;
-  height: number | null;
-  weight: number | null;
-  imc: number | null;
-  waist: number | null;
-  bmi: number | null;
-  bmr: number | null;
-  grease: number | null;
-  fat_mass: number | null;
-  ffm: number | null;
-  tbw: number | null;
-  grip: number | null;
-  grip_points: number | null;
-  jump: number | null;
-  jump_points: number | null;
-  agility: number | null;
-  agility_points: number | null;
+  height: string | null;
+  weight: string | null;
+  imc: string | null;
+  waist: string | null;
+  bmi: string | null;
+  bmr: string | null;
+  grease: string | null;
+  fat_mass: string | null;
+  ffm: string | null;
+  tbw: string | null;
+  grip: string | null;
+  grip_points: string | null;
+  jump: string | null;
+  jump_points: string | null;
+  agility: string | null;
+  agility_points: string | null;
   resistance: string;
-  resistance_points: number | null;
-  total: number | null;
+  resistance_points: string | null;
+  total: string | null;
 }
 
 interface TestControlledDropdownProps {
@@ -133,7 +133,7 @@ export const TestControlledDropdown = ({
       className={`dropdown ${
         isTestOpen ? 'outline outline-[1.4px] -outline-offset-1 outline-[#2563eb]' : ''
       } ${
-        selectedOption === originalFormData?.test ? '' : `${selectedOption ? 'bg-gray-200 dark:bg-gray-700' : ''}`
+        selectedOption === originalFormData?.test ? '' : `${selectedOption ? 'bg-gray-200 dark:bg-zinc-700' : ''}`
       }`}
     >
       <div className="dropdown-header" onClick={toggleDropdown}>

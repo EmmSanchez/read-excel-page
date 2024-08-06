@@ -379,8 +379,6 @@ export function Table() {
     if (!participants) return
     const participantsCopy = [...participants]
     const sortedParticipants = sortParticipantsByColumn(participantsCopy, columnToSort as ParticipantKeys, sortDirection)
-    console.log(sortedParticipants);
-    
   
     if (!searchValue) {
       setFilteredParticipants(participants ? filterParticipantsValues(sortedParticipants) : null)
