@@ -525,37 +525,45 @@ export function Table() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(searchParams?.get('direction') ? (searchParams.get('direction')!.toString() === 'asc' ? 'asc': 'desc') : 'asc')
 
   const handleSortByHeader = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
-    const params = new URLSearchParams(searchParams)
-
-    e.preventDefault()
-    setColumnToSortIndex(index)
-    // params to save index header
-    params.set('sortIndex', index.toString())
-
+    e.preventDefault();
+    
+    // Update column to sort
+    setColumnToSortIndex(index);
+  
     setSortDirection((prev) => {
-
+      // Manage the new direcion
       const newDirection = prev === 'asc' && columnToSortIndex === index ? 'desc' : 'asc';
-      
-      const column = TableHeaders[index] as ParticipantKeys
-      setColumnToSort(column)
-      
-      // params of sort header
-      params.set('sort', column)
-      
-      // params to save sort direction
-      params.set('direction', newDirection)
+      return newDirection;
+    });
+  
+    // Update column name
+    const column = TableHeaders[index] as ParticipantKeys;
+    setColumnToSort(column);
+  
+    // Manange the pagination, return to page 1
+    handlePage('Select', 1);
+  };
+  
+  useEffect(() => {
+    // Sort participants and create a copy of actual filteredParticipants to avoid unintentionally changes
+    const filteredParticipantsCopy = filteredParticipants ? [...filteredParticipants] : null;
+    if (filteredParticipantsCopy) {
+      const sortedData = sortParticipantsByColumn(filteredParticipantsCopy, columnToSort as ParticipantKeys, sortDirection);
+      setFilteredParticipants(sortedData);
+    }
 
-      replace(`${pathName}?${params.toString()}`)
-
-      const filteredParticipantsCopy = filteredParticipants ? [...filteredParticipants] : null 
-      if (!filteredParticipantsCopy) return prev
-      const sortedData = sortParticipantsByColumn(filteredParticipantsCopy, column, newDirection)    
-      setFilteredParticipants(sortedData)
-      handlePage('Select', 1)
-
-      return newDirection
-    })
-  }
+    // Params -------------------------------------------------
+    const params = new URLSearchParams(searchParams);
+  
+    //params of sort header
+    params.set('sort', columnToSort);
+    // sortIndex
+    params.set('sortIndex', columnToSortIndex.toString());
+    // params to save sort direction
+    params.set('direction', sortDirection);
+    replace(`${pathName}?${params.toString()}`);
+  
+  }, [columnToSortIndex, columnToSort, sortDirection]);
 
   return (
     <>
@@ -750,7 +758,7 @@ export function Table() {
                       </div>
                     </div>
                     <div className="flex justify-center gap-1">
-                      <input type="number" onChange={(e) => handleChangePageInput(e)} min={1} max={totalPages.length} onKeyDown={preventInvalidChars} placeholder="Page" className="w-18 mr-2 p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 focus:hover:bg-transparent"/>
+                      <input type="number" onChange={(e) => handleChangePageInput(e)} min={1} max={totalPages.length} onKeyDown={preventInvalidChars} placeholder="Page" className="w-18 mr-2 p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 focus:hover:bg-transparent"/>
                       <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent">
                         <ChevronLeft />
                       </button>
