@@ -110,6 +110,12 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
   // Ranges of ages
   const ageRanges = useAgesStore(state => state.ageRanges)
 
+  // Manage hours, minutes, seconds for resistance
+  const [hours, setHours] = useState('');
+  const [minutes, setMinutes] = useState('');
+  const [seconds, setSeconds] = useState('');
+  const [milliseconds, setMilliseconds] = useState('');
+
   const formatTime = (input: string) => {
     // Extraer partes de la cadena
     const parts = input.match(/(\d+)?(:?)(\d+)?(:?)(\d+)?(\.?)?(\d+)?/);
@@ -161,10 +167,15 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
           newFormData[action] = newValue; 
           break;
         
-        case "resistance":
+        // resistance section 
+        case "hours":
+        case "minutes":
+        case "seconds":
+        case "milliseconds":
           const newTime = newValue
-          newFormData[action] = formatTime(newTime); 
+          // newFormData[action] = formatTime(newTime); 
           break
+
         case "age":
           const newAge = parseInt(newValue);
           newFormData.age = isNaN(newAge) ? null : newAge;
@@ -626,7 +637,7 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
             </div>
 
             <div className="flex flex-col flex-grow">
-              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} setFormData={setFormData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen}/>   
+              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} setFormData={setFormData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen} hours={hours} minutes={minutes} seconds={seconds} milliseconds={milliseconds}/>   
             </div>
 
 

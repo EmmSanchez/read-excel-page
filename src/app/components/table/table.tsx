@@ -612,8 +612,8 @@ export function Table() {
                     </div>
 
                     <div className="flex justify-center gap-1">
-                      <div className="w-24 mr-2 p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600 transition-all"></div>
-                      <button disabled className="w-[38px] p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600">
+                      <div className="w-24 h-10 mr-2 p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600 transition-all"></div>
+                      <button disabled className="w-[36px] p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600">
                       </button>
                       {
                         totalPages.length < 6 ? 
@@ -621,7 +621,7 @@ export function Table() {
                             {
                               totalPages.map((pageNumber, index) => {
                                 return (
-                                  <button disabled key={index} className={`w-[36px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
+                                  <button disabled key={index} className={`w-[32px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
                                   </button>
                                 )
                               })
@@ -632,7 +632,7 @@ export function Table() {
                             { 
                               page > 3 &&
                               <>
-                                <button disabled className={`w-[36px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
+                                <button disabled className={`w-[32px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
                                 </button>
                                 <p className="flex p-2 items-end tracking-widest">
                                   ...
@@ -643,7 +643,7 @@ export function Table() {
                             {
                               totalPages.slice(initialPage, finalPage).map((pageNumber, index) => {
                                 return (
-                                  <button disabled key={index} className={`w-[36px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
+                                  <button disabled key={index} className={`w-[32px] px-3 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600`}>
                                   </button>
                                 )
                               })
@@ -660,7 +660,7 @@ export function Table() {
                             }
                           </>
                       }
-                      <button disabled className="w-[38px] p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600">
+                      <button disabled className="w-[36px] p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600">
                       </button>
                     </div>
                     <div className="flex justify-end items-end">

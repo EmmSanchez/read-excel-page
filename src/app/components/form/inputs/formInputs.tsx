@@ -51,9 +51,13 @@ interface FormInputsProps {
   isGenreOpen: boolean
   setIsGenreOpen: React.Dispatch<React.SetStateAction<boolean>>
   setFormData?: React.Dispatch<React.SetStateAction<FormData>>
+  hours: string
+  minutes: string
+  seconds: string
+  milliseconds: string
 }
 
-export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, setSelectedOption, selectedOption, isTestOpen, setIsTestOpen, selectedGenre, setSelectedGenre, isGenreOpen,setIsGenreOpen, setFormData }: FormInputsProps) {
+export function FormInputs({ handleInput, formData, originalFormData, idError, handleGetNewIndex, activeSection, setSelectedOption, selectedOption, isTestOpen, setIsTestOpen, selectedGenre, setSelectedGenre, isGenreOpen,setIsGenreOpen, setFormData, hours, minutes, seconds, milliseconds }: FormInputsProps) {
 
   // AVOID e, E, +, -
   const preventInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -61,7 +65,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
       e.preventDefault();
     }
   };
-  
+
   return (
     <>
       {activeSection === "Información" ?
@@ -202,7 +206,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
                         {/* GRIP POINTS */}
                         <div className="flex flex-col-reverse gap-1 w-full">
                           <input value={formData.grip_points?.toString() || ''} type="number" name="grip_points" id="grip_points" min="0" onChange={(e) => handleInput(e, "grip_points")} onKeyDown={preventInvalidChars} placeholder='Puntos de agarre' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.grip_points !== originalFormData?.grip_points ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} />
-                          <label htmlFor="p" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
+                          <label htmlFor="grip_points" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
                         </div>
                       </div>
                         
@@ -210,12 +214,12 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
                         {/* JUMP*/}
                         <div className="flex flex-col-reverse gap-1 w-full">
                           <input value={formData.jump?.toString() || ''} type="number" name="jump" id="jump" min="0" onChange={(e) => handleInput(e, "jump")} onKeyDown={preventInvalidChars} placeholder='Ingresa el salto' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.jump !== originalFormData?.jump ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} />
-                          <label htmlFor="p" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Salto</label>
+                          <label htmlFor="jump" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Salto</label>
                         </div>
                         {/* JUMP POINTS */}
                         <div className="flex flex-col-reverse gap-1 w-full">
                           <input value={formData.jump_points?.toString() || ''} type="number" name="jump_points" id="jump_points" min="0" onChange={(e) => handleInput(e, "jump_points")} onKeyDown={preventInvalidChars} placeholder='Puntos de salto' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.jump_points !== originalFormData?.jump_points ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} />
-                          <label htmlFor="p" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
+                          <label htmlFor="jump_points" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
                         </div>
                       </div>
 
@@ -223,25 +227,68 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
                         {/* AGILITY*/}
                         <div className="flex flex-col-reverse gap-1 w-full">
                           <input value={formData.agility?.toString() || ''} type="number" name="agility" id="agility" min="0" onChange={(e) => handleInput(e, "agility")} onKeyDown={preventInvalidChars} placeholder='Ingresa la agilidad' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.agility !== originalFormData?.agility ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} />
-                          <label htmlFor="p" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Agilidad</label>
+                          <label htmlFor="agility" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Agilidad</label>
                         </div>
                         {/* AGILITY POINTS*/}
                         <div className="flex flex-col-reverse gap-1 w-full">
                           <input value={formData.agility_points?.toString() || ''} type="number" name="agility_points" id="agility_points" min="0" onChange={(e) => handleInput(e, "agility_points")} onKeyDown={preventInvalidChars} placeholder='Puntos de agilidad' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.agility_points !== originalFormData?.agility_points ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} />
-                          <label htmlFor="p" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
+                          <label htmlFor="agility_points" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
                         </div>
                       </div>
 
                       <div className="grid gap-x-8 gap-y-1 custom-grid-form_rendimiento-sections">
                         {/* RESISTANCE*/}
                         <div className="flex flex-col-reverse gap-1 w-full">
-                          <input value={formData.resistance?.toString() || ''} type="text" name="resistance" id="resistance" min="0" onChange={(e) => handleInput(e, "resistance")} onKeyDown={preventInvalidChars} placeholder='Ingresa el tiempo' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.resistance !== originalFormData?.resistance ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} />
-                          <label htmlFor="p" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Resistencia</label>
+                          <div className="flex w-full items-center rounded border-[1px] border-solid border-[#cecbcb]">
+                            <input
+                              type="number"
+                              value={hours}
+                              onChange={(e) => handleInput(e, 'hours')}
+                              onKeyDown={preventInvalidChars}
+                              placeholder="horas"
+                              className="personalized-resistance w-full p-1 border text-center"
+                            />
+                            <span>:</span>
+                            <input
+                              type="number"
+                              value={minutes}
+                              onChange={(e) => handleInput(e, 'minutes')}
+                              onKeyDown={preventInvalidChars}
+                              placeholder="minutos"
+                              min="0"
+                              max="59"
+                              className="personalized-resistance w-full p-1 border text-center"
+                            />
+                            <span>:</span>
+                            <input
+                              type="number"
+                              value={seconds}
+                              onChange={(e) => handleInput(e, 'seconds')}
+                              onKeyDown={preventInvalidChars}
+                              placeholder="segundos"
+                              min="0"
+                              max="59"
+                              className="personalized-resistance w-full p-1 border text-center"
+                            />
+                            <span>.</span>
+                            <input
+                              type="number"
+                              value={milliseconds}
+                              onChange={(e) => handleInput(e, 'milliseconds')}
+                              onKeyDown={preventInvalidChars}
+                              placeholder="milisegundos"
+                              min="0"
+                              max="999"
+                              className="personalized-resistance w-full p-1 border text-center"
+                            />
+                          </div>
+                          {/* <input value={formData.resistance?.toString() || ''} type="text" name="resistance" id="resistance" min="0" onChange={(e) => handleInput(e, "resistance")} onKeyDown={preventInvalidChars} placeholder='Ingresa el tiempo' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.resistance !== originalFormData?.resistance ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} /> */}
+                          <label htmlFor="resistance" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Resistencia</label>
                         </div>
                         {/* RESISTANCE POINTS*/}
                         <div className="flex flex-col-reverse gap-1 w-full">
                           <input value={formData.resistance_points?.toString() || ''} type="number" name="resistance_points" id="resistance_points" min="0" onChange={(e) => handleInput(e, "resistance_points")} onKeyDown={preventInvalidChars} placeholder='Puntos por tiempo' className={`personalized-text-input dark:bg-transparent ${!formData ? 'bg-white' : `${formData.resistance_points !== originalFormData?.resistance_points ? 'bg-gray-200 dark:bg-zinc-700' : 'bg-white'}`}`} />
-                          <label htmlFor="p" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
+                          <label htmlFor="resistance_points" className='pb-[2px] text-base text-gray-800 dark:text-gray-100 font-medium label-default'>Puntos</label>
                         </div>
                       </div>
                     </div>
