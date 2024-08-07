@@ -33,8 +33,6 @@ export function RefreshButton () {
     setIsTableLoading(true)
     await getParticipants()
     setIsTableLoading(false)
-    // Guardar searchValue
-    
   }
 
   return (

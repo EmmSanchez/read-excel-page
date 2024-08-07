@@ -507,7 +507,11 @@ export function Table() {
     e.preventDefault()
     const newPage = parseInt(e.target.value)
 
-    if (!newPage || newPage === 0) return setPage(1);
+    if (!newPage || newPage === 0) {
+      setPage(1);
+      handlePage('Select', 1);
+      return;
+    }
     
     if (newPage > totalPages.length) {
       const fixedPage = totalPages.length
@@ -608,7 +612,7 @@ export function Table() {
                     </div>
 
                     <div className="flex justify-center gap-1">
-                      <input disabled type="number" className="w-24 mr-2 p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600 transition-all"/>
+                      <div className="w-24 mr-2 p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600 transition-all"></div>
                       <button disabled className="w-[38px] p-2 rounded-md animate-pulse bg-gray-300 dark:bg-gray-700 border-solid border-[1px] border-gray-300 dark:border-gray-600">
                       </button>
                       {
@@ -758,7 +762,7 @@ export function Table() {
                       </div>
                     </div>
                     <div className="flex justify-center gap-1">
-                      <input type="number" onChange={(e) => handleChangePageInput(e)} min={1} max={totalPages.length} onKeyDown={preventInvalidChars} placeholder="Page" className="w-18 mr-2 p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 focus:hover:bg-transparent"/>
+                      <input type="number" value={page} onChange={(e) => handleChangePageInput(e)} min={1} max={totalPages.length} onKeyDown={preventInvalidChars} placeholder="Page" className="w-18 mr-2 p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 focus:hover:bg-transparent"/>
                       <button disabled={page === 1} onClick={() => handlePage('Previous')} className="p-2 rounded-md border-solid border-[1px] border-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent">
                         <ChevronLeft />
                       </button>

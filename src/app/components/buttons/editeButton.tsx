@@ -110,6 +110,19 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
   // Ranges of ages
   const ageRanges = useAgesStore(state => state.ageRanges)
 
+  const formatTime = (input: string) => {
+    // Extraer partes de la cadena
+    const parts = input.match(/(\d+)?(:?)(\d+)?(:?)(\d+)?(\.?)?(\d+)?/);
+    if (!parts) return '';
+
+    const hours = parts[1] ? String(parts[1]).padStart(2, '0') : '00';
+    const minutes = parts[3] ? String(parts[3]).padStart(2, '0') : '00';
+    const seconds = parts[5] ? String(parts[5]).padStart(2, '0') : '00';
+    const milliseconds = parts[7] ? String(parts[7]).padEnd(3, '0') : '000';
+
+    return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+  };
+
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, action: string) => {
     const newValue = e.target.value
@@ -145,10 +158,13 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
 
         case "employeeNumber":
         case "category":
-        case "resistance":
           newFormData[action] = newValue; 
           break;
-    
+        
+        case "resistance":
+          const newTime = newValue
+          newFormData[action] = formatTime(newTime); 
+          break
         case "age":
           const newAge = parseInt(newValue);
           newFormData.age = isNaN(newAge) ? null : newAge;
