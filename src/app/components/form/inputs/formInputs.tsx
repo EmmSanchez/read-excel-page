@@ -239,7 +239,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
                       <div className="grid gap-x-8 gap-y-1 custom-grid-form_rendimiento-sections">
                         {/* RESISTANCE*/}
                         <div className="flex flex-col-reverse gap-1 w-full">
-                          <div className="flex w-full items-center rounded border-[1px] border-solid border-[#cecbcb]">
+                          <div className="flex w-full items-center rounded border-[1px] border-solid border-[#cecbcb] group">
                             <input
                               type="number"
                               value={hours}

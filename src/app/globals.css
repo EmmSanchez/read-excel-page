@@ -7,10 +7,10 @@
   border: solid 1px #cecbcb;
   padding: 8px 10px;
   border-radius: 4px;
+  /* transition: all ease-in-out 0.05s; */
 
   &::placeholder {
     font-size: 14px;
-    font-weight: 300;
     color: gray;
   }
 
@@ -59,6 +59,11 @@
   &:focus {
     outline: transparent;
   }
+
+  &::placeholder {
+    font-size: 14px;
+    color: gray;
+  }
 }
 
 .personalized-resistance::-webkit-outer-spin-button,
@@ -70,6 +75,15 @@
 /* Firefox */
 .personalized-resistance[type="number"] {
   -moz-appearance: textfield;
+}
+
+.group:focus-within {
+  outline: solid 1.4px #2563eb;
+  outline-offset: -1px;
+}
+
+.group:focus-within + .label-default {
+  color: #2563eb;
 }
 
 .custom-grid-form {

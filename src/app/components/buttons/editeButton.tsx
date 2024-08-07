@@ -116,18 +116,22 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
   const [seconds, setSeconds] = useState('');
   const [milliseconds, setMilliseconds] = useState('');
 
-  const formatTime = (input: string) => {
-    // Extraer partes de la cadena
-    const parts = input.match(/(\d+)?(:?)(\d+)?(:?)(\d+)?(\.?)?(\d+)?/);
-    if (!parts) return '';
-
-    const hours = parts[1] ? String(parts[1]).padStart(2, '0') : '00';
-    const minutes = parts[3] ? String(parts[3]).padStart(2, '0') : '00';
-    const seconds = parts[5] ? String(parts[5]).padStart(2, '0') : '00';
-    const milliseconds = parts[7] ? String(parts[7]).padEnd(3, '0') : '000';
-
-    return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+  const formatTime = () => {
+    if (hours === '' && minutes === '' && seconds === '' && milliseconds === '') return ''
+    
+    const hoursFixed = hours === '' ? '00' : hours.padStart(2, '0')
+    const minutesFixed = minutes === '' ? '00' : minutes.padStart(2, '0')
+    const secondsFixed = seconds === '' ? '00' : seconds.padStart(2, '0')
+    const millisecondsFixed = milliseconds === '' ? '000' : milliseconds.padEnd(3, '0')
+    return `${hoursFixed}:${minutesFixed}:${secondsFixed}.${millisecondsFixed}`;
   };
+
+  useEffect(() => {
+    const formattedTime = formatTime()
+    setFormData((prev) => ({
+      ...prev, resistance: formattedTime
+    }))
+  }, [hours, minutes, seconds, milliseconds]) 
 
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, action: string) => {
@@ -169,11 +173,27 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
         
         // resistance section 
         case "hours":
+          const newHours = newValue
+          setHours(newHours)
+          break;
+
         case "minutes":
+          const newMinutes = newValue
+          if (newMinutes.length > 2) break
+          setMinutes(newMinutes)
+          break;
+
+
         case "seconds":
+          const newSeconds = newValue
+          if (newSeconds.length > 2) break
+          setSeconds(newSeconds)
+          break;
+
         case "milliseconds":
-          const newTime = newValue
-          // newFormData[action] = formatTime(newTime); 
+          const newMilliseconds = newValue
+          if (newMilliseconds.length > 3) break
+          setMilliseconds(newMilliseconds)
           break
 
         case "age":
@@ -206,9 +226,10 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
         default:
           break;
     }
+    
     setFormData(newFormData)
   }
-
+  
   useEffect(() => {
     if (idError) {
       setIsSaveButtonDisabled(true)
@@ -249,6 +270,12 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
     return parseFloat(num.toFixed(2));
   }
 
+  const splitResistanceTime = (time: string) => {
+    const [hours, minutes, secondsAndMiliseconds] = time.split(':')
+    const [seconds, miliseconds] = secondsAndMiliseconds.split('.')
+    return [hours, minutes, seconds, miliseconds]
+  }
+
   const getRowInfo = (id: number) => {
     resetInputs();
     if (filteredParticipants && participants) {
@@ -286,6 +313,12 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
           resistance_points: rowToEdit.Puntos_3 !== null ? rowToEdit.Puntos_3.toString() : null,
           total: rowToEdit.Total !== null ? rowToEdit.Total.toString() : null,
         };
+        const [newHours, newMinutes, newSeconds, newMiliseconds] = splitResistanceTime(rowToEdit.Resistencia!)
+        setHours(newHours)
+        setMinutes(newMinutes)
+        setSeconds(newSeconds)
+        setMilliseconds(newMiliseconds)
+
         setOriginalFormData(rowInfo);
         setFormData(rowInfo);
         setIsSaveButtonDisabled(false)
@@ -299,6 +332,10 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
   const resetInputs = () => {
     setFormData(initialFormData)
     setOriginalFormData(initialFormData)
+    setMilliseconds('')
+    setSeconds('')
+    setMinutes('')
+    setHours('')
   }
 
   // EDIT -------------------

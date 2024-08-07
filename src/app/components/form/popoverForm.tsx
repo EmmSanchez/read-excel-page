@@ -117,6 +117,29 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
     return range ? range.value : 1
   }
 
+  // Manage hours, minutes, seconds for resistance
+  const [hours, setHours] = useState('');
+  const [minutes, setMinutes] = useState('');
+  const [seconds, setSeconds] = useState('');
+  const [milliseconds, setMilliseconds] = useState('');
+
+  const formatTime = () => {
+    if (hours === '' && minutes === '' && seconds === '' && milliseconds === '') return ''
+    
+    const hoursFixed = hours === '' ? '00' : hours.padStart(2, '0')
+    const minutesFixed = minutes === '' ? '00' : minutes.padStart(2, '0')
+    const secondsFixed = seconds === '' ? '00' : seconds.padStart(2, '0')
+    const millisecondsFixed = milliseconds === '' ? '000' : milliseconds.padEnd(3, '0')
+    return `${hoursFixed}:${minutesFixed}:${secondsFixed}.${millisecondsFixed}`;
+  };
+
+  useEffect(() => {
+    const formattedTime = formatTime()
+    setFormData((prev) => ({
+      ...prev, resistance: formattedTime
+    }))
+  }, [hours, minutes, seconds, milliseconds]) 
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, action: string) => {
     const newValue = e.target.value
     const newFormData = { ...formData }
@@ -144,9 +167,33 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
       case "employeeNumber":
       case "genre":
       case "category":
-      case "resistance":
             newFormData[action] = newValue; 
             break;
+
+      // resistance section 
+      case "hours":
+        const newHours = newValue
+        setHours(newHours)
+        break;
+
+      case "minutes":
+        const newMinutes = newValue
+        if (newMinutes.length > 2) break
+        setMinutes(newMinutes)
+        break;
+
+
+      case "seconds":
+        const newSeconds = newValue
+        if (newSeconds.length > 2) break
+        setSeconds(newSeconds)
+        break;
+
+      case "milliseconds":
+        const newMilliseconds = newValue
+        if (newMilliseconds.length > 3) break
+        setMilliseconds(newMilliseconds)
+        break
             
       case "age":
         const newAge = parseInt(newValue);
@@ -179,7 +226,6 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
         break;
     }
     setFormData(newFormData)
-    
   }
   
   // ENDPOINT TO ADD NEW ROW
@@ -274,6 +320,10 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
   const resetInputs = () => {
     setFormData(initialFormData)
     setActiveSection("Información")
+    setMilliseconds('')
+    setSeconds('')
+    setMinutes('')
+    setHours('')
   }
   const handleChangeSection = (e: React.MouseEvent<HTMLHeadingElement, MouseEvent>) => {
     e.preventDefault()
@@ -336,7 +386,7 @@ export function PopoverForm ({setIdError, idError, setIsPopoverVisible, isPopove
             </div>
 
             <div className="flex flex-col flex-grow">
-              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen}/>   
+              <FormInputs idError={idError} handleInput={handleInput} handleGetNewIndex={handleGetNewIndex} formData={formData} originalFormData={originalFormData} activeSection={activeSection} selectedOption={selectedOption} setSelectedOption={setSelectedOption} isTestOpen={isTestOpen} setIsTestOpen={setIsTestOpen} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre} isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen} hours={hours} minutes={minutes} seconds={seconds} milliseconds={milliseconds}/>   
             </div>
             
             <div className="flex items-center justify-between">
