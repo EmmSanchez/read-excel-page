@@ -379,11 +379,13 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
     setIsTestOpen(false)
     setSelectedGenre('')
     setIsGenreOpen(false)
+    
   }
 
   // APROVE CHANGES
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, action: string) => {
     e.preventDefault();
+    e.stopPropagation()
     
     try {
       if(!originalFormData.id) return
@@ -436,12 +438,14 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
           setSelectedOption('')
           setSelectedGenre('')
           setActiveSection("Información");
+          console.log('para por aquí');
         }
         setParticipants(updatedData)
         setFilteredParticipants(sortedData)
         setIsTestOpen(false)
         setIsGenreOpen(false)
         setOriginalFormData(formData)
+        console.log('para por aquí');
       }
       
     } catch (error) {
