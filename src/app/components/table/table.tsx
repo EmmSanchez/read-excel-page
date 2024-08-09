@@ -69,8 +69,8 @@ export const sortArrayByColumn = (arr: ExcelData, column: string) => {
 
 };
 
-function filterParticipantsValues(participants: ParticipantData[]) {
-  const newFilteredData = participants.map(participant => ({
+export function filterParticipantsValues(participantsToFilter: ParticipantData[]) {
+  const newFilteredData = participantsToFilter.map(participant => ({
     "#": participant["#"],
     "Apellido paterno": participant["Apellido paterno"],
     "Apellido materno": participant["Apellido materno"],
@@ -88,11 +88,10 @@ function filterParticipantsValues(participants: ParticipantData[]) {
     "Puntos_3": participant["Puntos_3"],
     "Total": participant["Total"]
   }));
-
   return newFilteredData
 }
 
-type ParticipantKeys = keyof filteredParticipant;  
+export type ParticipantKeys = keyof filteredParticipant;  
 
 type Participant = filteredParticipant | ParticipantData;
 
@@ -149,6 +148,11 @@ export function Table() {
   const { replace } = useRouter()
   const [searchValue, setSearchValue] = useState<string>(searchParams.get('search') ? searchParams.get('search')!.toString() : '')
 
+  // Sorting variables
+  const [columnToSortIndex, setColumnToSortIndex] = useState<number>(searchParams?.get('sortIndex') ? parseInt(searchParams.get('sortIndex')!.toString()) : 0)
+  const [columnToSort, setColumnToSort] = useState<string>(searchParams?.get('sort') ? searchParams.get('sort')!.toString() : '#')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(searchParams?.get('direction') ? (searchParams.get('direction')!.toString() === 'asc' ? 'asc': 'desc') : 'asc')
+
   // Manual Refresh
   const isTableLoading = useTableLoading((state) => state.isTableLoading)
 
@@ -183,32 +187,32 @@ export function Table() {
   const headers = ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos', 'Agilidad', 'Puntos', 'Resistencia', 'Puntos', 'Total']
   const TableHeaders = ['#', 'Apellido paterno', 'Apellido materno', 'Nombre', 'Prueba', 'Edad', 'TBW', 'Agarre', 'Puntos', 'Salto', 'Puntos_1', 'Agilidad', 'Puntos_2', 'Resistencia', 'Puntos_3', 'Total']
 
-  useEffect(() => {
-    if (!searchValue) {
-      if (!participants) return
-      const newFilteredData = participants.map(participant => ({
-        "#": participant["#"],
-        "Apellido paterno": participant["Apellido paterno"],
-        "Apellido materno": participant["Apellido materno"],
-        "Nombre": participant["Nombre"],
-        "Prueba": participant["Prueba"],
-        "Edad": participant["Edad"],
-        "TBW": participant["TBW"],
-        "Agarre": participant["Agarre"],
-        "Puntos": participant["Puntos"],
-        "Salto": participant["Salto"],
-        "Puntos_1": participant["Puntos_1"],
-        "Agilidad": participant["Agilidad"],
-        "Puntos_2": participant["Puntos_2"],
-        "Resistencia": participant["Resistencia"],
-        "Puntos_3": participant["Puntos_3"],
-        "Total": participant["Total"]
-      }));
-      setFilteredParticipants(newFilteredData)
+  // useEffect(() => {
+  //   if (!searchValue) {
+  //     if (!participants) return
+  //     const newFilteredData = participants.map(participant => ({
+  //       "#": participant["#"],
+  //       "Apellido paterno": participant["Apellido paterno"],
+  //       "Apellido materno": participant["Apellido materno"],
+  //       "Nombre": participant["Nombre"],
+  //       "Prueba": participant["Prueba"],
+  //       "Edad": participant["Edad"],
+  //       "TBW": participant["TBW"],
+  //       "Agarre": participant["Agarre"],
+  //       "Puntos": participant["Puntos"],
+  //       "Salto": participant["Salto"],
+  //       "Puntos_1": participant["Puntos_1"],
+  //       "Agilidad": participant["Agilidad"],
+  //       "Puntos_2": participant["Puntos_2"],
+  //       "Resistencia": participant["Resistencia"],
+  //       "Puntos_3": participant["Puntos_3"],
+  //       "Total": participant["Total"]
+  //     }));
+  //     setFilteredParticipants(newFilteredData)
       
-    }
+  //   }
 
-  }, [searchValue, participants])
+  // }, [searchValue, participants])
 
   // CONVERT EXCEL TO JSON
   useEffect(() => {
@@ -349,7 +353,6 @@ export function Table() {
     setRowToDelete(null);
   };
 
-
   // SEARCHING ------------------------------------------------------------------------------------------------------------------------------------------------
   const handleSearchbar = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
@@ -378,6 +381,7 @@ export function Table() {
 
     if (!participants) return
     const participantsCopy = [...participants]
+    
     const sortedParticipants = sortParticipantsByColumn(participantsCopy, columnToSort as ParticipantKeys, sortDirection)
   
     if (!searchValue) {
@@ -408,11 +412,10 @@ export function Table() {
         filteredParticipants = participantsCopy?.filter((row, index) => row.Nombre?.toString().toLowerCase().includes(searchValue.toLowerCase()));
       }
   
+      console.log(filteredParticipants);
       setFilteredParticipants(filteredParticipants ? filterParticipantsValues(filteredParticipants) : null);
-      
     }
-    
-  }, [searchValue, participants]);
+  }, [searchValue, participants, ageRanges]);
 
   useEffect(() => {
     setPage(1)
@@ -524,9 +527,6 @@ export function Table() {
   }
 
   // SORTING -----------------------------------------------------------------------------------------------------------------------------------------
-  const [columnToSortIndex, setColumnToSortIndex] = useState<number>(searchParams?.get('sortIndex') ? parseInt(searchParams.get('sortIndex')!.toString()) : 0)
-  const [columnToSort, setColumnToSort] = useState<string>(searchParams?.get('sort') ? searchParams.get('sort')!.toString() : '#')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(searchParams?.get('direction') ? (searchParams.get('direction')!.toString() === 'asc' ? 'asc': 'desc') : 'asc')
 
   const handleSortByHeader = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
     e.preventDefault();
@@ -861,7 +861,7 @@ export function Table() {
                       </div>
                       <div className='table-row-group'>
                         {filteredParticipants?.slice(initialNumber, finalNumber).map((item, rowIndex) => (
-                          <Row key={item["#"]} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} item={item} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow} columnToSort={columnToSort} sortDirection={sortDirection}/>
+                          <Row key={rowIndex} rowIndex={rowIndex} handleGetRow={handleGetRow} selectedRows={selectedRows} item={item} rowToDelete={rowToDelete} cancelDelete={cancelDelete} confirmDeleteRow={confirmDeleteRow} columnToSort={columnToSort} sortDirection={sortDirection}/>
                         ))}
                       </div>
                     </div>

@@ -5,6 +5,8 @@ import React, { useState } from "react"
 import { ArrowDropdwonIcon } from "../../../../public/icons/icons";
 import { useAgesStore } from "@/app/store/agesStore";
 import { useParticipantsDataStore } from "@/app/store/participants";
+import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipants";
+import { filterParticipantsValues, sortParticipantsByColumn } from "@/app/components/table/table";
 
 interface User {
   username: string;
@@ -60,6 +62,9 @@ export default function Settings () {
   // FIXING
   const participants = useParticipantsDataStore(state => state.participants)
   const setParticipants = useParticipantsDataStore(state => state.setParticipants)
+
+  const setFilteredParticipants = useFilteredParticipantsDataStore(state => state.setFilteredParticipants)
+
 
   const options = useTestOptionsStore(state => state.options)
   const users = useDataUsersStore(state => state.users)
@@ -332,7 +337,7 @@ export default function Settings () {
       const res = await fetch('/api/excelData/ages/uploadRange', {
         method: 'POST',
         headers: {
-          'Content-Type': 'applicaction/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ newRange })
       })
@@ -373,6 +378,10 @@ export default function Settings () {
             });
 
             setParticipants(updatedExcel)
+
+            const updatedCopy = [...updatedExcel]
+            const sortedUpdatedExcel = sortParticipantsByColumn(updatedCopy, '#', 'asc')
+            setFilteredParticipants(filterParticipantsValues(sortedUpdatedExcel))
           }
         }
       }
@@ -417,6 +426,10 @@ export default function Settings () {
             });
             
             setParticipants(updatedExcel)
+
+            const updatedCopy = [...updatedExcel]
+            const sortedUpdatedExcel = sortParticipantsByColumn(updatedCopy, '#', 'asc')
+            setFilteredParticipants(filterParticipantsValues(sortedUpdatedExcel))
           }
 
           setAgeRanges(newRanges)
@@ -458,7 +471,7 @@ export default function Settings () {
                 </div>
                 <div className='table-row-group'>
                   {options && (options.map((option, rowIndex) => (
-                    <div key={option} className="table-row">
+                    <div key={rowIndex} className="table-row">
                       <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <p>{option}</p>
                       </div>
@@ -530,7 +543,7 @@ export default function Settings () {
                 </div>
                 <div className='table-row-group'>
                   {ageRanges && (ageRanges.map((range, rowIndex) => (
-                    <div key={range.minAge} className="table-row">
+                    <div key={rowIndex} className="table-row">
                       <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <p>{range.minAge}</p>
                       </div>
@@ -613,7 +626,7 @@ export default function Settings () {
                 </div>
                 <div className='table-row-group'>
                   {users.map((user, rowIndex) => (
-                    <div key={user.username} className="table-row">
+                    <div key={rowIndex} className="table-row">
                       <div className="table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <p>{user.rol}</p>
                       </div>

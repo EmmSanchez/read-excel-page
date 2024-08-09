@@ -105,7 +105,7 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
   const [isTestOpen, setIsTestOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [isGenreOpen, setIsGenreOpen] = useState(false);
-  const [selectedGenre, setSelectedGenre] = useState('')
+  const [selectedGenre, setSelectedGenre] = useState<string>('')
 
   // Ranges of ages
   const ageRanges = useAgesStore(state => state.ageRanges)
@@ -401,7 +401,7 @@ export function EditButton ({handleGetRow, rowIndex, item, columnToSort, sortDir
               'Apellido paterno': formData.p_surname,
               'Apellido materno': formData.m_surname,
               Nombre: formData.name,
-              Prueba: formData.test,
+              Prueba: selectedOption,
               '# Empleado': formData.employeeNumber,
               Edad: formData.age,
               Genero: formData.genre,

@@ -98,22 +98,20 @@ export const TestControlledDropdown = ({
     if (newOption.trim() !== '') {
       try {
         await addNewOption(newOption)
-        
+        handleOptionClick(newOption)
+
         if (options) {
           setOptions([...options, newOption]);
         } else {
           setOptions([newOption])
         }
+        setIsTestOpen(false);
       } catch (error) {
         console.error('Error al agregar nueva opción', error)
       }
-
-      if (setSelectedOption) {
-        setSelectedOption(newOption);
-      }
-      setNewOption('');
-      setIsAddTestActive(false);
     }
+    setNewOption('');
+    setIsAddTestActive(false);
   };
 
   const handleCancelAddOption = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -149,9 +147,9 @@ export const TestControlledDropdown = ({
           isTestOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
-        {options?.map((option) => (
+        {options?.map((option, index) => (
           <div
-            key={option}
+            key={index}
             className="dropdown-item font-semibold text-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
             onClick={() => handleOptionClick(option)}
           >
