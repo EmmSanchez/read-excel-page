@@ -125,7 +125,7 @@ export function FormInputs({ handleInput, formData, originalFormData, idError, h
             {/* GENERO */}
             <div className="flex flex-col-reverse gap-1 w-full">
               <GenreControlledDropdown isGenreOpen={isGenreOpen} setIsGenreOpen={setIsGenreOpen} originalFormData={originalFormData} formData={formData} setFormData={setFormData} selectedGenre={selectedGenre} setSelectedGenre={setSelectedGenre}/>
-              <label htmlFor="test" className={`pb-[2px] text-base font-medium label-default ${isTestOpen ? 'text-[#2563eb]' : 'text-gray-800 dark:text-gray-100'}`}>Género</label>
+              <label htmlFor="test" className={`pb-[2px] text-base font-medium label-default ${isGenreOpen ? 'text-[#2563eb]' : 'text-gray-800 dark:text-gray-100'}`}>Género</label>
             </div>
             {/* CATEGORÍA */}
             <div className="flex flex-col-reverse gap-1 w-full">

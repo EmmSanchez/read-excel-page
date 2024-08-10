@@ -143,7 +143,7 @@ export const TestControlledDropdown = ({
         </span>
       </div>
       <div
-        className={`dropdown-menu transition-all duration-100 ease-in-out shadow-lg dark:border-gray-600 dark:bg-gray-800 ${
+        className={`dropdown-menu max-h-44 overflow-y-auto transition-all duration-100 ease-in-out shadow-lg dark:border-gray-600 dark:bg-gray-800 ${
           isTestOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >

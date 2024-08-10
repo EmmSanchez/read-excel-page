@@ -458,10 +458,10 @@ export default function Settings () {
           </div>
 
            {/* TABLE */}
-           <div className="flex overflow-auto">
-              <div className='table table-auto mt-5 w-full rounded-xl border-collapse border-[1px] border-solid border-gray-300  dark:border-zinc-800'>
-                <div className='table-header-group bg-gray-900 dark:bg-neutral-950 text-gray-50'>
-                  <div className='table-row'>
+           <div className="flex overflow-auto mt-5 max-h-[400px] overflow-y-auto">
+              <div className='table table-auto w-full rounded-xl border-collapse border-[1px] border-solid border-gray-300 dark:border-zinc-800'>
+                <div className='table-header-group'>
+                  <div className='table-row sticky -top-1 bg-gray-900 dark:bg-neutral-950 text-gray-50'>
                     <div className='table-cell p-3'>
                       <p>Prueba</p>
                     </div>
@@ -477,7 +477,6 @@ export default function Settings () {
                       </div>
                       <div className="w-10 table-cell p-3 border-b-[1px] border-solid border-gray-300 dark:border-neutral-800">
                         <div className="flex justify-end gap-4">
-                        
                           <button onClick={() => handleDeleteTest(option)} className="px-3 py-1 rounded bg-red-600 hover:bg-red-800">
                             <p className="text-white">Eliminar</p>
                           </button>
