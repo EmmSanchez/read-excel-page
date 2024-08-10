@@ -7,6 +7,7 @@ import { useDataUsersStore } from "../store/dataUsers";
 import { useAgesStore } from "../store/agesStore";
 import { useParticipantsDataStore } from "@/app/store/participants";
 import { useUserStore } from "../store/userStore";
+import { useIsGetDataFetchFinished } from "../store/getDataFinished";
 
 
 
@@ -27,6 +28,9 @@ export default function Layout({
   const setParticipants = useParticipantsDataStore(state => state.setParticipants)
 
   const setUserProfile = useUserStore(state => state.setUserProfile)
+
+  // Manual loading
+  const setIsGetDataFetchFinished = useIsGetDataFetchFinished(state => state.setIsGetDataFetchFinished)
 
 
 
@@ -50,8 +54,6 @@ export default function Layout({
         const { sortedParticipants, fileInfoArray } = data;
   
         if (sortedParticipants.length === 0) {
-          console.log('No hay datos de participantes');
-          
           // there is a file with no data
           if (!fileInfoArray) {
             return;
@@ -60,10 +62,12 @@ export default function Layout({
           setParticipants(sortedParticipants);
           const fileInfo = fileInfoArray[0];
           setFile(fileInfo);
+          setIsGetDataFetchFinished(true)
         } else {
           setParticipants(sortedParticipants);
           const fileInfo = fileInfoArray[0];
           setFile(fileInfo);
+          setIsGetDataFetchFinished(true)
         }
       } else {
         console.error('Error al obtener los datos de participantes, código de estado:', response.status);
