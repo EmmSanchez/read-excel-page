@@ -15,6 +15,39 @@ import { useFilteredParticipantsDataStore } from "@/app/store/filteredParticipan
 import { ParticipantData } from "@/app/types/ClientParticipant";
 import { filteredParticipant } from "@/app/types/filteredParticipant";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+
+const participantExample = [{
+  '#': 1,
+  'Apellido paterno': 'Apellido 1',
+  'Apellido materno': 'Apellido 2',
+  Nombre: 'Nombre 1',
+  Prueba: 'Prueba',
+  '# Empleado': '20',
+  Edad: 30,
+  Genero: 'HOMBRE',
+  Categoria: '1',
+  'Altura [cm]': 1.8,
+  'Peso [kg]': 75,
+  'Grasa [%]': 10,
+  IMC: 10,
+  'Cintura [cm]': 10,
+  BMI: 10,
+  BMR: 10,
+  Fatmass: 10,
+  FFM: 10,
+  TBW: 10,
+  Agarre: 10,
+  Puntos: 10,
+  Salto: 10,
+  Puntos_1: 10,
+  Agilidad: 10,
+  Puntos_2: 10,
+  Resistencia: '00:01:54.000',
+  Puntos_3: 10,
+  Total: 40
+}]
 
 type ExcelData = (string | number | boolean | null)[][] | null;
 
@@ -569,6 +602,16 @@ export function Table() {
   
   }, [columnToSortIndex, columnToSort, sortDirection]);
 
+  const createEmptyFile = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    const fileName = 'PlantillaNueva'
+    const fileSize = 0
+    const newFile = { _id:'', name: fileName, size: fileSize} as unknown as File
+    setFile(newFile)
+    setParticipants(participantExample)
+    await sendToMongoDB(participantExample, fileName, fileSize, ageRanges);
+  }
+  
   return (
     <>
       {participants ? (
@@ -874,9 +917,21 @@ export function Table() {
         </>
       ) : (
         <>
-          <div className="flex flex-col m-4">
-            <h1>Pasos a Seguir</h1>
-            <p>Haz click en el botón superior e inserta un archivo de excel</p>
+          <div className="flex justify-center items-center text-center mx-4 mt-4 h-fit flex-wrap">
+            <div className="flex flex-col justify-center p-8 ">
+              <h2 className="text-3xl font-bold text-[#2564ebe5] dark:text-zinc-100">DESCARGA LA PLANTILLA</h2>
+              <p className="text-sm w-96 mt-2 self-center text-gray-500 dark:text-gray-300">Haz click en el siguiente botón para descargar el archivo de excel y empieza a editar, eliminar, añadir y configurar los datos.</p>
+              <div className="flex flex-col gap-2">
+                <button className="w-52 self-center mt-8 py-3 rounded-md bg-[#2564ebe5] text-blue-50 text-lg font-medium transition-all ease-in-out hover:bg-blue-800">
+                  <Link href='/files/Plantilla.xlsx' download='Plantilla.xlsx'>Descargar plantilla</Link>
+                </button>
+                <p>ó</p>
+                <button onClick={(e) => createEmptyFile(e)} className="w-52 self-center py-3 rounded-md text-[#2564ebe5] text-lg font-medium transition-all ease-in-out border-2 border-solid border-[#2564ebe5] hover:bg-blue-50 dark:hover:bg-zinc-900">Comenzar sin archivo</button>
+              </div>
+            </div>
+            <Image src='/images/dashboard_mockup_transparent.png' width={2880} height={1920} alt="Excel image example" className="w-[1000px] transition-all ease-in-out hover:scale-[98%]"/>
+          </div>
+          <div className="">
           </div>
         </>
       )}

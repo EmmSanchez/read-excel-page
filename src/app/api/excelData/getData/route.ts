@@ -8,15 +8,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     await connectDB();
 
-    // Get sorted participants object
-    let sortedParticipants;
-    try {
-      sortedParticipants = await ParticipantModel.find().sort({ '#': 1 })
-    } catch (error) {
-      console.error('Error al obtener participantes:', error);
-      return NextResponse.json({ error: 'Error al obtener participantes' }, { status: 500 });
-    }
-
     // Get file's info
     let fileInfoArray;
     try {
@@ -26,9 +17,18 @@ export async function GET(req: NextRequest, res: NextResponse) {
       return NextResponse.json({ error: 'Error al obtener información del archivo' }, { status: 500 });
     }
 
+    // Get sorted participants object
+    let sortedParticipants;
+    try {
+      sortedParticipants = await ParticipantModel.find().sort({ '#': 1 })
+    } catch (error) {
+      console.error('Error al obtener participantes:', error);
+      return NextResponse.json({ error: 'Error al obtener participantes' }, { status: 500 });
+    }
+
     // Verify if there is data, if not, the var is null and works in client -> (!fileInfoArray)
     if (!fileInfoArray || fileInfoArray.length === 0) {
-      return NextResponse.json({ error: 'No se encontró información del archivo' }, { status: 404 });
+      return NextResponse.json({ error: 'No se encontró información del archivo' }, { status: 200 });
     }
 
     return NextResponse.json({ sortedParticipants, fileInfoArray });

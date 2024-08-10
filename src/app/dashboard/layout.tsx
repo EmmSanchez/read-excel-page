@@ -38,29 +38,35 @@ export default function Layout({
           'Content-Type': 'application/json'
         },
       });
-
+  
       if (response.ok) {
-        const {sortedParticipants, fileInfoArray} = await response.json();
+        const data = await response.json();
         
-        // if there is no data or just the columns
-        if (sortedParticipants.length === 1) {
-          console.log('No hay datos de partipantes');
+        if (!data || !data.sortedParticipants || !data.fileInfoArray) {
+          console.error('La respuesta no contiene los datos esperados:', data);
+          return;
+        }
+  
+        const { sortedParticipants, fileInfoArray } = data;
+  
+        if (sortedParticipants.length === 0) {
+          console.log('No hay datos de participantes');
           
           // there is a file with no data
           if (!fileInfoArray) {
-            return
+            return;
           }
           
-          setParticipants(sortedParticipants)
-          const fileInfo = fileInfoArray[0]
-          setFile(fileInfo)
+          setParticipants(sortedParticipants);
+          const fileInfo = fileInfoArray[0];
+          setFile(fileInfo);
         } else {
-          setParticipants(sortedParticipants)
-          const fileInfo = fileInfoArray[0]
-          setFile(fileInfo)
+          setParticipants(sortedParticipants);
+          const fileInfo = fileInfoArray[0];
+          setFile(fileInfo);
         }
       } else {
-        console.error('Error al obtener los datos de participantes')
+        console.error('Error al obtener los datos de participantes, código de estado:', response.status);
       }
     } catch (error) {
       console.error('Error de red:', error);
