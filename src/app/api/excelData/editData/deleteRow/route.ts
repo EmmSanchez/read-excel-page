@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import ParticipantModel from "@/models/uploadedData";
+import connectDB from "@/app/lib/mongodb";
 
 export async function DELETE(req: NextRequest) {
+  await connectDB()
+
   try {
     const data = await req.json()
 

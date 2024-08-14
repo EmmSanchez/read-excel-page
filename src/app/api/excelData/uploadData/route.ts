@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
 import FileInfoModel from '@/models/fileInfo';
+import connectDB from '@/app/lib/mongodb';
 
 interface Participant {
   _id: string;
@@ -36,6 +37,8 @@ interface Participant {
 }
 
 export async function POST(req: NextRequest) {
+  await connectDB()
+
   const { data, fileName, fileSize, ageRanges } = await req.json();
 
   if (!data) {

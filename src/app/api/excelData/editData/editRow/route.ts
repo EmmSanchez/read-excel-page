@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import ParticipantModel from "@/models/uploadedData";
+import connectDB from "@/app/lib/mongodb";
 
 export async function POST(req: NextRequest, res: NextResponse) {
+  await connectDB()
+
   try {
     const { formData, id, selectedOption, selectedGenre } = await req.json()
     

@@ -1,7 +1,10 @@
+import connectDB from "@/app/lib/mongodb";
 import ParticipantModel from "@/models/uploadedData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  await connectDB()
+
   try {
     const { row } = await req.json()
     if(!row) return NextResponse.json({ message: "Datos inválidos" }, { status: 400 });

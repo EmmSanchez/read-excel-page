@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import UserModel from '@/models/users';
+import connectDB from "@/app/lib/mongodb";
 
 export async function POST(req: NextRequest,) {
+  await connectDB()
+
   const { user } = await req.json()
 
   if (!user) {

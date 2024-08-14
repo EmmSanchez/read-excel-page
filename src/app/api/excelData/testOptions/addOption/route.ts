@@ -1,7 +1,10 @@
+import connectDB from "@/app/lib/mongodb";
 import TestOptionsModel from "@/models/tests";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  await connectDB()
+
   try {
     const option = await req.json()
     

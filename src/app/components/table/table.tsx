@@ -933,8 +933,8 @@ export function Table() {
                   <h2 className="text-3xl font-bold text-[#2564ebe5] dark:text-zinc-100">DESCARGA LA PLANTILLA</h2>
                   <p className="text-sm w-96 mt-2 self-center text-gray-500 dark:text-gray-300">Haz click en el siguiente botón para descargar el archivo de excel y empieza a editar, eliminar, añadir y configurar los datos.</p>
                   <div className="flex flex-col gap-2">
-                    <button className="w-52 self-center mt-8 py-3 rounded-md bg-[#2564ebe5] text-blue-50 text-lg font-medium transition-all ease-in-out hover:bg-blue-800">
-                      <Link href='/files/Plantilla.xlsx' download='Plantilla.xlsx'>Descargar plantilla</Link>
+                    <button className="w-52 self-center mt-8 rounded-md bg-[#2564ebe5] text-blue-50 text-lg font-medium transition-all ease-in-out hover:bg-blue-800">
+                      <a href='/files/Plantilla.xlsx' download='Plantilla.xlsx' className="flex w-full h-full justify-center py-3 rounded-md">Descargar plantilla</a>
                     </button>
                     <p>ó</p>
                     <button onClick={(e) => createEmptyFile(e)} className="w-52 self-center py-3 rounded-md text-[#2564ebe5] text-lg font-medium transition-all ease-in-out border-2 border-solid border-[#2564ebe5] hover:bg-blue-50 dark:hover:bg-zinc-900">Comenzar sin archivo</button>

@@ -1,8 +1,11 @@
+import connectDB from "@/app/lib/mongodb";
 import RangeAgeModel from "@/models/rangeAges";
 import ParticipantModel from "@/models/uploadedData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req: NextRequest) {
+  await connectDB()
+
   try {
     const { minAge, maxAge } = await req.json()
     await RangeAgeModel.findOneAndDelete({'minAge': minAge})

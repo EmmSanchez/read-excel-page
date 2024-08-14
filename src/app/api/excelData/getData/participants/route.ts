@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import ParticipantModel from '@/models/uploadedData';
+import connectDB from '@/app/lib/mongodb';
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest, res: NextResponse) {
+  await connectDB()
+
   try {
     // Get sorted participants object
     let sortedParticipants;

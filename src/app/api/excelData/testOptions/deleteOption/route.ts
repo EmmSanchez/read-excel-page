@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import TestOptionsModel from "@/models/tests";
+import connectDB from "@/app/lib/mongodb";
 
 export async function DELETE(req: NextRequest) {
+  await connectDB()
+
   try {
     const { option } = await req.json()
 

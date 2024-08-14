@@ -1,9 +1,12 @@
+import connectDB from "@/app/lib/mongodb";
 import TestOptionsModel from "@/models/tests";
 import { NextResponse } from "next/server";
 export const dynamic = 'force-dynamic'
 
 
 export async function GET() {
+  await connectDB()
+
   try {
     // just get option and not _id
     const data = await TestOptionsModel.find({}, 'option -_id').sort({ option: 1})

@@ -1,7 +1,9 @@
+import connectDB from "@/app/lib/mongodb";
 import UserModel from "@/models/users";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req: NextRequest) {
+  await connectDB()
   const { username } = await req.json()
 
   try { 

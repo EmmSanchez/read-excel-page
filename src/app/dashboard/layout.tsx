@@ -48,6 +48,7 @@ export default function Layout({
         
         if (!data || !data.sortedParticipants || !data.fileInfoArray) {
           console.error('La respuesta no contiene los datos esperados:', data);
+          setIsGetDataFetchFinished(true)
           return;
         }
   
@@ -71,9 +72,11 @@ export default function Layout({
         }
       } else {
         console.error('Error al obtener los datos de participantes, código de estado:', response.status);
+        setIsGetDataFetchFinished(true)
       }
     } catch (error) {
       console.error('Error de red:', error);
+      setIsGetDataFetchFinished(true)
     }
   }
 
